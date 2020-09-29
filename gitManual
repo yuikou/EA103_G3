@@ -1,0 +1,32 @@
+git clone https://github.com/yuikou/EA103_G3.git
+在EA103_G3裡面
+git branch 自己的分支fix1
+git checkout fix1
+把檔案丟上fix1
+git add --all
+git commit -m "msg"
+********
+把檔案丟上fix1
+git add --all
+git commit -m "msg"
+********
+把檔案丟上fix1
+git add --all
+git commit -m "msg"
+********
+把檔案丟上fix1
+git add --all
+git commit -m "msg"
+********
+
+//以上作業都在local的分支進行
+
+git checkout master
+git pull //拿到master上最新的資料
+git merge fix1
+//解決合併衝突
+git add --all
+git commit -m "解決合併衝突"
+git pull
+//確認有沒有衝突, 沒有的話push
+git push
