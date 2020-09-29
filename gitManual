@@ -3,6 +3,9 @@ git clone https://github.com/yuikou/EA103_G3
 cd到EA103_G3裡面
 
 git branch 自己的分支fix1
+
+====================================================
+
 git checkout fix1
 把檔案丟上fix1
 git add --all
@@ -21,6 +24,7 @@ git add --all
 git commit -m "msg"
 ********
 
+====================================================
 //以上作業都在local的分支進行
 
 git checkout master
