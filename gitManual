@@ -1,4 +1,4 @@
-git clone https://github.com/yuikou/EA103_G3.git
+git clone https://github.com/yuikou/EA103_G3
 在EA103_G3裡面
 git branch 自己的分支fix1
 git checkout fix1
