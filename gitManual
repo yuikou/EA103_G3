@@ -1,5 +1,9 @@
 git clone https://github.com/yuikou/EA103_G3
+<<<<<<< HEAD
 在EA103_G3裡面
+=======
+cd到EA103_G3裡面
+>>>>>>> origin/master
 git branch 自己的分支fix1
 git checkout fix1
 把檔案丟上fix1
