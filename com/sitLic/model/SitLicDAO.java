@@ -16,7 +16,7 @@ public class SitLicDAO implements SitLicDAO_interface{
 		} catch (NamingException e) {
 			e.printStackTrace();
 		}
-	}
+	}//
 	
 	private static final String ADD_PSTMT = "INSERT INTO sitLic VALUES ('SL' || lpad(licNo_seq.NEXTVAL, 3, '0'), ?, ?, ?, ?, ?)";
 	private static final String UPDATE_PSTMT = "UPDATE sitLic SET LICNAME=?, LICPIC=?, LICEXP=?, LICSTATUS=? WHERE LICNO=?";
