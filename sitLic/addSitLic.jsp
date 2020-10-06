@@ -126,7 +126,7 @@
 				           		<span class="focus-input100"></span>
 				           </div>
 				           <div class="info txt1 myP">
-                                	證照失效日 <span>*</span>
+                                	證照失效日 <˙span>*</span>
                                 <div class="add-note">
                                     <span>若證照有失效日期，請於下列日期欄位輸入</span>
                                 </div>
