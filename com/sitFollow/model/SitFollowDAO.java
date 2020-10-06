@@ -32,17 +32,25 @@ public class SitFollowDAO implements SitFollowDAO_interface {
 
 		try {
 			con = ds.getConnection();
+			con.setAutoCommit(false);
+			
 			pstmt = con.prepareStatement(ADD_PSTMT);
 			pstmt.setString(1, memNo);
 			pstmt.setString(2, sitNo);
 			// 如果新增一筆成功，回傳true給Controller，方便執行下一段程式碼
 			if (pstmt.executeUpdate() == 1) {
 				addOK = true;
+				con.commit();
 			}
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new RuntimeException("出現DB問題" + e.getMessage());
+			try {
+				con.rollback();
+				throw new RuntimeException("A database error occured. "+e.getMessage());
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
 		} finally {
 			if (pstmt != null) {
 				try {
@@ -70,17 +78,25 @@ public class SitFollowDAO implements SitFollowDAO_interface {
 
 		try {
 			con = ds.getConnection();
+			con.setAutoCommit(false);
+			
 			pstmt = con.prepareStatement(DEL_PSTMT);
 			pstmt.setString(1, memNo);
 			pstmt.setString(2, sitNo);
 			// 如果刪除一筆成功，回傳true給Controller，方便執行下一段程式碼
 			if (pstmt.executeUpdate() == 1) {
 				delOK = true;
+				con.commit();
 			}
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new RuntimeException("出現DB問題GG" + e.getMessage());
+			try {
+				con.rollback();
+				throw new RuntimeException("A database error occured. "+e.getMessage());
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
 		} finally {
 			if (pstmt != null) {
 				try {

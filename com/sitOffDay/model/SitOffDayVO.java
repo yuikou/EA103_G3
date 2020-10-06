@@ -8,6 +8,7 @@ public class SitOffDayVO {
 	private Date offDay;
 	private String offTime;
 	private Integer offDayTyp;
+	private String groupID;
 	
 	public String getOffDayNo() {
 		return offDayNo;
@@ -38,6 +39,12 @@ public class SitOffDayVO {
 	}
 	public void setOffDayTyp(Integer offDayTyp) {
 		this.offDayTyp = offDayTyp;
+	}
+	public String getGroupID() {
+		return groupID;
+	}
+	public void setGroupID(String groupID) {
+		this.groupID = groupID;
 	}
 	
 	

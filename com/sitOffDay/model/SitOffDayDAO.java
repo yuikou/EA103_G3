@@ -18,14 +18,42 @@ public class SitOffDayDAO implements SitOffDayDAO_interface{
 		}
 	}
 
-	private static final String ADD_PSTMT 			= "INSERT INTO sitOffDay VALUES ('SD' || lpad(offDayNo_seq.NEXTVAL, 3, '0'), ?, ?, ?, ?)";
-	private static final String UPDATE_PSTMT 		= "UPDATE sitOffDay SET offDay=?, offTime=? WHERE offDayNo=? ";
-	private static final String DEL_PSTMT 			= "DELETE sitOffDay WHERE offDayNo=? ";
+	private static final String ADD_PSTMT 			= "INSERT INTO sitOffDay VALUES ('SD' || lpad(offDayNo_seq.NEXTVAL, 3, '0'), ?, ?, ?, ?, ?)";
+	private static final String DEL_PSTMT 			= "DELETE sitOffDay WHERE groupId=? ";
 	private static final String GET_BY_OFFDAYNO 	= "SELECT * FROM sitOffDay WHERE offDayNo=? ";
+	private static final String GET_BY_SITSRVNO 	= "SELECT * FROM sitOffDay WHERE sitSrvNo=? ";
 	private static final String GET_SIT_BY_OFFDATE 	= "SELECT sitSrvNo FROM sitOffDay WHERE offDay  BETWEEN to_date(?, 'yyyy-mm-dd') "
 													+ "AND TO_DATE(?, 'yyyy-mm-dd') "
-													+ "AND offTime=? "
+													+ "AND offTime is Null OR offTime = ? "
 													+ "AND sitSrvNo IN (SELECT sitSrvNo FROM sitSrv WHERE sitSrvCode=?)";
+	
+	@Override
+	public Boolean commit(Boolean addOK) {
+		Boolean isCommit = false;
+		Connection con = null;
+		
+		try {
+			con = ds.getConnection();
+			if (addOK) {
+				con.commit();
+				isCommit = true;
+			} else {
+				con.rollback();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new RuntimeException("新增失敗： " + e.getMessage());
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return isCommit;
+	}
 	
 	@Override
 	public Boolean add(SitOffDayVO sod) {
@@ -35,19 +63,28 @@ public class SitOffDayDAO implements SitOffDayDAO_interface{
 		
 		try {
 			con = ds.getConnection();
+			con.setAutoCommit(false);
+			
 			pstmt = con.prepareStatement(ADD_PSTMT);
 			pstmt.setString(1, sod.getSitSrvNo());
 			pstmt.setDate(2, sod.getOffDay());
 			pstmt.setObject(3, sod.getOffTime());
 			pstmt.setInt(4, sod.getOffDayTyp());
+			pstmt.setObject(5, sod.getGroupID());
 			
 			if ( pstmt.executeUpdate() == 1) {
 				addOK = true;
+				con.commit();
 			}
-
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new RuntimeException("GGG SQLEXC" + e.getMessage());
+			try {
+				con.rollback();
+				throw new RuntimeException("A database error occured. "+e.getMessage());
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
 		} finally {
 			if (pstmt != null) {
 				try {
@@ -67,62 +104,32 @@ public class SitOffDayDAO implements SitOffDayDAO_interface{
 		return addOK;
 	}
 
-	@Override
-	public Boolean update(SitOffDayVO sod) {
-		Boolean updateOK = false;
-		Connection con = null;
-		PreparedStatement pstmt = null;
-		
-		try {
-			con = ds.getConnection();
-			pstmt = con.prepareStatement(UPDATE_PSTMT);
-			pstmt.setDate(1, sod.getOffDay());
-			pstmt.setObject(2, sod.getOffTime());
-			pstmt.setString(3, sod.getOffDayNo());
-			
-			if ( pstmt.executeUpdate() == 1) {
-				updateOK = true;
-			}
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new RuntimeException("GGG SQLEXC" + e.getMessage());
-		} finally {
-			if (pstmt != null) {
-				try {
-					pstmt.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-			if (con != null) {
-				try {
-					con.close();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		return updateOK;
-	}
 
 	@Override
-	public Boolean del(String offDayNo) {
+	public Boolean del(String groupId) {
 		Boolean delOK = false;
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		
 		try {
 			con = ds.getConnection();
+			con.setAutoCommit(false);
+			
 			pstmt = con.prepareStatement(DEL_PSTMT);
-			pstmt.setString(1, offDayNo);
-			if ( pstmt.executeUpdate() == 1) {
+			pstmt.setString(1, groupId);
+			if ( pstmt.executeUpdate() > 1) {
 				delOK = true;
+				con.commit();
 			}
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new RuntimeException("GGG SQLEXC" + e.getMessage());
+			try {
+				con.rollback();
+				throw new RuntimeException("A database error occured. "+e.getMessage());
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
 		} finally {
 			if (pstmt != null) {
 				try {
@@ -162,6 +169,7 @@ public class SitOffDayDAO implements SitOffDayDAO_interface{
 				sod.setOffDay(rs.getDate(3));
 				sod.setOffTime(rs.getString(4));
 				sod.setOffDayTyp(rs.getInt(5));
+				sod.setGroupID(rs.getString(6));
 			}
 			
 		} catch (SQLException e) {
@@ -193,6 +201,60 @@ public class SitOffDayDAO implements SitOffDayDAO_interface{
 		return sod;
 	}
 
+	@Override
+	public List<SitOffDayVO> getByFK(String sitSrvNo) {
+		List<SitOffDayVO> list = new ArrayList<SitOffDayVO>();
+		SitOffDayVO sod = null;
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		try {
+			con = ds.getConnection();
+			pstmt = con.prepareStatement(GET_BY_SITSRVNO);
+			pstmt.setString(1, sitSrvNo);
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				sod = new SitOffDayVO();
+				sod.setOffDayNo(rs.getString(1));
+				sod.setSitSrvNo(rs.getString(2));
+				sod.setOffDay(rs.getDate(3));
+				sod.setOffTime(rs.getString(4));
+				sod.setOffDayTyp(rs.getInt(5));
+				sod.setGroupID(rs.getString(6));
+				list.add(sod);
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new RuntimeException("GGGGG不知道說什麼了" + e.getMessage());
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return list;
+	}
+	
 	@Override
 	public Set<String> getSitByDate(String sitSrvCode, String start_date, String end_date, String time) {
 		Set<String> set = new HashSet<String>();

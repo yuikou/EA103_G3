@@ -1,6 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="BIG5"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ page import="com.sitFollow.model.*, java.util.*" %>
+<%@ page import="com.sitFollow.model.*, com.member.model.*, java.util.*" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -67,14 +67,6 @@
                 <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
             </li> -->
         </ul>
-		
-		<!-- 取得追蹤的保姆的會員編號 -->
-		<%
-        	String memNo = (String) session.getAttribute("memNo");
-			SitFollowService sfSvc = new  SitFollowService();
-        	List<String> memlist = sfSvc.getAllByMemNo(memNo);
-        	pageContext.setAttribute("memlist", memlist);
-        %>
         
 		<!-- 先創建Svc -->
         <jsp:useBean id="memSvc" class="com.member.model.MemService"></jsp:useBean>
@@ -83,8 +75,7 @@
         
         
         <div class="row myRow">
-        
-        <c:forEach var="mem" items="${memlist}">
+        <c:forEach var="mem" items="${list}">
         
 			<div class="col-6 col-md-3 col-sm-4 card">
             	<img src="${pageContext.request.contextPath}/ShowImg?action=sitFollow&memNo=${mem}" class="card-img-top" alt="...">
@@ -130,13 +121,12 @@
 		<img class="srvImg" src="${path}/img/pet-taxi.svg">寵物計程車 
 		<img class="srvImg" src="${path}/img/pet-bath.svg">加購洗澡 
 		<img class="srvImg" src="${path}/img/pet-google.svg">加購接送
-        
+		
 <!--         <div class="cutePage"> -->
 <!--             <a href="#"><img src="025-bull terrier.png" class="page" alt="..."></a> -->
 <!--             <a href="#"><img src="026-turkish pointer.png" class="page" alt="..."></a> -->
 <!--             <a href="#"><img src="028-bichon frise.png" class="page" alt="..."></a> -->
 <!--         </div> -->
-
     </div>
 
 <!------------------ footer ------------------>

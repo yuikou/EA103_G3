@@ -12,6 +12,7 @@ public class SitLicJDBCDAO implements SitLicDAO_interface {
 
 	private static final String ADD_PSTMT = "INSERT INTO sitLic VALUES ('SL' || lpad(licNo_seq.NEXTVAL, 3, '0'), ?, ?, ?, ?, ?)";
 	private static final String UPDATE_PSTMT = "UPDATE sitLic SET LICNAME=?, LICPIC=?, LICEXP=?, LICSTATUS=? WHERE LICNO=?";
+	private static final String UPDATE_STATUS_PSTMT = "UPDATE sitLic SET LICSTATUS=? WHERE LICNO=?";
 	private static final String GET_ALL_LIC = "SELECT * FROM sitLic WHERE SITNO=? ORDER BY LICNO";
 	private static final String GET_ONE_LIC = "SELECT * FROM sitLic WHERE LICNO=?";
 	private static final String GET_UNVERIFIED_LIC = "SELECT * FROM sitLic WHERE LICSTATUS=?";
@@ -116,6 +117,45 @@ public class SitLicJDBCDAO implements SitLicDAO_interface {
 		}
 	}
 
+	@Override
+	public void updateStatus(String licNo, Integer licStatus) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		
+		try {
+			Class.forName(driver);
+			con = DriverManager.getConnection(url, user, passwd);
+			con.setAutoCommit(false);
+			pstmt = con.prepareStatement(UPDATE_STATUS_PSTMT);
+			pstmt.setInt(1, licStatus);
+			pstmt.setString(2, licNo);
+			
+			pstmt.executeUpdate();
+			
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			throw new RuntimeException("Couldn't load database driver. " + e.getMessage());
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new RuntimeException("資料庫問題發生!!! " + e.getMessage());
+		} finally {
+			if(pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if(con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
 	@Override
 	public SitLicVO getOneLicByPK(String licNo) {
 		SitLicVO sitLic = null;
@@ -318,18 +358,11 @@ public class SitLicJDBCDAO implements SitLicDAO_interface {
 //		VO2.setLicStatus(0);
 //		VO2.setLicNo("SL004");
 //		jdbcdao.update(VO2);
-
-		// 修改
-//		byte[] pic = null;
-//		try {
-//			pic = getPictureByteArray("E:/專題/專題練習/DAO_practice/證照/特定寵物業許可證(個人2).jpg");
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//		SitLicVO VO4 = new SitLicVO();
-//		VO4.setLicPic(pic);
-//		VO4.setLicNo("SL004");
-//		jdbcdao.update2(VO4);
+		
+		
+		// 修改狀態
+		jdbcdao.updateStatus("SL001", 1);
+		
 		
 		// 查詢one
 		SitLicVO VO3 = jdbcdao.getOneLicByPK("SL003");

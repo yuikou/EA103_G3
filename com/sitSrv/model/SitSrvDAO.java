@@ -32,8 +32,7 @@ public class SitSrvDAO implements SitSrvDAO_interface {
 //			+ "JOIN petSitter ps ON ps.memNo = m.memNo "
 //			+ "JOIN sitSrv ss ON ps.sitNo = ss.sitNo "
 //			+ "WHERE sitSrvCode=? AND memAddress Like ? AND acpPetTyp=?";
-	private static StringBuffer CHOOSE_SIT_FROM_SRV = new StringBuffer(
-								"SELECT * From sitSrv WHERE sitSrvCode=? AND acpPetNum>=? AND acpPetTyp = ANY (");
+	private static StringBuffer CHOOSE_SIT_FROM_SRV = new StringBuffer("SELECT * From sitSrv WHERE sitSrvCode=? AND acpPetNum>=? AND acpPetTyp = ANY (");
 
 	@Override
 	public Boolean add(SitSrvVO sitSrv) {
@@ -43,8 +42,9 @@ public class SitSrvDAO implements SitSrvDAO_interface {
 
 		try {
 			con = ds.getConnection();
-			pstmt = con.prepareStatement(ADD_PSTMT);
+			con.setAutoCommit(false);
 
+			pstmt = con.prepareStatement(ADD_PSTMT);
 			pstmt.setString(1, sitSrv.getSitSrvName());
 			pstmt.setString(2, sitSrv.getSitSrvCode());
 			pstmt.setString(3, sitSrv.getSitNo());
@@ -67,11 +67,17 @@ public class SitSrvDAO implements SitSrvDAO_interface {
 
 			if (pstmt.executeUpdate() == 1) {
 				addOK = true;
+				con.commit();
 			}
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new RuntimeException("GGYY...出現SQL問題" + e.getMessage());
+			try {
+				con.rollback();
+				throw new RuntimeException("A database error occured. "+e.getMessage());
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
 		} finally {
 			if (pstmt != null) {
 				try {
@@ -99,8 +105,9 @@ public class SitSrvDAO implements SitSrvDAO_interface {
 
 		try {
 			con = ds.getConnection();
-			pstmt = con.prepareStatement(UPDATE_PSTMT);
+			con.setAutoCommit(false);
 
+			pstmt = con.prepareStatement(UPDATE_PSTMT);
 			pstmt.setString(1, sitSrv.getSitSrvName());
 			pstmt.setString(2, sitSrv.getSitSrvCode());
 			pstmt.setString(3, sitSrv.getSitNo());
@@ -124,11 +131,17 @@ public class SitSrvDAO implements SitSrvDAO_interface {
 
 			if (pstmt.executeUpdate() == 1) {
 				updateOK = true;
+				con.commit();
 			}
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new RuntimeException("GGYY...出現SQL問題" + e.getMessage());
+			try {
+				con.rollback();
+				throw new RuntimeException("A database error occured. "+e.getMessage());
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
 		} finally {
 			if (pstmt != null) {
 				try {
@@ -156,15 +169,22 @@ public class SitSrvDAO implements SitSrvDAO_interface {
 
 		try {
 			con = ds.getConnection();
+			con.setAutoCommit(false);
 			pstmt = con.prepareStatement(ISDEL_PSTMT);
 			pstmt.setString(1, sitSrvNo);
 			if (pstmt.executeUpdate() == 1) {
 				delOK = true;
+				con.commit();
 			}
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new RuntimeException("GGYY...出現SQL問題" + e.getMessage());
+			try {
+				con.rollback();
+				throw new RuntimeException("A database error occured. "+e.getMessage());
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
 		} finally {
 			if (pstmt != null) {
 				try {
@@ -265,6 +285,7 @@ public class SitSrvDAO implements SitSrvDAO_interface {
 
 			while (rs.next()) {
 				sitSrv = new SitSrvVO();
+				sitSrv.setSitSrvNo(rs.getString("sitSrvNo"));
 				sitSrv.setSitSrvName(rs.getString("sitSrvName"));
 				sitSrv.setSitSrvCode(rs.getString("sitSrvCode"));
 				sitSrv.setSitNo(rs.getString("sitNo"));
