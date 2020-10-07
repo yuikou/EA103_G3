@@ -6,9 +6,9 @@
 
 <%
 	GrmService grmSvc = new GrmService();
-String salno = (session.getAttribute("salno")).toString();
-List<GrmVO> list = grmSvc.getGrm(salno);
-pageContext.setAttribute("list", list);
+	String salno = (session.getAttribute("salno")).toString();
+	List<GrmVO> list = grmSvc.getGrm(salno);
+	pageContext.setAttribute("list", list);
 %>
 <!DOCTYPE html>
 <html>
@@ -105,7 +105,7 @@ pageContext.setAttribute("list", list);
 			</div>
 			<div class="col-12 col-md-12">
 				<div class="table-responsive">
-					<table class="table">
+					<table class="table listAll">
 						<thead>
 							<tr>
 								<th scope="col" class="gw">美容師編號</th>
@@ -115,7 +115,7 @@ pageContext.setAttribute("list", list);
 								<th scope="col"></th>
 							</tr>
 						</thead>
-						<%@ include file="pages/page1.file"%>
+						<%@ include file="/back-end/pages/page1.file"%>
 						<c:forEach var="grmVO" items="${list}" begin="<%=pageIndex%>"
 							end="<%=pageIndex+rowsPerPage-1%>">
 							<tbody class="tbody">
@@ -125,7 +125,7 @@ pageContext.setAttribute("list", list);
 										src="<%=request.getContextPath()%>/grm/picReader?grmPic=${grmVO.groomerNo}"
 										name="grmPic" class="showGPic"></td>
 									<td>${grmVO.groomerName}</td>
-									<td>${grmVO.groomerInfo}</td>
+									<td class="toLeft">${grmVO.groomerInfo}</td>
 									<td>
 										<form method="post"
 											action="<%=request.getContextPath()%>/grm/grm.do">
@@ -143,11 +143,11 @@ pageContext.setAttribute("list", list);
 												type="hidden" name="action" value="delete">
 										</form></td>
 								</tr>
+							</tbody>
 						</c:forEach>
-						</tbody>
 					</table>
 				</div>
-				<%@ include file="pages/page2.file"%>
+				<%@ include file="/back-end/pages/page2.file"%>
 			</div>
 		</div>
 	</div>

@@ -15,8 +15,8 @@ import java.util.List;
 public class GrmJDBCDAO implements GrmDAO_interface {
 	String driver = "oracle.jdbc.driver.OracleDriver";
 	String url = "jdbc:oracle:thin:@localhost:1521:XE";
-	String userid = "LIZ";
-	String passwd = "LIZ";
+	String userid = "EA103G3";
+	String passwd = "123456";
 
 	// ·Ç³ÆSQL«ü¥O
 	private static final String INSERT_STMT = "INSERT INTO GROOMER(GROOMERNO, SALNO, GROOMERNAME, GROOMERINFO, GROOMERPIC, ISDELETE) VALUES ('G' || lpad(GROOMER_SEQ.NEXTVAL, 3, '0'), ?, ?, ?, ?, ?)";

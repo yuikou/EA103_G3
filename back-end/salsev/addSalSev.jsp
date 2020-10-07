@@ -1,9 +1,9 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="Big5"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ page import="com.grm.model.*"%>
+<%@ page import="com.salsev.model.*"%>
 
 <%
-	GrmVO grmVO = (GrmVO) request.getAttribute("grmVO");
+	SalsevVO salvVO = (SalsevVO) request.getAttribute("salvVO");
 %>
 
 <!DOCTYPE html>
@@ -24,11 +24,10 @@
 	href="<%=request.getContextPath()%>/css/groomer.css">
 <link rel="Shortcut Icon" type="image/x-icon"
 	href="https://dzmg8959fhe1k.cloudfront.net/all/favicon.ico">
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-<title>Petfect Match ==美容專區== 更新美容師資料</title>
+<title>新增服務項目</title>
 </head>
 <body>
-	<!-- 此處includeheader -->
+	<!-- 此處include header -->
 	<div class="layout"></div>
 	<div class="container">
 		<div class="row">
@@ -38,9 +37,10 @@
 						<td><span> <a
 								href="<%=request.getContextPath()%>/back-end/backEnd_index.jsp">回首頁</a>
 						</span>
-							<h4>更新美容師資料</h4></td>
+							<h4>新增服務項目</h4></td>
 					</tr>
 				</table>
+
 				<%-- 錯誤表列 --%>
 				<c:if test="${not empty errorMsgs}">
 					<font style="color: red">請修正以下錯誤:</font>
@@ -51,40 +51,57 @@
 					</ul>
 				</c:if>
 			</div>
-			<div class="col-12 col-md-12">
+			<div class="col-md-12">
 				<div class="table-responsive">
-					<FORM METHOD="post" ACTION="<%=request.getContextPath() %>/grm/grm.do" enctype="multipart/form-data">
-						<table class="table table-borderless">
+					<form method="post"
+						action="<%=request.getContextPath()%>/salsev/salsev.do">
+						<table class="table table-borderless table-sm">
 							<tr>
-								<th scope="col" class="gw">美容師編號:</th>
-								<td><%=grmVO.getGroomerNo()%></td>
+								<th scope="row">美容項目名稱:</th>
+								<td><select name="salsevname" required>
+									<option value="單品項美容">單品項美容</option>
+									<option value="基礎美容">基礎美容</option>
+									<option value="精緻美容">精緻美容</option>
+								</select></td>
 							</tr>
 							<tr>
-								<th scope="col" class="gw">美容師照片:</th>
-								<td id="preview"><img
-									src="<%=request.getContextPath()%>/grm/picReader?grmPic=${grmVO.groomerNo}"
-									id="gPic"></td>
-								<td><input type="file" id="myFile" name="grmPic"
-									value="修改照片" multiple></td>
+								<th scope="row">美容項目內容:</th>
+								<td><input type="text" name="salsevinfo" size="100"
+									class="gInfo" required /></td>
 							</tr>
 							<tr>
-								<th scope="col" class="gw">美容師暱稱:</th>
-								<td><input type="TEXT" name="gname" size="15"
-									value="<%=grmVO.getGroomerName()%>" /></td>
+								<th scope="row">可服務寵物類型:</th>
+								<td><select name="petcat" required>
+									<option value="0">其他</option>
+									<option value="1">短毛貓</option>
+									<option value="2">長毛貓</option>
+									<option value="3">小型犬(1-5 kg)</option>
+									<option value="4">中型犬(5-10 kg)</option>
+									<option value="5">大型犬(10 kg以上)</option>
+								</select></td>
 							</tr>
 							<tr>
-								<th scope="col" class="gw">美容師簡介:</th>
-								<td><input type="TEXT" name="ginfo" maxlength="100"
-									value="<%=grmVO.getGroomerInfo()%>" /></td>
+								<th scope="row">美容項目預計花費時間:</th>
+								<td>
+								<select name="salsevtime" required>
+									<option value="1">1</option>
+									<option value="2">2</option>
+									<option value="3">3</option>
+									<option value="4">4</option>
+									<option value="5">5</option>
+								</select>小時</td>
+							</tr>
+							<tr>
+								<th scope="row">價格:</th>
+								<td><input type="number" name="salsevpr" class="salsevpr" required></td>
 							</tr>
 						</table>
 						<div class="addSetting">
-							<input type="hidden" name="isDelete" value="0"> <input
-								type="hidden" name="grmno" value="<%=grmVO.getGroomerNo()%>">
-							<input type="submit" value="送出更新" class="btn btn-outline-success">
-							<input type="hidden" name="action" value="update">
+							<input type="hidden" name="status" value="0"> 
+							<input type="submit" value="新增" class="btn btn-outline-success">
+							<input type="hidden" name="action" value="insert">
 						</div>
-					</FORM>
+					</form>
 					<div id="cancelBtn">
 						<button id="back" class="btn btn-outline-secondary">取消</button>
 					</div>
@@ -92,7 +109,6 @@
 			</div>
 		</div>
 	</div>
-
 	<!-- 此處include footer  -->
 	<!-- Optional JavaScript -->
 	<!-- jQuery first, then Popper.js, then Bootstrap JS -->
@@ -107,7 +123,6 @@
 		src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
 		integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
 		crossorigin="anonymous"></script>
-	<script src="<%=request.getContextPath()%>/js/grmPicUp.js"></script>
 	<script src="<%=request.getContextPath()%>/js/util.js"></script>
 	<script type="text/javascript">
 		window.onload = init;
