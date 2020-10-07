@@ -108,7 +108,7 @@ public class GrmServlet extends HttpServlet {
 			
 			try {
 				/***************************1.接收請求參數****************************************/
-				String groomerNo = new String(req.getParameter("groomerNo"));
+				String groomerNo = req.getParameter("groomerNo");
 				
 				/***************************2.開始查詢資料****************************************/
 				GrmService grmSvc = new GrmService();
@@ -214,7 +214,7 @@ public class GrmServlet extends HttpServlet {
 	
 			try {
 				/***************************1.接收請求參數***************************************/
-				String groomerNo = (req.getParameter("groomerNo")).toString();
+				String groomerNo = (req.getParameter("groomerNo")).toString().trim();
 				
 				/***************************2.開始刪除資料***************************************/
 				GrmService grmSvc = new GrmService();
@@ -250,6 +250,7 @@ public class GrmServlet extends HttpServlet {
 			String url = "/front-end/grmOff/selectDay.jsp";
 			RequestDispatcher selectDay = req.getRequestDispatcher(url);
 			selectDay.forward(req, res);
+			
 			} catch (Exception e) {
 				errorMsgs.add("轉交資料失敗:"+e.getMessage());
 				RequestDispatcher failureView = req.getRequestDispatcher("/front-end/grm/choose_grm.jsp");
