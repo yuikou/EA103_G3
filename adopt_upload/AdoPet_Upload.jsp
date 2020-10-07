@@ -6,7 +6,7 @@
 
 
 <%
-AdoPetVO adoPetVO = (AdoPetVO) request.getAttribute("adoPetVO"); //¤@¶}©l¶i¨Ó¬OªÅ­È¡Aµ¥¨Ï¥ÎªÌ¶ñ¼g¸ê®Æ¦ı¦³»~®É¡AAdoPetServlet #122·|§â¤è¤~¶ñ¼gªº¸ê°T¥]¸Ë°_¨Ó¡C
+AdoPetVO adoPetVO = (AdoPetVO) request.getAttribute("adoPetVO"); //ä¸€é–‹å§‹é€²ä¾†æ˜¯ç©ºå€¼ï¼Œç­‰ä½¿ç”¨è€…å¡«å¯«è³‡æ–™ä½†æœ‰èª¤æ™‚ï¼ŒAdoPetServlet #122æœƒæŠŠæ–¹æ‰å¡«å¯«çš„è³‡è¨ŠåŒ…è£èµ·ä¾†ã€‚
 %>
 
 <% 
@@ -46,14 +46,14 @@ AdoPetVO adoPetVO = (AdoPetVO) request.getAttribute("adoPetVO"); //¤@¶}©l¶i¨Ó¬Oª
 		<script src="<%=request.getContextPath()%>/adopt/datetimepicker/jquery.js"></script>
 <script src="<%=request.getContextPath()%>/adopt/datetimepicker/jquery.datetimepicker.full.js"></script>	
 <style>
-/*¨ú®ø«ö¶s¤@¶}©l¥ı®ø¥¢*/
+/*å–æ¶ˆæŒ‰éˆ•ä¸€é–‹å§‹å…ˆæ¶ˆå¤±*/
 #removeButtonArea {
 	display: none;
 }
 
 input.cxlBox {
 	position: absolute;
-	/*checkbox ½Õ¾ã¤j¤p*/
+	/*checkbox èª¿æ•´å¤§å°*/
 	-ms-transform: scale(1.5); /* IE */
 	-moz-transform: scale(1.5); /* FF */
 	-webkit-transform: scale(1.5); /* Safari and Chrome */
@@ -78,7 +78,7 @@ input.cxlBox {
 		var removeButton = document.getElementById("removeButton");
 		var adoPetPic = document.getElementById("adoPetPic");
 		adoPetPic.addEventListener('change', function() {
-			/*¤W¶ÇÀÉ®×«á¡A¨ú®øÁä´N¥i¥H¥X²{*/
+			/*ä¸Šå‚³æª”æ¡ˆå¾Œï¼Œå–æ¶ˆéµå°±å¯ä»¥å‡ºç¾*/
 			removeButtonArea.style.display = "inline";
 
 			
@@ -109,7 +109,7 @@ input.cxlBox {
 						});
 						reader.readAsDataURL(file);
 					} else {
-						alert("½Ğ¤W¶Ç¹Ï¤ù!");
+						alert("è«‹ä¸Šå‚³åœ–ç‰‡!");
 					}
 				}
 			}
@@ -133,35 +133,7 @@ input.cxlBox {
 		});
 
 		
-		//©|¥¼¼g¥X¿ï¾Ü¿ß«á¡A¤ÀÃş¥u¶]¿ßªº
-// 		var petCat =document.getElementById("petCat");
-// 		var petType = document.getElementsByClassName("petType");
-// 		var option = document.getElementsByTagName("option");
-// 		console.log(petType);
-// 		petType.addEventListener('click', function() {
-
-			
-			
-// 				if (petType[0].checked==true) {
-					
-// 					var span = document.createElement('span');
-// 					span.setAttribute("style",'display:none;');
-// 					span.append(option[1]);
-// 					span.append(option[2]);
 		
-
-			
-				
-				
-				
-// 				}else{
-// 					option[3].style.visibility="hidden";
-// 					option[4].style.visibility="hidden";
-// 					option[5].style.visibility="hidden";
-// 					option[6].style.visibility="hidden";
-// 				}
-			
-// 		});
 		
 	}
 	window.onload = init;
@@ -175,13 +147,13 @@ input.cxlBox {
       $('#petBirth').datetimepicker({
          theme: '',              //theme: 'dark',
 	       timepicker:false,       //timepicker:true,
-	       step: 1,                //step: 60 (³o¬Otimepickerªº¹w³]¶¡¹j60¤ÀÄÁ)
+	       step: 1,                //step: 60 (é€™æ˜¯timepickerçš„é è¨­é–“éš”60åˆ†é˜)
 	       format:'Y-m-d',         //format:'Y-m-d H:i:s',
 		   value: '<%=petBirth%>',
-         //disabledDates:        ['2017/06/08','2017/06/09','2017/06/10'], // ¥h°£¯S©w¤£§t
-         //startDate:	            '2017/07/10',  // °_©l¤é
-         //minDate:               '-1970-01-01', // ¥h°£¤µ¤é(¤£§t)¤§«e
-         //maxDate:               '+1970-01-01'  // ¥h°£¤µ¤é(¤£§t)¤§«á
+         //disabledDates:        ['2017/06/08','2017/06/09','2017/06/10'], // å»é™¤ç‰¹å®šä¸å«
+         //startDate:	            '2017/07/10',  // èµ·å§‹æ—¥
+         //minDate:               '-1970-01-01', // å»é™¤ä»Šæ—¥(ä¸å«)ä¹‹å‰
+         //maxDate:               '+1970-01-01'  // å»é™¤ä»Šæ—¥(ä¸å«)ä¹‹å¾Œ
       });
     
 	
@@ -231,8 +203,8 @@ input.cxlBox {
 		
 				<div class="row">
 					<div class="col-lg-8 ftco-animate">
-						<h1 class="mb-3 bread">·s¼W«İ»â¾iÃdª«</h1>
-						<h4 class="mb-5">½Ğ¶ñ¼g¸Ô²Ó¸ê°T</h4>
+						<h1 class="mb-3 bread">æ–°å¢å¾…é ˜é¤Šå¯µç‰©</h1>
+						<h4 class="mb-5">è«‹å¡«å¯«è©³ç´°è³‡è¨Š</h4>
 						
 						<c:if test="${ not empty erroMsgas}">
 						<c:forEach var="message" items="${erroMsgas}">
@@ -245,78 +217,78 @@ input.cxlBox {
 						<form action="/adoPet/adoPet/AdoPet.do" method=post class="px-4 bg-light"
 							enctype="multipart/form-data">
 							<div class="form-group">
-								<label for="petName">Ãdª«¦WºÙ*</label> <input type="text"
+								<label for="petName">å¯µç‰©åç¨±*</label> <input type="text"
 									class="form-control" name="petName" id="petName" value="<%= (adoPetVO==null)? "":adoPetVO.getPetName()%>" required>
 							</div>
 							<div class="form-group">
-								<label for="petBreed">Ãdª««~ºØ*</label> <input type="text"
+								<label for="petBreed">å¯µç‰©å“ç¨®*</label> <input type="text"
 									name="petBreed" class="form-control" id="petBreed" value="<%= (adoPetVO==null)? "":adoPetVO.getPetBreed()%>" required>
 							</div>
 							<div class="form-group">
-								<label for="petType">Ãdª«Ãş§O*</label> ª¯ <input type="radio"
-									name="petType" id="petType" value="0" ${(adoPetVO.petType==0)? "checked":""} checked> ¿ß <input
+								<label for="petType">å¯µç‰©é¡åˆ¥*</label> ç‹— <input type="radio"
+									name="petType" id="petType" value="0" ${(adoPetVO.petType==0)? "checked":""} checked> è²“ <input
 									type="radio" name="petType" value="1" ${(adoPetVO.petType==1)? "checked":""} >
 							</div>
 							
 						
 							<div class="form-group">
-								<label for="petSex">Ãdª«©Ê§O*</label> ¤½ <input type="radio"
-									name="petSex" id="petSex" value="0" ${(adoPetVO.petSex == 0)? "checked":""} checked> ¥À <input
+								<label for="petSex">å¯µç‰©æ€§åˆ¥*</label> å…¬ <input type="radio"
+									name="petSex" id="petSex" value="0" ${(adoPetVO.petSex == 0)? "checked":""} checked> æ¯ <input
 									type="radio" name="petSex" value="1" ${(adoPetVO.petSex==1)? "checked":""} >
 							</div>
 							<div class="form-group">
-								<label for="petBirth">Ãdª«¥Í¤é*</label> <input type="date"
+								<label for="petBirth">å¯µç‰©ç”Ÿæ—¥*</label> <input type="date"
 									name="petBirth" id="petBirth" required class="form-control" value="<%= (adoPetVO ==null)? "":adoPetVO.getPetBirth()%>">
 							</div>
 							<div class="form-group">
-								<label for="petWeight">Ãdª«Åé­«*</label> <input type="text"
+								<label for="petWeight">å¯µç‰©é«”é‡*</label> <input type="text"
 									name="petWeight" id="petWeight" class="form-control" value="<%= (adoPetVO ==null)? "":adoPetVO.getPetWeight()%>" required>
 							</div>
 							<div class="form-group">
-								<label for="petCat">Ãdª«¤ÀÃş*</label> <select name="petCat" id="petCat"
+								<label for="petCat">å¯µç‰©åˆ†é¡*</label> <select name="petCat" id="petCat"
 									class="form-control" required>
 									<option></option>
-									<option value="1" ${(adoPetVO.petCat ==1)? "selected":""}>µu¤ò¿ß</option>
-									<option value="2" ${(adoPetVO.petCat ==2)? "selected":"" }>ªø¤ò¿ß</option>
-									<option value="3" ${(adoPetVO.petCat ==3)? "selected":"" }>ª¯(¤p«¬1-5kg)</option>
-									<option value="4" ${(adoPetVO.petCat ==4)? "selected":"" }>ª¯(¤¤«¬10kg¥H¤U)</option>
-									<option value="5" ${(adoPetVO.petCat ==5)? "selected":"" }>ª¯(¤j«¬20kg¥H¤U)</option>
-									<option value="6" ${(adoPetVO.petCat ==6)? "selected":"" }>ª¯(¯S¤j«¬20kg¥H¤W)</option>
+									<option value="1" ${(adoPetVO.petCat ==1)? "selected":""}>çŸ­æ¯›è²“</option>
+									<option value="2" ${(adoPetVO.petCat ==2)? "selected":"" }>é•·æ¯›è²“</option>
+									<option value="3" ${(adoPetVO.petCat ==3)? "selected":"" }>ç‹—(å°å‹1-5kg)</option>
+									<option value="4" ${(adoPetVO.petCat ==4)? "selected":"" }>ç‹—(ä¸­å‹10kgä»¥ä¸‹)</option>
+									<option value="5" ${(adoPetVO.petCat ==5)? "selected":"" }>ç‹—(å¤§å‹20kgä»¥ä¸‹)</option>
+									<option value="6" ${(adoPetVO.petCat ==6)? "selected":"" }>ç‹—(ç‰¹å¤§å‹20kgä»¥ä¸Š)</option>
 								</select>
 							</div>
 							<div class="form-group">
-								<label for="location">±´³X¦a°Ï*</label> <select name="location"
+								<label for="location">æ¢è¨ªåœ°å€*</label> <select name="location"
 									id="location" class="form-control" required>
 									<option value=></option>
-									<option value="320®ç¶é¥«¤¤Ãc°Ï¤¤¤j¸ô300¸¹" ${(adoPetVO.location =="320®ç¶é¥«¤¤Ãc°Ï¤¤¤j¸ô300¸¹")?"selected":"" }>®ç¶éÁ`³¡</option>
-									<option value="404¥x¤¤¥«¥_°Ï°·¦æ¸ô490¸¹" ${(adoPetVO.location =="404¥x¤¤¥«¥_°Ï°·¦æ¸ô490¸¹")?"selected":"" }>¥x¤¤¤À¤½¥q</option>
-									<option value="812°ª¶¯¥«¤p´ä°ÏªQ©M¸ô1¸¹" ${(adoPetVO.location =="812°ª¶¯¥«¤p´ä°ÏªQ©M¸ô1¸¹")?"selected":""}>°ª¶¯¤À¤½¥q</option>
+									<option value="320æ¡ƒåœ’å¸‚ä¸­å£¢å€ä¸­å¤§è·¯300è™Ÿ" ${(adoPetVO.location =="320æ¡ƒåœ’å¸‚ä¸­å£¢å€ä¸­å¤§è·¯300è™Ÿ")?"selected":"" }>æ¡ƒåœ’ç¸½éƒ¨</option>
+									<option value="404å°ä¸­å¸‚åŒ—å€å¥è¡Œè·¯490è™Ÿ" ${(adoPetVO.location =="404å°ä¸­å¸‚åŒ—å€å¥è¡Œè·¯490è™Ÿ")?"selected":"" }>å°ä¸­åˆ†å…¬å¸</option>
+									<option value="812é«˜é›„å¸‚å°æ¸¯å€æ¾å’Œè·¯1è™Ÿ" ${(adoPetVO.location =="812é«˜é›„å¸‚å°æ¸¯å€æ¾å’Œè·¯1è™Ÿ")?"selected":""}>é«˜é›„åˆ†å…¬å¸</option>
 								</select>
 							</div>
 							<div class="form-group">
-								<label for="petChar">¯S¼x</label>
+								<label for="petChar">ç‰¹å¾µ</label>
 								<input type="text" name="petChar" id="petChar" cols="10" rows="10"
 									class="form-control" value="${adoPetVO.petChar}">
 							</div>
 							<div class="form-group">
-								<label for="adoPetPic">«İ»â¾iÃdª«¹Ï¤ù*</label> <br> <input
+								<label for="adoPetPic">å¾…é ˜é¤Šå¯µç‰©åœ–ç‰‡*</label> <br> <input
 									type="file" name="adoPetPic" id="adoPetPic" multiple
 									style="margin-bottom: 20px" required>
 							</div>
 							
 								<div class="form-group" style="margin-bottom: 20px">
- 								¹Ï¤ù¹wÄı 
+ 								åœ–ç‰‡é è¦½ 
 								<div id="removeButtonArea"> 
-									 <input type="button" value="§R°£¹Ï¤ù" id="removeButton">
+									 <input type="button" value="åˆªé™¤åœ–ç‰‡" id="removeButton">
 								</div> 
  								<div id="preview"></div>
  								</div>
 							<div class="form-group" style="margin-left: 200px">
 								<input type="hidden" name="action" value="insert">
-								<input type="submit" value="½T»{·s¼W"
+								<input type="submit" value="ç¢ºèªæ–°å¢"
 									class="btn py-3 px-4 btn-primary"> 	
 <!-- 									<input type="reset" -->
-<!-- 									value="²M°£ªí³æ" class="btn py-3 px-4 btn-secondary"> -->
+<!-- 									value="æ¸…é™¤è¡¨å–®" class="btn py-3 px-4 btn-secondary"> -->
 							</div></form>
 
 				</div>
@@ -326,7 +298,7 @@ input.cxlBox {
 						<form action="#" class="search-form">
 							<div class="form-group">
 								<span class="icon icon-search"></span> <input type="text"
-									class="form-control" placeholder="½Ğ¿é¤J«İ»â¾iÃdª«½s¸¹">
+									class="form-control" placeholder="è«‹è¼¸å…¥å¾…é ˜é¤Šå¯µç‰©ç·¨è™Ÿ">
 							</div>
 						</form>
 					</div>
@@ -343,99 +315,7 @@ input.cxlBox {
 			</div>
 		</section>
 		<!-- .section -->
-		<footer class="ftco-footer ftco-section">
-			<div class="container">
-				<div class="row mb-5">
-					<div class="col-md">
-						<div class="ftco-footer-widget mb-4">
-							<h2 class="ftco-heading-2">
-								About <span><a href="index.html">Ecoland</a></span>
-							</h2>
-							<p>Far far away, behind the word mountains, far from the
-								countries Vokalia and Consonantia, there live the blind texts.</p>
-							<ul
-								class="ftco-footer-social list-unstyled float-md-left float-lft mt-5">
-								<li class="ftco-animate"><a href="#"><span
-										class="icon-twitter"></span></a></li>
-								<li class="ftco-animate"><a href="#"><span
-										class="icon-facebook"></span></a></li>
-								<li class="ftco-animate"><a href="#"><span
-										class="icon-instagram"></span></a></li>
-							</ul>
-						</div>
-					</div>
-					<div class="col-md">
-						<div class="ftco-footer-widget mb-4 ml-md-4">
-							<h2 class="ftco-heading-2">Information</h2>
-							<ul class="list-unstyled">
-								<li><a href="#"><span
-										class="icon-long-arrow-right mr-2"></span>Online Enquiry</a></li>
-								<li><a href="#"><span
-										class="icon-long-arrow-right mr-2"></span>General Enquiry</a></li>
-								<li><a href="#"><span
-										class="icon-long-arrow-right mr-2"></span>Booking</a></li>
-								<li><a href="#"><span
-										class="icon-long-arrow-right mr-2"></span>Privacy</a></li>
-								<li><a href="#"><span
-										class="icon-long-arrow-right mr-2"></span>Refund Policy</a></li>
-								<li><a href="#"><span
-										class="icon-long-arrow-right mr-2"></span>Call Us</a></li>
-							</ul>
-						</div>
-					</div>
-					<div class="col-md">
-						<div class="ftco-footer-widget mb-4">
-							<h2 class="ftco-heading-2">Experience</h2>
-							<ul class="list-unstyled">
-								<li><a href="#"><span
-										class="icon-long-arrow-right mr-2"></span>Adventure</a></li>
-								<li><a href="#"><span
-										class="icon-long-arrow-right mr-2"></span>Hotel and Restaurant</a></li>
-								<li><a href="#"><span
-										class="icon-long-arrow-right mr-2"></span>Beach</a></li>
-								<li><a href="#"><span
-										class="icon-long-arrow-right mr-2"></span>Nature</a></li>
-								<li><a href="#"><span
-										class="icon-long-arrow-right mr-2"></span>Camping</a></li>
-								<li><a href="#"><span
-										class="icon-long-arrow-right mr-2"></span>Party</a></li>
-							</ul>
-						</div>
-					</div>
-					<div class="col-md">
-						<div class="ftco-footer-widget mb-4">
-							<h2 class="ftco-heading-2">Have a Questions?</h2>
-							<div class="block-23 mb-3">
-								<ul>
-									<li><span class="icon icon-map-marker"></span><span
-										class="text">203 Fake St. Mountain View, San Francisco,
-											California, USA</span></li>
-									<li><a href="#"><span class="icon icon-phone"></span><span
-											class="text">+2 392 3929 210</span></a></li>
-									<li><a href="#"><span class="icon icon-envelope"></span><span
-											class="text">info@yourdomain.com</span></a></li>
-								</ul>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-12 text-center">
-						<p>
-							Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0.
-							Copyright &copy;
-							<script>
-<!-- // 								document.write(new Date().getFullYear()); -->
-<!-- 							</script> -->
-							All rights reserved | <i class="icon-heart color-danger"
-								aria-hidden="true"></i> by <a href="https://colorlib.com"
-								target="_blank">Colorlib</a>
-							Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0.
-						</p>
-					</div>
-				</div>
-			</div>
-		</footer>
+	
 		<!-- loader -->
 		<div id="ftco-loader" class="show fullscreen">
 			<svg class="circular" width="48px" height="48px">
