@@ -58,7 +58,7 @@
 						<table class="table table-borderless table-sm">
 							<tr>
 								<th scope="row">美容項目名稱:</th>
-								<td><select name="salsevname" required>
+								<td><select name="salsevname" id="salsevname" required>
 									<option value="單品項美容">單品項美容</option>
 									<option value="基礎美容">基礎美容</option>
 									<option value="精緻美容">精緻美容</option>
@@ -67,7 +67,7 @@
 							<tr>
 								<th scope="row">美容項目內容:</th>
 								<td><input type="text" name="salsevinfo" size="100"
-									class="gInfo" required /></td>
+									class="gInfo" id="salsevInfo" placeholder="剪指甲/特殊處理(拆結、除蟲除蚤、皮膚調理...)等..." required /></td>
 							</tr>
 							<tr>
 								<th scope="row">可服務寵物類型:</th>
@@ -124,8 +124,9 @@
 		integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
 		crossorigin="anonymous"></script>
 	<script src="<%=request.getContextPath()%>/js/util.js"></script>
-	<script type="text/javascript">
-		window.onload = init;
-	</script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="<%=request.getContextPath()%>/js/salsev.js"></script>
+	
+
 </body>
 </html>

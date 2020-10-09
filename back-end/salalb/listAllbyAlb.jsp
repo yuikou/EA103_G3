@@ -13,11 +13,26 @@ pageContext.setAttribute("list", list);
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- 瀏覽器版本相容性 -->
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<!-- Bootstrap CSS -->
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
+	crossorigin="anonymous">
+<!-- 匯入外部CSS -->
+<link rel="stylesheet" type="text/css"
+	href="<%=request.getContextPath()%>/css/index.css">
+<link rel="stylesheet" type="text/css"
+	href="<%=request.getContextPath()%>/css/groomer.css">
+<link rel="Shortcut Icon" type="image/x-icon"
+	href="https://dzmg8959fhe1k.cloudfront.net/all/favicon.ico">
 <title>Document</title>
 </head>
 <body>
+<!-- 此處include header -->
+	<div class="layout"></div>
 	<div class="container">
 		<div class="row">
 			<div class="col-12 col-md-12">
@@ -39,19 +54,16 @@ pageContext.setAttribute("list", list);
 				</c:if>
 			</div>
 			<div class="addgrm">
-				<a
-					href="<%=request.getContextPath()%>/back-end/salalb/addAlbPic.jsp">新增相片</a>
+				<a href="<%=request.getContextPath()%>/back-end/salalb/addAlbPic.jsp">新增相片</a>
 			</div>
 			<div class="col-12 col-md-12">
 				<div class="row">
 					<c:forEach var="picVO" items="${list}" begin="0" end="20">
-						<div class="card" style="width: 18rem;">
+						<div class="card sabCard" style="width: 18rem;">
 							<img
-								src="<%=request.getContextPath()%>/salalb/picReader?salAlbNo=${picVO.salAlbNo}"
-								alt="picture for salon" name="salAlbNo"
-								class="card-img-top showPic">
-							<div class="card-body">
-								<p class="card-text">${picVO.salPortInfo}</p>
+								src="<%=request.getContextPath()%>/grm/PicReader?action=salAlbNo&salAlbNo=${picVO.salAlbNo}"
+								alt="picture for salon" name="salAlbNo" class="card-img-top">
+							<div class="card-body mydBtn">
 								<form method="post"
 									action="<%=request.getContextPath()%>/salalb/salalb.do">
 									<input type="submit" value="刪除" class="btn btn-outline-danger">
@@ -65,5 +77,18 @@ pageContext.setAttribute("list", list);
 			</div>
 		</div>
 	</div>
+	<!-- Optional JavaScript -->
+	<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+		integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+		integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+		integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+		crossorigin="anonymous"></script>
 </body>
 </html>

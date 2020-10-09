@@ -2,7 +2,6 @@
 .layout {
 	height: 100px;
 }
-
 /*Page»¡©ú¦rÅé*/
 h4{
 	color: #457B9D;
@@ -127,4 +126,7 @@ td.salsevpr{
 }
 .salvtime{
 	text-align: right;
+}
+.sabCard{
+    margin: 10px 5px;
 }
