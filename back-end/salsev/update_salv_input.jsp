@@ -129,8 +129,5 @@
 		integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
 		crossorigin="anonymous"></script>
 	<script src="<%=request.getContextPath()%>/js/util.js"></script>
-	<script type="text/javascript">
-		window.onload = init;
-	</script>
 </body>
 </html>

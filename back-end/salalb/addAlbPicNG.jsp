@@ -20,21 +20,27 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-md-12">
-				<span class="myset"> <a	href="<%=request.getContextPath()%>/back-end/backEnd_index.jsp">回首頁</a></span>
+				<span class="myset"> <a
+					href="<%=request.getContextPath()%>/back-end/backEnd_index.jsp">回首頁</a></span>
 				<div id="cancelBtn">
-						<button id="back" class="btn btn-outline-secondary">回上一頁</button>
+					<button id="back" class="btn btn-outline-secondary">回上一頁</button>
 				</div>
 			</div>
 			<div class="col-md-12">
 				<label for="input-res-1">File Gallery</label>
-				<div class="file-loading">
-					<input id="input-res-1" name="input-res-1[]" type="file" multiple>
-				</div>
+				<form method="post"
+					action="<%=request.getContextPath()%>/salalb/salalb.do"
+					enctype="multipart/form-data" role="form">
+					<div class="file-loading">
+						<input id="input-res-1" name="salpic" type="file" multiple>
+					</div>
+				</form>
 			</div>
 		</div>
 	</div>
 	<script src="<%=request.getContextPath()%>/js/util.js"></script>
-	<script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+		crossorigin="anonymous"></script>
 	<!-- piexif.min.js is needed for auto orienting image files OR when restoring exif data in resized images and when you
     wish to resize images before upload. This must be loaded before fileinput.min.js -->
 	<script
@@ -58,20 +64,20 @@
 	<script
 		src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.0.9/js/fileinput.min.js"></script>
 	<!-- following theme script is needed to use the Font Awesome 5.x theme (`fas`) -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.0.9/themes/fas/theme.min.js"></script>
-	<!-- optionally if you need translation for your language then include the locale file as mentioned below (replace LANG.js with your language locale) -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.0.9/js/locales/LANG.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.1.2/js/fileinput.min.js"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.0.9/themes/fas/theme.min.js"></script>
 
 	<script>
 		$(document).ready(function() {
 			$("#input-res-1").fileinput({
-				uploadUrl : "/salalb",
+				uploadAsync : true,
+				uploadUrl : "<%=request.getContextPath()%>/salalb/salalb.do",
 				enableResumableUpload : true,
 				initialPreviewAsData : true,
 				maxFileCount : 5,
 				theme : 'fas',
 				deleteUrl : '/site/file-delete',
+				allowedFileExtensions : [ 'jpg', 'png', 'gif' ],
 				fileActionSettings : {
 					showZoom : function(config) {
 						if (config.type === 'pdf' || config.type === 'image') {
@@ -80,6 +86,13 @@
 						return false;
 					}
 				}
+			});
+			$("#input-res-1").on("filebatchuploadcomplete", function() {
+				alert("上傳成功");
+			});
+			$("#input-res-1").on('fileerror', function(event, data, msg) {
+				alert(data.msg);
+				// tokenTimeOut(data);
 			});
 		});
 	</script>
