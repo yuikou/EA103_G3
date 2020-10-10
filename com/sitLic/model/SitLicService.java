@@ -31,6 +31,10 @@ public class SitLicService {
 		sitLic.setLicStatus(licStatus);
 		slDAO.update(sitLic);
 	}
+	
+	public void updateStatus(String licNo, Integer licStatus) {
+		slDAO.updateStatus(licNo, licStatus);
+	}
 
 	public SitLicVO getOneLicByPK(String licNo) {
 		return slDAO.getOneLicByPK(licNo);

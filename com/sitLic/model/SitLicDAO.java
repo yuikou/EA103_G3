@@ -20,6 +20,7 @@ public class SitLicDAO implements SitLicDAO_interface{
 	
 	private static final String ADD_PSTMT = "INSERT INTO sitLic VALUES ('SL' || lpad(licNo_seq.NEXTVAL, 3, '0'), ?, ?, ?, ?, ?)";
 	private static final String UPDATE_PSTMT = "UPDATE sitLic SET LICNAME=?, LICPIC=?, LICEXP=?, LICSTATUS=? WHERE LICNO=?";
+	private static final String UPDATE_STATUS_PSTMT = "UPDATE sitLic SET LICSTATUS=? WHERE LICNO=?";
 	private static final String GET_ALL_LIC = "SELECT * FROM sitLic WHERE SITNO=? ORDER BY LICNO";
 	private static final String GET_ONE_LIC = "SELECT * FROM sitLic WHERE LICNO=?";
 	private static final String GET_UNVERIFIED_LIC = "SELECT * FROM sitLic WHERE LICSTATUS=?";
@@ -31,6 +32,8 @@ public class SitLicDAO implements SitLicDAO_interface{
 		
 		try {
 			con = ds.getConnection();
+			con.setAutoCommit(false);
+			
 			pstmt =con.prepareStatement(ADD_PSTMT);
 			pstmt.setString(1, sitLic.getSitNo());
 			pstmt.setString(2, sitLic.getLicName());
@@ -39,11 +42,17 @@ public class SitLicDAO implements SitLicDAO_interface{
 			pstmt.setInt(5, sitLic.getLicStatus());
 			
 			pstmt.executeUpdate();
+			con.commit();
 			
 		} catch (SQLException e) {
 			//console印出例外原因位置，個人比較好debug
 			e.printStackTrace();
-			throw new RuntimeException("資料庫問題發生!!! " + e.getMessage());
+			try {
+				con.rollback();
+				throw new RuntimeException("A database error occured. "+e.getMessage());
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
 		} finally {
 			if(pstmt != null) {
 				try {
@@ -70,6 +79,8 @@ public class SitLicDAO implements SitLicDAO_interface{
 		
 		try {
 			con = ds.getConnection();
+			con.setAutoCommit(false);
+			
 			pstmt = con.prepareStatement(UPDATE_PSTMT);
 			pstmt.setString(1, sitLic.getLicName());
 			pstmt.setBytes(2, sitLic.getLicPic());
@@ -78,10 +89,16 @@ public class SitLicDAO implements SitLicDAO_interface{
 			pstmt.setString(5, sitLic.getLicNo());
 			
 			pstmt.executeUpdate();
+			con.commit();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new RuntimeException("資料庫問題發生!!! " + e.getMessage());
+			try {
+				con.rollback();
+				throw new RuntimeException("A database error occured. "+e.getMessage());
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
 		} finally {
 			if(pstmt != null) {
 				try {
@@ -173,7 +190,7 @@ public class SitLicDAO implements SitLicDAO_interface{
 				sitLic.setLicNo(rs.getString("LICNO"));
 				sitLic.setSitNo(rs.getString("SITNO"));
 				sitLic.setLicName(rs.getString("LICNAME"));
-				sitLic.setLicPic(rs.getBytes("LICPIC"));
+//				sitLic.setLicPic(rs.getBytes("LICPIC"));
 				sitLic.setLicEXP(rs.getDate("LICEXP"));
 				sitLic.setLicStatus(rs.getInt("LICSTATUS"));
 				list.add(sitLic);
@@ -261,5 +278,47 @@ public class SitLicDAO implements SitLicDAO_interface{
 			}
 		}
 		return list;
+	}
+
+	@Override
+	public void updateStatus(String licNo, Integer licStatus) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		
+		try {
+			con = ds.getConnection();
+			con.setAutoCommit(false);
+			
+			pstmt = con.prepareStatement(UPDATE_STATUS_PSTMT);
+			pstmt.setInt(1, licStatus);
+			pstmt.setString(2, licNo);
+			
+			pstmt.executeUpdate();
+			con.commit();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			try {
+				con.rollback();
+				throw new RuntimeException("A database error occured. "+e.getMessage());
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+		} finally {
+			if(pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if(con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 }
