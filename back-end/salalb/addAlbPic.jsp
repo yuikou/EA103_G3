@@ -1,9 +1,8 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="Big5"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ page import="com.grm.model.*"%>
-
+<%@ page import="com.salonAlbum.model.*"%>
 <%
-	GrmVO grmVO = (GrmVO) request.getAttribute("grmVO");
+	SalonAlbVO salbvo = (SalonAlbVO) request.getAttribute("salbvo");
 %>
 
 <!DOCTYPE html>
@@ -21,14 +20,15 @@
 <link rel="stylesheet" type="text/css"
 	href="<%=request.getContextPath()%>/css/index.css">
 <link rel="stylesheet" type="text/css"
-	href="<%=request.getContextPath()%>/css/groomer.css">
+	href="<%=request.getContextPath()%>/css/salalb.css">
 <link rel="Shortcut Icon" type="image/x-icon"
 	href="https://dzmg8959fhe1k.cloudfront.net/all/favicon.ico">
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-<title>Petfect Match ==美容專區== 更新美容師資料</title>
+<title>Insert title here</title>
 </head>
 <body>
-	<!-- 此處includeheader -->
+
+	<!-- 此處include header -->
+
 	<div class="layout"></div>
 	<div class="container">
 		<div class="row">
@@ -38,9 +38,11 @@
 						<td><span> <a
 								href="<%=request.getContextPath()%>/back-end/backEnd_index.jsp">回首頁</a>
 						</span>
-							<h4>更新美容師資料</h4></td>
+							<button id="back" class="btn btn-outline-secondary">回上一頁</button>
+							<h4>新增美容店相片</h4></td>
 					</tr>
 				</table>
+
 				<%-- 錯誤表列 --%>
 				<c:if test="${not empty errorMsgs}">
 					<font style="color: red">請修正以下錯誤:</font>
@@ -51,48 +53,31 @@
 					</ul>
 				</c:if>
 			</div>
-			<div class="col-12 col-md-12">
-				<div class="table-responsive">
-					<FORM METHOD="post" ACTION="<%=request.getContextPath() %>/grm/grm.do" enctype="multipart/form-data">
-						<table class="table table-borderless">
-							<tr>
-								<th scope="col" class="gw">美容師編號:</th>
-								<td><%=grmVO.getGroomerNo()%></td>
-							</tr>
-							<tr>
-								<th scope="col" class="gw">美容師照片:</th>
-								<td id="preview"><img
-									src="<%=request.getContextPath()%>/grm/picReader?grmPic=${grmVO.groomerNo}"
-									id="gPic"></td>
-								<td><input type="file" id="myFile" name="grmPic"
-									value="修改照片" multiple></td>
-							</tr>
-							<tr>
-								<th scope="col" class="gw">美容師暱稱:</th>
-								<td><input type="TEXT" name="gname" size="15"
-									value="<%=grmVO.getGroomerName()%>" /></td>
-							</tr>
-							<tr>
-								<th scope="col" class="gw">美容師簡介:</th>
-								<td><input type="TEXT" name="ginfo" maxlength="100"
-									value="<%=grmVO.getGroomerInfo()%>" /></td>
-							</tr>
-						</table>
-						<div class="addSetting">
-							<input type="hidden" name="isDelete" value="0"> <input
-								type="hidden" name="grmno" value="<%=grmVO.getGroomerNo()%>">
-							<input type="submit" value="送出更新" class="btn btn-outline-success">
-							<input type="hidden" name="action" value="update">
-						</div>
-					</FORM>
-					<div id="cancelBtn">
-						<button id="back" class="btn btn-outline-secondary">取消</button>
+			<div class="col-md-12">
+				<form method="post"
+					action="<%=request.getContextPath()%>/salalb/salalb.do"
+					enctype="multipart/form-data">
+					<div id="main">
+						<label>請選擇圖片檔:</label> 
+						<input type="file" id="myFile" name="salpic" multiple>
 					</div>
+					<input type="hidden" name="action" value="insert"> 
+					<input type="submit" value="上傳" class="btn btn-outline-success">
+				</form>
+				<div class="btnset">
+					<label>預覽相片: </label>
+					<div id="preview" class="preview"></div>
+				</div>
+
+			</div>
+			<div class="col-md-12">
+				<div class="btnset">
+					<button id="remove" class="btn btn-outline-secondary">刪除</button>
+					<button id="removeAll" class="btn btn-outline-secondary">刪除全部</button>
 				</div>
 			</div>
 		</div>
 	</div>
-
 	<!-- 此處include footer  -->
 	<!-- Optional JavaScript -->
 	<!-- jQuery first, then Popper.js, then Bootstrap JS -->
@@ -107,8 +92,8 @@
 		src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
 		integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
 		crossorigin="anonymous"></script>
-	<script src="<%=request.getContextPath()%>/js/grmPicUp.js"></script>
 	<script src="<%=request.getContextPath()%>/js/util.js"></script>
+	<script src="<%=request.getContextPath()%>/js/salPicUp.js"></script>
 	<script type="text/javascript">
 		window.onload = init;
 	</script>

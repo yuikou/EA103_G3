@@ -19,7 +19,7 @@ public class GrmDAO implements GrmDAO_interface {
 	static {
 		try {
 			Context ctx = new javax.naming.InitialContext();
-			ds = (DataSource) ctx.lookup("java:comp/env/jdbc/PJDB");
+			ds = (DataSource) ctx.lookup("java:comp/env/jdbc/G3DB");
 		} catch (NamingException e) {
 			e.printStackTrace();
 		}

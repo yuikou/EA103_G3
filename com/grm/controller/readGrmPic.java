@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.grm.model.GrmService;
+import com.salonAlbum.model.SalonAlbService;
 
 
 @WebServlet("/grm/picReader")
@@ -18,8 +19,8 @@ public class readGrmPic extends HttpServlet {
 
 		res.setContentType("image/*");
 		ServletOutputStream out = res.getOutputStream();
-		
-		String grmNo = (String)req.getParameter("grmPic");
+//從DB讀取美容師照片		
+		String grmNo = req.getParameter("grmPic").toString();
 		GrmService gsv = new GrmService();
 		byte[] gPic = gsv.getOneGrm(grmNo).getGroomerPic();
 		out.write(gPic);
