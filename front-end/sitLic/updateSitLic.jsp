@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="com.sitLic.model.*" %>
 <!DOCTYPE html>
-<html>
+<html lang="zh-Hant">
 <head>
 <!-- Required meta tags -->
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -14,23 +14,23 @@
 
 <!-- 匯入外部CSS -->
 <c:set var="path" value="/EA103G3/front-end" />
-
-<link rel="stylesheet" type="text/css" href="${path}/css/bootstrap.min.css">   
-<link rel="stylesheet" type="text/css" href="${path}/css/Main.css">
+<c:set var="cssPath" value="/EA103G3/css/euphy" />
+<link rel="stylesheet" type="text/css" href="${cssPath}/bootstrap.min.css">   
+<link rel="stylesheet" type="text/css" href="${cssPath}/Main.css">
 <link rel="stylesheet" type="text/css" href="${path}/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" type="text/css" href="${path}/css/animate.css">
-<link rel="stylesheet" type="text/css" href="${path}/css/animsition.min.css">
-<link rel="stylesheet" type="text/css" href="${path}/css/util.css">
-<link rel="stylesheet" type="text/css" href="${path}/css/Petfect.css">
-<link rel="stylesheet" type="text/css" href="${path}/css/pitSitterForm.css">
-<link rel="stylesheet" type="text/css" href="${path}/css/sitLicAll.css">
+<link rel="stylesheet" type="text/css" href="${cssPath}/animate.css">
+<link rel="stylesheet" type="text/css" href="${cssPath}/animsition.min.css">
+<link rel="stylesheet" type="text/css" href="${cssPath}/util.css">
+<link rel="stylesheet" type="text/css" href="${cssPath}/Petfect.css">
+<link rel="stylesheet" type="text/css" href="${cssPath}/pitSitterForm.css">
+<link rel="stylesheet" type="text/css" href="${cssPath}/sitLicAll.css">
 <link rel="Shortcut Icon" type="image/x-icon" href="https://dzmg8959fhe1k.cloudfront.net/all/favicon.ico">
 </head>
 
 <BODY>
 
 <!-------------------- nav -------------------->
-	<jsp:include page="../nav.jsp"/>
+	<jsp:include page="/front-end/nav.jsp"/>
     
 <!------------------ 內文body ------------------>
     <div class="container">
@@ -47,18 +47,7 @@
 			</c:if>
 		</div>
 
-<!-- 修改證書 -->	
-	<% 
-		SitLicVO sitLicVO = (SitLicVO) request.getAttribute("sitLicVO");
-		pageContext.setAttribute("sitLicVO", sitLicVO);
-	%>
-	
-		<!-- 測試用 -->
-		<div class="prev">
-			<a href="listOneSitAllLic.jsp">回到上一頁</a>
-		</div>
-		<!-- 測試用 -->
-		
+		<!-- 修改證書 -->	
 		<div class="limiter" style="margin:100px 0 40px 0;">
 	        <div class="container-login100 cover">
 	            <div class="wrap-login100 mybody">
@@ -66,7 +55,19 @@
 						action="sitLic.do" method="post"
 						enctype="multipart/form-data">
 						<span class="login100-form-title">
-				                                        修改保姆證照
+							<a class="back" href="listOneSitAllLic.jsp">
+							<svg viewBox="0 0 16 16" class="bi bi-box-arrow-in-left" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+  								<path fill-rule="evenodd" d="M10 3.5a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 1 1 0v2A1.5 1.5 0 0 1 9.5 14h-8A1.5 1.5 0 0 1 0 12.5v-9A1.5 1.5 0 0 1 1.5 2h8A1.5 1.5 0 0 1 11 3.5v2a.5.5 0 0 1-1 0v-2z"/>
+  								<path fill-rule="evenodd" d="M4.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H14.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z"/>
+							</svg>
+							</a>
+				                               修改保姆證照
+				            <a class="search" href="listOneSitAllLic.jsp" style="visibility: hidden;">
+	                        	<svg viewBox="0 0 16 16" class="bi bi-search" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+  									<path fill-rule="evenodd" d="M10.442 10.442a1 1 0 0 1 1.415 0l3.85 3.85a1 1 0 0 1-1.414 1.415l-3.85-3.85a1 1 0 0 1 0-1.415z"/>
+									<path fill-rule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"/>
+								</svg>
+							</a>
 				        </span>
 						<div class="licBox">
 				           	<div class="wrap-input100 hideDiv">
@@ -99,7 +100,9 @@
 				           	</div>
 				           	<div class="info txt1 myP">證照圖片 </div>
 							<div class="wrap-input100">
-				           		<img class="licPicImg" alt="" src="${pageContext.request.contextPath}/ShowImg?action=sitLic&licNo=${sitLicVO.licNo}">
+								<div class="myOldPic">
+				           			<img class="licPicImg" alt="" src="${pageContext.request.contextPath}/PicReader.do?action=sitLic&licNo=${sitLicVO.licNo}">
+				           		</div>
 				           	</div>
 					        <div class="wrap-input100">
 					           	<label class="myLabel">
@@ -108,8 +111,8 @@
 					           		<input class="myFile" type="file" name="licPic" style="display:none">
 					           	</label>
 					        </div>
-					        <div class="wrap-input100 validate-input input100 myP preview" style="margin-top:0;">
-					                                圖片檔預覽<button class="login100-form-btn remove">刪除</button>
+					        <div class="wrap-input100 validate-input input100 myP preview" style="margin-top:0;padding-bottom:5px;">
+					                                圖片檔預覽<button class="login100-form-btn remove hideDiv">刪除</button>
 					        </div>
 					        <div class="container-login100-form-btn p-b-40">
 						   		<input type="hidden" name="action" value="update">
@@ -123,15 +126,16 @@
 	</div>
 	
 <!------------------ footer ------------------>
-    <jsp:include page="../footer.jsp"/>
+    <jsp:include page="/front-end/footer.jsp"/>
     
     
 <!-- 匯入js -->
-	<script src="${path}/js/jquery-3.2.1.min.js"></script>
-	<script src="${path}/js/animsition.min.js"></script>
-	<script src="${path}/js/popper.js"></script>
-	<script src="${path}/js/bootstrap.min.js"></script>
-	<script src="${path}/js/main.js"></script>
+	<c:set var="jsPath" value="/EA103G3/js/euphy" />
+	<script src="${jsPath}/jquery-3.2.1.min.js"></script>
+	<script src="${jsPath}/animsition.min.js"></script>
+	<script src="${jsPath}/popper.js"></script>
+	<script src="${jsPath}/bootstrap.min.js"></script>
+	<script src="${jsPath}/main.js"></script>
 	<!-- 上傳圖片預覽 -->
 	<script type="text/javascript">
     	function init() {
@@ -158,7 +162,9 @@
                             //file物件存在:在FileReader物件上註冊load事件 - 載入檔案的意思
                             var fr = new FileReader();
                             fr.addEventListener('load', function (e) {
-                                 //新增img元素
+                            	// 打開刪除按鈕
+                           	 	$(".remove").removeClass("hideDiv"); 
+                            	//新增img元素
                                  var img = document.createElement('img');
                                  //賦予屬性
                                  img.setAttribute('src', e.target.result);
@@ -191,6 +197,8 @@
            e.preventDefault();
            $(this).next(".myReview").remove();
            myFile[0].value='';
+        	// 關閉刪除按鈕
+      	   $(".remove").addClass("hideDiv");
        });
 
 	}

@@ -21,7 +21,6 @@ public class SitLicServlet extends HttpServlet {
 	}
 
 	protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-		// 處理中文請求
 		String action = req.getParameter("action");
 		HttpSession session = req.getSession();
 
@@ -210,8 +209,9 @@ public class SitLicServlet extends HttpServlet {
 		
 /* 來自 listUnverifiedLic.jsp 的請求 - 修改證照狀態 */
 		if ("verify".equals(action)) {
-			List<String> errorMsgs = new LinkedList<String>();
-			req.setAttribute("errorMsgs", errorMsgs);
+//			List<String> errorMsgs = new LinkedList<String>();
+//			req.setAttribute("errorMsgs", errorMsgs);
+			PrintWriter out = res.getWriter();
 	
 			try {
 				/*************************** 1.接收請求參數 ****************************************/
@@ -223,17 +223,23 @@ public class SitLicServlet extends HttpServlet {
 				
 				/*************************** 2.開始新增資料 ***************************************/
 				SitLicService slSvc = new SitLicService();
-				slSvc.updateStatus(licNo, licStatus);
+				Boolean updateOK  = slSvc.updateStatus(licNo, licStatus);
 		
 				/*************************** 3.新增完成,準備轉交(Send the Success view) ***********/
-				String url = "listUnverifiedLic.jsp";
-				RequestDispatcher sucessView = req.getRequestDispatcher(url);
-				sucessView.forward(req, res);
+//				String url = "listUnverifiedLic.jsp";
+//				RequestDispatcher sucessView = req.getRequestDispatcher(url);
+//				sucessView.forward(req, res);
+				if (updateOK) {
+					out.write(licNo);
+				} else {
+					out.write("error");
+				}
 				
 			} catch (Exception e) {
-				errorMsgs.add("審核失敗： " + e.getMessage());
-				RequestDispatcher failureView = req.getRequestDispatcher("listUnverifiedLic.jsp");
-				failureView.forward(req, res);
+//				errorMsgs.add("審核失敗： " + e.getMessage());
+//				RequestDispatcher failureView = req.getRequestDispatcher("listUnverifiedLic.jsp");
+//				failureView.forward(req, res);
+				out.write("error: " + e.getMessage());
 			}
 		}
 	}

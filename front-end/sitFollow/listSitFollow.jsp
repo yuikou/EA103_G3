@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page import="com.sitFollow.model.*, java.util.*" %>
 <!DOCTYPE html>
-<html>
+<html lang="zh-Hant">
 <head>
 <!-- Required meta tags -->
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -13,12 +13,12 @@
 
 <!-- 匯入外部CSS -->
 <c:set var="path" value="/EA103G3/front-end" />
-
-<link rel="stylesheet" type="text/css" href="${path}/css/bootstrap.min.css">   
-<link rel="stylesheet" type="text/css" href="${path}/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" type="text/css" href="${path}/css/Main.css">
-<link rel="stylesheet" type="text/css" href="${path}/css/Petfect.css">
-<link rel="stylesheet" type="text/css" href="${path}/css/SF.css">
+<c:set var="cssPath" value="/EA103G3/css/euphy" />
+<link rel="stylesheet" type="text/css" href="${cssPath}/bootstrap.min.css">   
+<link rel="stylesheet" type="text/css" href="/EA103G3/front-end/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" type="text/css" href="${cssPath}/Main.css">
+<link rel="stylesheet" type="text/css" href="${cssPath}/Petfect.css">
+<link rel="stylesheet" type="text/css" href="${cssPath}/SF.css">
 <link rel="Shortcut Icon" type="image/x-icon" href="https://dzmg8959fhe1k.cloudfront.net/all/favicon.ico">
 
 </head>
@@ -69,25 +69,20 @@
         </ul>
 		
 		<!-- 取得追蹤的保姆的會員編號 -->
-		<%
-        	String memNo = (String) session.getAttribute("memNo");
-			SitFollowService sfSvc = new  SitFollowService();
-        	List<String> memlist = sfSvc.getAllByMemNo(memNo);
-        	pageContext.setAttribute("memlist", memlist);
-        %>
+		<% String memNo = (String) session.getAttribute("memNo"); %>
         
 		<!-- 先創建Svc -->
         <jsp:useBean id="memSvc" class="com.member.model.MemService"></jsp:useBean>
         <jsp:useBean id="petSitterSvc" class="com.petSitter.model.PetSitterService"></jsp:useBean>
         <jsp:useBean id="sitSrvSvc" class="com.sitSrv.model.SitSrvService"></jsp:useBean>
-        
+        <jsp:useBean id="sfSvc" class="com.sitFollow.model.SitFollowService"></jsp:useBean>
         
         <div class="row myRow">
         
-        <c:forEach var="mem" items="${memlist}">
+        <c:forEach var="mem" items="${sfSvc.getAllByMemNo(memNo)}">
         
 			<div class="col-6 col-md-3 col-sm-4 card">
-            	<img src="${pageContext.request.contextPath}/ShowImg?action=sitFollow&memNo=${mem}" class="card-img-top" alt="...">
+            	<img src="${pageContext.request.contextPath}/PicReader.do?action=sitFollow&memNo=${mem}" class="card-img-top" alt="...">
                 <div class="card-body">
                     <h5 class="card-title">${memSvc.getOneMem(mem).memName}</h5>
                     <p class="card-text">
@@ -122,14 +117,16 @@
             </div>
         </c:forEach>
         </div>
-        <small class="text-muted">提供服務</small><br>
-		<img class="srvImg" src="${path}/img/pet-house.svg">寵物寄養 
-		<img class="srvImg" src="${path}/img/pet-milk.svg">寵物日托 
-		<img class="srvImg" src="${path}/img/pet-food.svg">到府照護 
-		<img class="srvImg" src="${path}/img/walking-the-dog.svg">遛狗 
-		<img class="srvImg" src="${path}/img/pet-taxi.svg">寵物計程車 
-		<img class="srvImg" src="${path}/img/pet-bath.svg">加購洗澡 
-		<img class="srvImg" src="${path}/img/pet-google.svg">加購接送
+        <div class="row" style="margin-top: 3%;">
+	        <small class="srvImgInfo">提供服務  </small>
+			<img class="srvImg" src="${path}/img/pet-house.svg">寵物寄養 
+			<img class="srvImg" src="${path}/img/pet-milk.svg">寵物日托 
+			<img class="srvImg" src="${path}/img/pet-food.svg">到府照護 
+			<img class="srvImg" src="${path}/img/walking-the-dog.svg">遛狗 
+			<img class="srvImg" src="${path}/img/pet-taxi.svg">寵物計程車 
+			<img class="srvImg" src="${path}/img/pet-bath.svg">加購洗澡 
+			<img class="srvImg" src="${path}/img/pet-google.svg">加購接送
+		</div>
         
 <!--         <div class="cutePage"> -->
 <!--             <a href="#"><img src="025-bull terrier.png" class="page" alt="..."></a> -->
@@ -143,9 +140,10 @@
     <jsp:include page="../footer.jsp"/>
 
 <!-- 匯入js -->
-	<script src="${path}/js/jquery-3.2.1.min.js"></script>
-	<script src="${path}/js/popper.js"></script>
-	<script src="${path}/js/bootstrap.min.js"></script>
-	<script src="${path}/js/favor.js"></script>
+	<c:set var="jsPath" value="/EA103G3/js/euphy" />
+	<script src="${jsPath}/jquery-3.2.1.min.js"></script>
+	<script src="${jsPath}/popper.js"></script>
+	<script src="${jsPath}/bootstrap.min.js"></script>
+	<script src="${jsPath}/favor.js"></script>
 </body>
 </html>

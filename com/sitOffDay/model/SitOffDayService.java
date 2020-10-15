@@ -11,10 +11,6 @@ public class SitOffDayService {
 		sodDAO = new SitOffDayDAO();
 	}
 	
-	public Boolean commit(Boolean addOK) {
-		return sodDAO.commit(addOK);
-	}
-	
 	public Boolean add (String sitSrvNo, Date offDay, String offTime, Integer offDayTyp, String groupID) {
 		SitOffDayVO sod = new SitOffDayVO();
 //		System.out.println(sitSrvNo+";"+offDay+";"+offTime+";"+offDayTyp);
@@ -39,7 +35,7 @@ public class SitOffDayService {
 		return sodDAO.getByFK(sitSrvNo);
 	}
 	
-	public Set<String> getSitByDate (String sitSrvCode, String start_date, String end_date, String time) {
-		return sodDAO.getSitByDate(sitSrvCode, start_date, end_date, time);
+	public Set<String> getSitByDate (String sitSrvCode, String start_date, String end_date) {
+		return sodDAO.getSitByDate(sitSrvCode, start_date, end_date);
 	}
 }

@@ -86,8 +86,8 @@ public class SitLicJDBCDAO implements SitLicDAO_interface {
 
 			if (pstmt.executeUpdate() == 1) {
 				System.out.println("上傳成功");
+				con.commit();
 			} 
-			con.commit();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 			throw new RuntimeException("Couldn't load database driver. " + e.getMessage());
@@ -118,7 +118,8 @@ public class SitLicJDBCDAO implements SitLicDAO_interface {
 	}
 
 	@Override
-	public void updateStatus(String licNo, Integer licStatus) {
+	public Boolean updateStatus(String licNo, Integer licStatus) {
+		Boolean updateOK = false;
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		
@@ -130,14 +131,22 @@ public class SitLicJDBCDAO implements SitLicDAO_interface {
 			pstmt.setInt(1, licStatus);
 			pstmt.setString(2, licNo);
 			
-			pstmt.executeUpdate();
+			if (pstmt.executeUpdate() == 1) {
+				updateOK = true;
+				con.commit();
+			}
 			
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 			throw new RuntimeException("Couldn't load database driver. " + e.getMessage());
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new RuntimeException("資料庫問題發生!!! " + e.getMessage());
+			try {
+				con.rollback();
+				throw new RuntimeException("修改失敗： " + e.getMessage());
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
 		} finally {
 			if(pstmt != null) {
 				try {
@@ -154,6 +163,7 @@ public class SitLicJDBCDAO implements SitLicDAO_interface {
 				}
 			}
 		}
+		return updateOK;
 	}
 	
 	@Override
@@ -422,6 +432,44 @@ public class SitLicJDBCDAO implements SitLicDAO_interface {
 		fis.close();
 		
 		return baos.toByteArray();
+	}
+
+	@Override
+	public void addFromSitSrv(SitLicVO sitLic, Connection con) {
+		PreparedStatement pstmt = null;
+		
+		try {
+			pstmt = con.prepareStatement(ADD_PSTMT);
+			pstmt.setString(1, sitLic.getSitNo());
+			pstmt.setString(2, sitLic.getLicName());
+			pstmt.setBytes(3, sitLic.getLicPic());
+			pstmt.setDate(4, sitLic.getLicEXP());
+			pstmt.setInt(5, sitLic.getLicStatus());
+
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			// console印出例外原因位置，個人比較好debug
+			e.printStackTrace();
+			if (con != null) {
+				try {
+					System.err.println("455.rolled back-由-emp");
+					con.rollback();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+					throw new RuntimeException("rollback error occured. "
+							+ e1.getMessage());
+				}
+			}
+			throw new RuntimeException("新增失敗： " + e.getMessage());
+		} finally {
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 }

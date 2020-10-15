@@ -8,6 +8,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sitLic.model.SitLicJDBCDAO;
+import com.sitLic.model.SitLicVO;
+
 public class SitSrvJDBCDAO implements SitSrvDAO_interface {
 	private static String driver = "oracle.jdbc.driver.OracleDriver";
 	private static String url = "jdbc:oracle:thin:@localhost:1521:xe";
@@ -15,27 +18,31 @@ public class SitSrvJDBCDAO implements SitSrvDAO_interface {
 	private static String passwd = "123456";
 
 	private static final String ADD_PSTMT = "INSERT INTO sitSrv VALUES ('SS' || lpad(sitSrv_seq.NEXTVAL, 3, '0'), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	private static final String ADD_PLUS_PSTMT = "INSERT INTO sitSrv (SITSRVNO, SITSRVNAME, SITSRVCODE, SITNO, SRVFEE, OUTOFSRV, ISDEL) VALUES ('SS' || lpad(sitSrv_seq.NEXTVAL, 3, '0'), ?, ?, ?, ?,'0','0')";
 	private static final String UPDATE_PSTMT = "UPDATE sitSrv "
 			+ "SET sitSrvName=?, sitSrvCode=?, sitNo=?, srvFee=?, srvInfo=?, srvArea=?, acpPetNum=?, acpPetTyp=?, "
 			+ "careLevel=?, stayLoc=?, overnightLoc=?, SmkFree=?, hasChild=?, walkTime=?, eqpt=?, addBathing=?, addPickup=?, "
 			+ "outOfSrv=?, isDel=? WHERE sitSrvNo=? ";
-	private static final String ISDEL_PSTMT = "UPDATE sitSrv SET isDel=1 WHERE sitSrvNo=? ";
+	private static final String UPDATE_STATUS_PSTMT = "UPDATE sitSrv SET OUTOFSRV=?,isDel=? WHERE sitSrvNo=? ";
 	private static final String GET_SIT_SRV = "SELECT * FROM sitSrv WHERE sitSrvNo=? ";
 	private static final String GET_SIT_ALL_SRV = "SELECT * FROM sitSrv WHERE sitNo=? ";
 	private static StringBuffer CHOOSE_SIT_FROM_SRV = new StringBuffer(
-			"SELECT * From sitSrv WHERE sitSrvCode=? AND acpPetNum>=? AND acpPetTyp = ANY (");
+			"SELECT * From sitSrv WHERE sitSrvCode=? AND acpPetTyp = ANY (");
 
 	@Override
-	public Boolean add(SitSrvVO sitSrv) {
+	public Boolean add(SitSrvVO sitSrv , Integer addBathingFee, Integer addPickupFee) {
 		Boolean addOK = false;
 		Connection con = null;
 		PreparedStatement pstmt = null;
+		PreparedStatement pstmt2 = null;
 
 		try {
 			Class.forName(driver);
 			con = DriverManager.getConnection(url, user, passwd);
 			con.setAutoCommit(false);
-			pstmt = con.prepareStatement(ADD_PSTMT);
+			int[] pk = {1};
+			
+			pstmt = con.prepareStatement(ADD_PSTMT, pk);
 
 			pstmt.setString(1, sitSrv.getSitSrvName());
 			pstmt.setString(2, sitSrv.getSitSrvCode());
@@ -50,30 +57,69 @@ public class SitSrvJDBCDAO implements SitSrvDAO_interface {
 			pstmt.setObject(11, sitSrv.getOvernightLoc());
 			pstmt.setObject(12, sitSrv.getSmkFree());
 			pstmt.setObject(13, sitSrv.getHasChild());
-			pstmt.setObject(14, sitSrv.getWalkTime());
+			pstmt.setObject(14, sitSrv.getSrvTime());
 			pstmt.setObject(15, sitSrv.getEqpt());
 			pstmt.setObject(16, sitSrv.getAddBathing());
 			pstmt.setObject(17, sitSrv.getAddPickup());
 			pstmt.setInt(18, 2);
 			pstmt.setInt(19, 0);
-
-			if (pstmt.executeUpdate() == 1) {
-				addOK = true;
+			pstmt.executeUpdate();
+			
+			String pkNo = null;
+			ResultSet rs = pstmt.getGeneratedKeys();
+			if (rs.next()) {
+				pkNo = rs.getString(1);
+				System.out.println("自增主鍵值= " + pkNo +"(剛新增成功的服務編號)");
+			} else {
+				System.out.println("未取得自增主鍵值");
+			}
+			rs.close();
+			
+			pstmt2 = con.prepareStatement(ADD_PLUS_PSTMT);
+			// 再同時新增加價服務
+			if (sitSrv.getAddBathing() == 1) {
+				pstmt2.setString(1, "加價洗澡"+pkNo);
+				pstmt2.setString(2, "Bathing");
+				pstmt2.setString(3, sitSrv.getSitNo());
+				pstmt2.setInt(4, addBathingFee);
+				pstmt2.executeUpdate();
+				pstmt2.clearParameters();
+			}
+			if (sitSrv.getAddPickup() == 1) {
+				pstmt2.setString(1, "加價接送"+pkNo);
+				pstmt2.setString(2, "Pickup");
+				pstmt2.setString(3, sitSrv.getSitNo());
+				pstmt2.setInt(4, addPickupFee);
+				pstmt2.executeUpdate();
 			}
 			con.commit();
-
+			addOK = true;
+			con.setAutoCommit(true);
+			
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 			throw new RuntimeException("Couldn't load database driver. " + e.getMessage());
 		} catch (SQLException e) {
 			e.printStackTrace();
-			try {
-				con.rollback();
-				throw new RuntimeException("新增失敗: " + e.getMessage());
-			} catch (SQLException e1) {
-				e1.printStackTrace();
+			if (con != null) {
+				try {
+					System.err.println("rolled back-由-sitSrv_add");
+					con.rollback();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+					throw new RuntimeException("rollback error occured. "
+							+ e1.getMessage());
+				}
 			}
+			throw new RuntimeException("新增失敗: " + e.getMessage());
 		} finally {
+			if (pstmt2 != null) {
+				try {
+					pstmt2.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
 			if (pstmt != null) {
 				try {
 					pstmt.close();
@@ -117,7 +163,7 @@ public class SitSrvJDBCDAO implements SitSrvDAO_interface {
 			pstmt.setObject(11, sitSrv.getOvernightLoc());
 			pstmt.setObject(12, sitSrv.getSmkFree());
 			pstmt.setObject(13, sitSrv.getHasChild());
-			pstmt.setObject(14, sitSrv.getWalkTime());
+			pstmt.setObject(14, sitSrv.getSrvTime());
 			pstmt.setObject(15, sitSrv.getEqpt());
 			pstmt.setObject(16, sitSrv.getAddBathing());
 			pstmt.setObject(17, sitSrv.getAddPickup());
@@ -161,7 +207,7 @@ public class SitSrvJDBCDAO implements SitSrvDAO_interface {
 
 	// 看似刪除其實是改狀態
 	@Override
-	public Boolean del(String sitSrvNo) {
+	public Boolean updateStatus(String sitSrvNo, Integer outOfSrv, Integer isDel) {
 		Boolean delOK = false;
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -170,12 +216,16 @@ public class SitSrvJDBCDAO implements SitSrvDAO_interface {
 			Class.forName(driver);
 			con = DriverManager.getConnection(url, user, passwd);
 			con.setAutoCommit(false);
-			pstmt = con.prepareStatement(ISDEL_PSTMT);
-			pstmt.setString(1, sitSrvNo);
+			pstmt = con.prepareStatement(UPDATE_STATUS_PSTMT);
+			pstmt.setString(3, sitSrvNo);
+			pstmt.setInt(1, outOfSrv);
+			pstmt.setInt(2, isDel);
 			if (pstmt.executeUpdate() == 1) {
 				delOK = true;
+				con.commit();
+			} else {
+				throw new SQLException();
 			}
-			con.commit();
 
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
@@ -236,7 +286,7 @@ public class SitSrvJDBCDAO implements SitSrvDAO_interface {
 				sitSrv.setOvernightLoc(rs.getInt("overnightLoc"));
 				sitSrv.setSmkFree(rs.getInt("smkFree"));
 				sitSrv.setHasChild(rs.getInt("hasChild"));
-				sitSrv.setWalkTime(rs.getInt("walkTime"));
+				sitSrv.setSrvTime(rs.getString("srvTime"));
 				sitSrv.setEqpt(rs.getInt("eqpt"));
 				sitSrv.setAddBathing(rs.getInt("addBathing"));
 				sitSrv.setAddPickup(rs.getInt("addPickup"));
@@ -306,7 +356,7 @@ public class SitSrvJDBCDAO implements SitSrvDAO_interface {
 				sitSrv.setOvernightLoc(rs.getInt("overnightLoc"));
 				sitSrv.setSmkFree(rs.getInt("smkFree"));
 				sitSrv.setHasChild(rs.getInt("hasChild"));
-				sitSrv.setWalkTime(rs.getInt("walkTime"));
+				sitSrv.setSrvTime(rs.getString("srvTime"));
 				sitSrv.setEqpt(rs.getInt("eqpt"));
 				sitSrv.setAddBathing(rs.getInt("addBathing"));
 				sitSrv.setAddPickup(rs.getInt("addPickup"));
@@ -347,7 +397,7 @@ public class SitSrvJDBCDAO implements SitSrvDAO_interface {
 	}
 
 	@Override
-	public List<SitSrvVO> choose_SitSrv(String sitSrvCode, Integer acpPetNum, Integer[] acpPetTyp, String appendSQL) {
+	public List<SitSrvVO> choose_SitSrv(String sitSrvCode, Object[] acpPetTyp, String appendSQL) {
 		List<SitSrvVO> list = new ArrayList<SitSrvVO>();
 		SitSrvVO sitSrv = null;
 		Connection con = null;
@@ -365,9 +415,8 @@ public class SitSrvJDBCDAO implements SitSrvDAO_interface {
 //			System.out.println(CHOOSE_SIT_FROM_SRV);
 			pstmt = con.prepareStatement(CHOOSE_SIT_FROM_SRV + appendSQL);
 			pstmt.setString(1, sitSrvCode);
-			pstmt.setInt(2, acpPetNum);
 			for (int i = 0; i < acpPetTyp.length; i++) {
-				pstmt.setInt(i+3, acpPetTyp[i]);
+				pstmt.setObject(i+2, acpPetTyp[i]);
 			}
 			rs = pstmt.executeQuery();
 
@@ -387,7 +436,7 @@ public class SitSrvJDBCDAO implements SitSrvDAO_interface {
 				sitSrv.setOvernightLoc(rs.getInt("overnightLoc"));
 				sitSrv.setSmkFree(rs.getInt("smkFree"));
 				sitSrv.setHasChild(rs.getInt("hasChild"));
-				sitSrv.setWalkTime(rs.getInt("walkTime"));
+				sitSrv.setSrvTime(rs.getString("srvTime"));
 				sitSrv.setEqpt(rs.getInt("eqpt"));
 				sitSrv.setAddBathing(rs.getInt("addBathing"));
 				sitSrv.setAddPickup(rs.getInt("addPickup"));
@@ -429,29 +478,31 @@ public class SitSrvJDBCDAO implements SitSrvDAO_interface {
 
 	public static void main(String[] args) {
 		SitSrvJDBCDAO jdbcdao = new SitSrvJDBCDAO();
+		
 
 		// 新增
-//		SitSrvVO vo1 = new SitSrvVO();
-//		vo1.setSitSrvName("Day Care");
-//		vo1.setSitSrvCode("DayCare");
-//		vo1.setSitNo("S003");
-//		vo1.setSrvFee(500);
-//		vo1.setSrvInfo("狗狗安親服務，安親4小時為單位，超過每小時50塊錢");
-//		vo1.setSrvArea(0);
-//		vo1.setAcpPetNum(5);
-//		vo1.setAcpPetTyp(4);
-//		vo1.setCareLevel(0);
-//		vo1.setStayLoc(0);
-//		vo1.setOvernightLoc(null);
-//		vo1.setSmkFree(1);
-//		vo1.setHasChild(0);
-//		vo1.setWalkTime(null);
-//		vo1.setEqpt(null);
-//		vo1.setAddBathing(1);
-//		vo1.setAddPickup(1);
-//		if (jdbcdao.add(vo1)) {
-//			System.out.println("新增成功");
-//		}
+		SitSrvVO vo1 = new SitSrvVO();
+		vo1.setSitSrvName("Day Care");
+		vo1.setSitSrvCode("DayCare");
+		vo1.setSitNo("S003");
+		vo1.setSrvFee(500);
+		vo1.setSrvInfo("狗狗安親服務，安親4小時為單位，超過每小時50塊錢");
+		vo1.setSrvArea(0);
+		vo1.setAcpPetNum(5);
+		vo1.setAcpPetTyp(4);
+		vo1.setCareLevel(0);
+		vo1.setStayLoc(0);
+		vo1.setOvernightLoc(null);
+		vo1.setSmkFree(1);
+		vo1.setHasChild(0);
+		vo1.setSrvTime("400");
+		vo1.setEqpt(null);
+		vo1.setAddBathing(1);
+		vo1.setAddPickup(1);
+		Boolean addOK = jdbcdao.add(vo1,30,25);
+		if (addOK) {
+			System.out.println("新增成功");
+		}
 
 		// 修改
 //		SitSrvVO vo2 = new SitSrvVO();
@@ -541,7 +592,7 @@ public class SitSrvJDBCDAO implements SitSrvDAO_interface {
 		List<SitSrvVO> list2 = new ArrayList<SitSrvVO>();
 		Integer[] types = { 0, 1, 2, 3, 4 };
 
-		list2 = jdbcdao.choose_SitSrv("DayCare", 1, types, "");
+		list2 = jdbcdao.choose_SitSrv("DogWalking", types, "");
 
 		System.out.println("--------------------以下是符合條件的保姆服務----------------------");
 		for (SitSrvVO sitsrv : list2) {
@@ -559,7 +610,7 @@ public class SitSrvJDBCDAO implements SitSrvDAO_interface {
 			System.out.println("OvernightLoc = " + sitsrv.getOvernightLoc());
 			System.out.println("SmkFree = " + sitsrv.getSmkFree());
 			System.out.println("HasChild = " + sitsrv.getHasChild());
-			System.out.println("WalkTime = " + sitsrv.getWalkTime());
+			System.out.println("SrvTime = " + sitsrv.getSrvTime());
 			System.out.println("EQPT = " + sitsrv.getEqpt());
 			System.out.println("AddBathing = " + sitsrv.getAddBathing());
 			System.out.println("AddPickup = " + sitsrv.getAddPickup());
@@ -568,6 +619,114 @@ public class SitSrvJDBCDAO implements SitSrvDAO_interface {
 			System.out.println("----------------------------------");
 		}
 		System.out.println("--------------------以上是符合條件的保姆服務----------------------");
+	}
+
+	@Override
+	public Boolean addWithSitLic(SitSrvVO sitSrv, Integer addBathingFee, Integer addPickupFee, SitLicVO sitLic) {
+		Boolean addOK = false;
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		PreparedStatement pstmt2 = null;
+
+		try {
+			Class.forName(driver);
+			con = DriverManager.getConnection(url, user, passwd);
+			con.setAutoCommit(false);
+			int[] pk = {1};
+			
+			pstmt = con.prepareStatement(ADD_PSTMT, pk);
+
+			pstmt.setString(1, sitSrv.getSitSrvName());
+			pstmt.setString(2, sitSrv.getSitSrvCode());
+			pstmt.setString(3, sitSrv.getSitNo());
+			pstmt.setInt(4, sitSrv.getSrvFee());
+			pstmt.setString(5, sitSrv.getSrvInfo());
+			pstmt.setInt(6, sitSrv.getSrvArea());
+			pstmt.setInt(7, sitSrv.getAcpPetNum());
+			pstmt.setInt(8, sitSrv.getAcpPetTyp());
+			pstmt.setObject(9, sitSrv.getCareLevel());
+			pstmt.setObject(10, sitSrv.getStayLoc());
+			pstmt.setObject(11, sitSrv.getOvernightLoc());
+			pstmt.setObject(12, sitSrv.getSmkFree());
+			pstmt.setObject(13, sitSrv.getHasChild());
+			pstmt.setObject(14, sitSrv.getSrvTime());
+			pstmt.setObject(15, sitSrv.getEqpt());
+			pstmt.setObject(16, sitSrv.getAddBathing());
+			pstmt.setObject(17, sitSrv.getAddPickup());
+			pstmt.setInt(18, 2);
+			pstmt.setInt(19, 0);
+			pstmt.executeUpdate();
+			
+			String pkNo = null;
+			ResultSet rs = pstmt.getGeneratedKeys();
+			if (rs.next()) {
+				pkNo = rs.getString(1);
+				System.out.println("自增主鍵值= " + pkNo +"(剛新增成功的服務編號)");
+			} else {
+				System.out.println("未取得自增主鍵值");
+			}
+			pstmt.clearParameters();
+			rs.close();
+			
+			pstmt2 = con.prepareStatement(ADD_PLUS_PSTMT);
+			// 再同時新增加價服務
+			if (sitSrv.getAddBathing() == 1) {
+				pstmt2.setString(1, "加價洗澡"+pkNo);
+				pstmt2.setString(2, "Bathing");
+				pstmt2.setString(3, sitSrv.getSitNo());
+				pstmt2.setInt(4, addBathingFee);
+				pstmt2.executeUpdate();
+				pstmt2.clearParameters();
+			}
+			if (sitSrv.getAddPickup() == 1) {
+				pstmt2.setString(1, "加價接送"+pkNo);
+				pstmt2.setString(2, "Pickup");
+				pstmt2.setString(3, sitSrv.getSitNo());
+				pstmt2.setInt(4, addPickupFee);
+				pstmt2.executeUpdate();
+			}
+			
+			// 再同時新增證書
+			SitLicJDBCDAO sldao = new SitLicJDBCDAO();
+			sldao.addFromSitSrv(sitLic, con);
+			
+			con.commit();
+			addOK = true;
+			con.setAutoCommit(true);
+			
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			throw new RuntimeException("Couldn't load database driver. " + e.getMessage());
+		} catch (SQLException e) {
+			e.printStackTrace();
+			if (con != null) {
+				try {
+					System.err.println("rolled back-由-sitSrv_addWithSitLic");
+					con.rollback();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+					throw new RuntimeException("rollback error occured. "
+							+ e1.getMessage());
+				}
+			}
+			throw new RuntimeException("新增失敗: " + e.getMessage());
+		} finally {
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return addOK;
 	}
 
 }

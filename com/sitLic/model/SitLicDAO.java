@@ -117,7 +117,6 @@ public class SitLicDAO implements SitLicDAO_interface{
 		}
 	}
 
-
 	@Override
 	public SitLicVO getOneLicByPK(String licNo) {
 		SitLicVO sitLic = null;
@@ -281,7 +280,8 @@ public class SitLicDAO implements SitLicDAO_interface{
 	}
 
 	@Override
-	public void updateStatus(String licNo, Integer licStatus) {
+	public Boolean updateStatus(String licNo, Integer licStatus) {
+		Boolean updateOK = false;
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		
@@ -293,8 +293,10 @@ public class SitLicDAO implements SitLicDAO_interface{
 			pstmt.setInt(1, licStatus);
 			pstmt.setString(2, licNo);
 			
-			pstmt.executeUpdate();
-			con.commit();
+			if (pstmt.executeUpdate() == 1) {
+				updateOK = true;
+				con.commit();
+			}
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -316,6 +318,44 @@ public class SitLicDAO implements SitLicDAO_interface{
 				try {
 					con.close();
 				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return updateOK;
+	}
+
+	public void addFromSitSrv(SitLicVO sitLic, Connection con) {
+PreparedStatement pstmt = null;
+		
+		try {
+			pstmt = con.prepareStatement(ADD_PSTMT);
+			pstmt.setString(1, sitLic.getSitNo());
+			pstmt.setString(2, sitLic.getLicName());
+			pstmt.setBytes(3, sitLic.getLicPic());
+			pstmt.setDate(4, sitLic.getLicEXP());
+			pstmt.setInt(5, sitLic.getLicStatus());
+
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			// console印出例外原因位置，個人比較好debug
+			e.printStackTrace();
+			if (con != null) {
+				try {
+					System.err.println("345.rolled back-由-emp");
+					con.rollback();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+					throw new RuntimeException("rollback error occured. "
+							+ e1.getMessage());
+				}
+			}
+			throw new RuntimeException("新增失敗： " + e.getMessage());
+		} finally {
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
 					e.printStackTrace();
 				}
 			}

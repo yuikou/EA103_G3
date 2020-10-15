@@ -20,40 +20,14 @@ public class SitOffDayDAO implements SitOffDayDAO_interface{
 
 	private static final String ADD_PSTMT 			= "INSERT INTO sitOffDay VALUES ('SD' || lpad(offDayNo_seq.NEXTVAL, 3, '0'), ?, ?, ?, ?, ?)";
 	private static final String DEL_PSTMT 			= "DELETE sitOffDay WHERE groupId=? ";
-	private static final String GET_BY_OFFDAYNO 	= "SELECT * FROM sitOffDay WHERE offDayNo=? ";
-	private static final String GET_BY_SITSRVNO 	= "SELECT * FROM sitOffDay WHERE sitSrvNo=? ";
-	private static final String GET_SIT_BY_OFFDATE 	= "SELECT sitSrvNo FROM sitOffDay WHERE offDay  BETWEEN to_date(?, 'yyyy-mm-dd') "
-													+ "AND TO_DATE(?, 'yyyy-mm-dd') "
-													+ "AND offTime is Null OR offTime = ? "
+	private static final String GET_BY_OFFDAYNO 	= "SELECT * FROM sitOffDay WHERE offDayNo=? ORDER BY offDayNo";
+	private static final String GET_BY_SITSRVNO 	= "SELECT * FROM sitOffDay WHERE sitSrvNo=? AND offDay BETWEEN SYSDATE-1 AND  SYSDATE+90 ORDER BY offDayNo";
+	
+	private static final String GET_SIT_BY_OFFDATE 	= "SELECT sitSrvNo FROM sitOffDay WHERE offDay BETWEEN to_date(?, 'yyyy-mm-dd') "
+													+ "AND to_date(?, 'yyyy-mm-dd') "
+													+ "AND offTime is Null AND offDayTyp = 0 "
 													+ "AND sitSrvNo IN (SELECT sitSrvNo FROM sitSrv WHERE sitSrvCode=?)";
 	
-	@Override
-	public Boolean commit(Boolean addOK) {
-		Boolean isCommit = false;
-		Connection con = null;
-		
-		try {
-			con = ds.getConnection();
-			if (addOK) {
-				con.commit();
-				isCommit = true;
-			} else {
-				con.rollback();
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new RuntimeException("·s¼W¥¢±Ñ¡G " + e.getMessage());
-		} finally {
-			if (con != null) {
-				try {
-					con.close();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		return isCommit;
-	}
 	
 	@Override
 	public Boolean add(SitOffDayVO sod) {
@@ -75,6 +49,8 @@ public class SitOffDayDAO implements SitOffDayDAO_interface{
 			if ( pstmt.executeUpdate() == 1) {
 				addOK = true;
 				con.commit();
+			} else {
+				throw new SQLException();
 			}
 			
 		} catch (SQLException e) {
@@ -117,9 +93,11 @@ public class SitOffDayDAO implements SitOffDayDAO_interface{
 			
 			pstmt = con.prepareStatement(DEL_PSTMT);
 			pstmt.setString(1, groupId);
-			if ( pstmt.executeUpdate() > 1) {
+			if ( pstmt.executeUpdate() >= 1) {
 				delOK = true;
 				con.commit();
+			} else {
+				throw new SQLException();
 			}
 
 		} catch (SQLException e) {
@@ -256,7 +234,7 @@ public class SitOffDayDAO implements SitOffDayDAO_interface{
 	}
 	
 	@Override
-	public Set<String> getSitByDate(String sitSrvCode, String start_date, String end_date, String time) {
+	public Set<String> getSitByDate(String sitSrvCode, String start_date, String end_date) {
 		Set<String> set = new HashSet<String>();
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -267,8 +245,7 @@ public class SitOffDayDAO implements SitOffDayDAO_interface{
 			pstmt = con.prepareStatement(GET_SIT_BY_OFFDATE);
 			pstmt.setString(1, start_date);
 			pstmt.setString(2, end_date);
-			pstmt.setString(3, time);
-			pstmt.setString(4, sitSrvCode);
+			pstmt.setString(3, sitSrvCode);
 			rs = pstmt.executeQuery();
 			
 			while (rs.next()) {

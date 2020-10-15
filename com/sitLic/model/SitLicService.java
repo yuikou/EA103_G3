@@ -20,6 +20,17 @@ public class SitLicService {
 		sitLic.setLicStatus(licStatus);
 		slDAO.add(sitLic);
 	}
+	
+	public SitLicVO addFromSitSrv(String sitNo, String licName, byte[] licPic, Date licEXP, Integer licStatus) {
+		SitLicVO sitLic = new SitLicVO();
+
+		sitLic.setSitNo(sitNo);
+		sitLic.setLicName(licName);
+		sitLic.setLicPic(licPic);
+		sitLic.setLicEXP(licEXP);
+		sitLic.setLicStatus(licStatus);
+		return sitLic;
+	}
 
 	public void update(String licNo, String licName, byte[] licPic, Date licEXP, Integer licStatus) {
 		SitLicVO sitLic = new SitLicVO();
@@ -32,8 +43,8 @@ public class SitLicService {
 		slDAO.update(sitLic);
 	}
 	
-	public void updateStatus(String licNo, Integer licStatus) {
-		slDAO.updateStatus(licNo, licStatus);
+	public Boolean updateStatus(String licNo, Integer licStatus) {
+		return slDAO.updateStatus(licNo, licStatus);
 	}
 
 	public SitLicVO getOneLicByPK(String licNo) {

@@ -19,42 +19,11 @@ public class SitOffDayJDBCDAO implements SitOffDayDAO_interface{
 	private static final String GET_BY_SITSRVNO 	= "SELECT * FROM sitOffDay WHERE sitSrvNo=? ";
 	private static final String GET_SIT_BY_OFFDATE 	= "SELECT sitSrvNo FROM sitOffDay WHERE offDay  BETWEEN to_date(?, 'yyyy-mm-dd') "
 													+ "AND TO_DATE(?, 'yyyy-mm-dd') "
-													+ "AND offTime is Null OR offTime = ? "
+													+ "AND offTime is Null AND offDayTyp = 0 "
 													+ "AND sitSrvNo IN (SELECT sitSrvNo FROM sitSrv WHERE sitSrvCode=?)";
 //	private static final String GET_SIT_BY_OFFDATE2	= "SELECT sitSrvNo FROM sitOffDay WHERE offday  BETWEEN to_date('2020-11-13', 'yyyy-mm-dd') AND TO_DATE('2020-11-14', 'yyyy-mm-dd')" 
 //														+ "AND sitSrvNo IN (SELECT sitSrvNo FROM sitSrv WHERE sitSrvCode='Boarding')";
 	
-	@Override
-	public Boolean commit(Boolean addOK) {
-		Boolean isCommit = false;
-		Connection con = null;
-		
-		try {
-			Class.forName(driver);
-			con = DriverManager.getConnection(url, user, passwd);
-			if (addOK) {
-				con.commit();
-				isCommit = true;
-			} else {
-				con.rollback();
-			}
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-			throw new RuntimeException("Couldn't load database driver. " + e.getMessage());
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new RuntimeException("新增失敗： " + e.getMessage());
-		} finally {
-			if (con != null) {
-				try {
-					con.close();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		return isCommit;
-	}
 	
 	@Override
 	public Boolean add(SitOffDayVO sod) {
@@ -74,20 +43,22 @@ public class SitOffDayJDBCDAO implements SitOffDayDAO_interface{
 			
 			if ( pstmt.executeUpdate() == 1) {
 				addOK = true;
+				con.commit();
+			} else {
+				throw new SQLException();
 			}
-//			con.commit();
 
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 			throw new RuntimeException("Couldn't load database driver. " + e.getMessage());
 		} catch (SQLException e) {
 			e.printStackTrace();
-//			try {
-//				con.rollback();
+			try {
+				con.rollback();
 				throw new RuntimeException("新增失敗： " + e.getMessage());
-//			} catch (SQLException e1) {
-//				e1.printStackTrace();
-//			}
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
 		} finally {
 			if (pstmt != null) {
 				try {
@@ -121,8 +92,10 @@ public class SitOffDayJDBCDAO implements SitOffDayDAO_interface{
 			pstmt.setString(1, groupId);
 			if ( pstmt.executeUpdate() > 1) {
 				delOK = true;
+				con.commit();
+			} else {
+				throw new SQLException();
 			}
-			con.commit();
 
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
@@ -266,7 +239,7 @@ public class SitOffDayJDBCDAO implements SitOffDayDAO_interface{
 	}
 	
 	@Override
-	public Set<String> getSitByDate(String sitSrvCode, String start_date, String end_date, String time) {
+	public Set<String> getSitByDate(String sitSrvCode, String start_date, String end_date) {
 		Set<String> set = new HashSet<String>();
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -278,8 +251,7 @@ public class SitOffDayJDBCDAO implements SitOffDayDAO_interface{
 			pstmt = con.prepareStatement(GET_SIT_BY_OFFDATE);
 			pstmt.setString(1, start_date);
 			pstmt.setString(2, end_date);
-			pstmt.setString(3, time);
-			pstmt.setString(4, sitSrvCode);
+			pstmt.setString(3, sitSrvCode);
 //			pstmt = con.prepareStatement(GET_SIT_BY_OFFDATE2);
 			rs = pstmt.executeQuery();
 			
@@ -323,22 +295,22 @@ public class SitOffDayJDBCDAO implements SitOffDayDAO_interface{
 		SitOffDayJDBCDAO jdbcdao = new SitOffDayJDBCDAO();
 		
 		// 新增
-		SitOffDayVO vo0 = new SitOffDayVO();
-		vo0.setSitSrvNo("SS004");
-		vo0.setOffDay(Date.valueOf("2020-10-5"));
-		vo0.setOffTime("1400");
-		vo0.setOffDayTyp(0);
-		SitOffDayVO vo1 = new SitOffDayVO();
-		vo1.setSitSrvNo("SS005");
-		vo1.setOffDay(Date.valueOf("2020-10-5"));
-		vo1.setOffTime("1400");
-		vo1.setOffDayTyp(0);
-		
-		Boolean addOK = false;
-		addOK = jdbcdao.add(vo0);
-		System.out.println(addOK);
-		addOK = jdbcdao.add(vo1);
-		System.out.println(addOK);
+//		SitOffDayVO vo0 = new SitOffDayVO();
+//		vo0.setSitSrvNo("SS004");
+//		vo0.setOffDay(Date.valueOf("2020-10-5"));
+//		vo0.setOffTime("1400");
+//		vo0.setOffDayTyp(0);
+//		SitOffDayVO vo1 = new SitOffDayVO();
+//		vo1.setSitSrvNo("SS005");
+//		vo1.setOffDay(Date.valueOf("2020-10-5"));
+//		vo1.setOffTime("1400");
+//		vo1.setOffDayTyp(0);
+//		
+//		Boolean addOK = false;
+//		addOK = jdbcdao.add(vo0);
+//		System.out.println(addOK);
+//		addOK = jdbcdao.add(vo1);
+//		System.out.println(addOK);
 		
 //		Boolean commitOK = false;
 //		commitOK = jdbcdao.commit(addOK);
@@ -378,7 +350,7 @@ public class SitOffDayJDBCDAO implements SitOffDayDAO_interface{
 		
 		// 查詢All
 		Set<String> set = new HashSet<String>();
-		set = jdbcdao.getSitByDate("DogWalking", "2020-10-4", "2020-10-6", "1000");
+		set = jdbcdao.getSitByDate("DogWalking", "2020-10-20", "2020-10-23");
 		
 		if (set.size() < 1) {
 			System.out.println("查無資料");
