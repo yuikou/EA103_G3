@@ -1,4 +1,15 @@
 
+import java.io.*;
+import java.sql.*;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.servlet.*;
+import javax.servlet.annotation.MultipartConfig;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
+import javax.sql.DataSource;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -19,16 +30,108 @@ import com.sitLic.model.SitLicVO;
 import com.sitPhoto.model.SitPhotoService;
 import com.sitPhoto.model.SitPhotoVO;
 
-@WebServlet("/picReader")
-public class picReader extends HttpServlet {
-	private static final long serialVersionUID = 8772772431614292284L;
+@WebServlet("/PicReader.do")
+@MultipartConfig
+public class PicReader extends HttpServlet {
 
-	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+	static DataSource ds;
+
+	static {
+		try {
+			Context ctx = new InitialContext();
+			ds = (DataSource) ctx.lookup("java:comp/env/jdbc/G3DB");
+		} catch (NamingException e) {
+			e.printStackTrace();
+		}
+	}
+	Connection con;
+	
+	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		doPost(req, res);
 	}
-
-	protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+	
+	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		
 		String action = req.getParameter("action");
+		
+		/*---- ®Ñ³Í ----*/
+		if ("getMemPhoto".equals(action)) {
+			try {
+				res.setContentType("image/*");
+				Statement stmt = con.createStatement();
+				ResultSet rs = stmt.executeQuery(
+						"SELECT MEMPHOTO FROM MEMBER_TABLE WHERE MEMNO = '" + req.getParameter("memNo") + "'");
+				ServletOutputStream out = res.getOutputStream();
+				if (rs.next()) {
+					BufferedInputStream in = new BufferedInputStream(rs.getBinaryStream("memPhoto"));
+					byte[] buf = new byte[4 * 1024]; // 4K buffer
+					int len;
+					while ((len = in.read(buf)) != -1) {
+						out.write(buf, 0, len);
+					}
+					in.close();
+				} else {
+					res.sendError(HttpServletResponse.SC_NOT_FOUND);
+				}
+				rs.close();
+				stmt.close();
+			} catch (Exception e) {
+				System.out.println(e);
+			}
+		}
+		
+		if("getPetPhoto".equals(action)) {
+			try {
+				res.setContentType("image/*");
+				Statement stmt = con.createStatement();
+				ResultSet rs = stmt.executeQuery(
+						"SELECT PETPHOTO FROM PET WHERE PETNO = '" + req.getParameter("petNo") + "'");
+				ServletOutputStream out = res.getOutputStream();
+
+				if (rs.next()) {
+					BufferedInputStream in = new BufferedInputStream(rs.getBinaryStream("petPhoto"));
+					byte[] buf = new byte[4 * 1024]; // 4K buffer
+					int len;
+					while ((len = in.read(buf)) != -1) {
+						out.write(buf, 0, len);
+					}
+					in.close();
+				} else {
+					res.sendError(HttpServletResponse.SC_NOT_FOUND);
+				}
+				rs.close();
+				stmt.close();
+			} catch (Exception e) {
+				System.out.println(e);
+			}
+		}
+		
+		if("getPetPic".equals(action)) {
+			try {
+				res.setContentType("image/*");
+				Statement stmt = con.createStatement();
+				ResultSet rs = stmt.executeQuery(
+						"SELECT petPic FROM PETPIC WHERE PETPICNO = '" + req.getParameter("petPicNo") + "'");
+				ServletOutputStream out = res.getOutputStream();
+
+				if (rs.next()) {
+					BufferedInputStream in = new BufferedInputStream(rs.getBinaryStream("petPic"));
+					byte[] buf = new byte[4 * 1024]; // 4K buffer
+					int len;
+					while ((len = in.read(buf)) != -1) {
+						out.write(buf, 0, len);
+					}
+					in.close();
+				} else {
+					res.sendError(HttpServletResponse.SC_NOT_FOUND);
+				}
+				rs.close();
+				stmt.close();
+			}catch(Exception e) {
+				System.out.println(e);
+			}
+			
+		}
 		
 		/* ----------¤_´@---------- */
 		if ("sitLic".equals(action)) {
@@ -136,7 +239,23 @@ public class picReader extends HttpServlet {
 				failureView.forward(req, res);
 			}
 		}
-		
+	}
+
+	public void init() throws ServletException {
+		try {
+			con = ds.getConnection();
+		} catch (SQLException e) {
+			throw new UnavailableException("Couldn't get db connection");
+		}
+	}
+
+	public void destroy() {
+		try {
+			if (con != null)
+				con.close();
+		} catch (SQLException e) {
+			System.out.println(e);
+		}
 	}
 
 }
