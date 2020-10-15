@@ -1,0 +1,36 @@
+/*防止本文被header覆蓋的空div*/
+.layout {
+	height: 100px;
+}
+
+#main {
+	padding: 10px;
+}
+
+.btnset {
+	margin: 10px;
+}
+
+img {
+	width: 300px;
+	height: auto;
+	margin: 20px;
+}
+
+input[type="checkbox"] {
+	width: 20px;
+	height: 20px;
+	display: block;
+}
+
+.picked {
+	width: auto;
+	height: auto;
+	float: left;
+	display: block;
+	border: 1px #aaa solid;
+}
+
+.picked:hover {
+	background-color: #FFF5C3;
+}
