@@ -1,9 +1,7 @@
 package com.salon.model;
 
 
-import java.sql.Timestamp;
-
-public class SalonVO {
+public class SalonVO implements java.io.Serializable{
 	private String salNo;
 	private String salName;
 	private String salOwner;

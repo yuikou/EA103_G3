@@ -5,9 +5,12 @@ import java.util.List;
 import com.salon.model.SalonVO;
 
 public interface SalonOrderDAO_interface {
-	public void insert(SalonOrderVO salonOrderVO);
-	public void update(SalonOrderVO salonOrderVO);
-	public void delete(String salOrderNo);
-	public List<SalonOrderVO> getall();
+	 void insert(SalonOrderVO salonOrderVO);
+	 void update(SalonOrderVO salonOrderVO);
+	 void delete(String salOrderNo);
+	 List<SalonOrderVO> getall();
+	 List<SalonOrderVO> getAllBySalNo(String salNo);
+	 List<SalonOrderVO> getAllByMemNo(String memNo);
+	
 
 }

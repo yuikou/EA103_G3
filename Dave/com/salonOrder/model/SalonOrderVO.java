@@ -16,6 +16,7 @@ public class SalonOrderVO {
 	private Timestamp salOrderCT;
 	private Double salStar;
 	private String salComment;
+	
 	public String getSalOrderNo() {
 		return salOrderNo;
 	}
