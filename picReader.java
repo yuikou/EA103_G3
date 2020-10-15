@@ -16,6 +16,8 @@ import com.member.model.MemService;
 import com.member.model.MemVO;
 import com.sitLic.model.SitLicService;
 import com.sitLic.model.SitLicVO;
+import com.sitPhoto.model.SitPhotoService;
+import com.sitPhoto.model.SitPhotoVO;
 
 @WebServlet("/picReader")
 public class picReader extends HttpServlet {
@@ -99,6 +101,42 @@ public class picReader extends HttpServlet {
 			}
 					
 		}
+		
+		/*---------怡晴---------*/
+		if ("sitPhoto".equals(action)) {
+
+			List<String> errorMsgs = new LinkedList<String>();
+			req.setAttribute("errorMsgs", errorMsgs);
+
+			try {
+
+				/*************************** 1.接收請求參數 ****************************************/
+				String sitPNo = req.getParameter("sitPNo");
+				/*************************** 2.開始查詢資料 *****************************************/
+				SitPhotoService sitPhotoSrv = new SitPhotoService();
+				SitPhotoVO sitPhotoVO = sitPhotoSrv.getByPK(sitPNo);
+
+				// 直接寫出
+				res.setContentType("image/jpg");
+				ServletOutputStream out = res.getOutputStream();
+
+				// byte[]轉InputStream
+				ByteArrayInputStream bin = new ByteArrayInputStream(sitPhotoVO.getSitPhoto());
+				byte[] buffer = new byte[4 * 1024];
+				int len;
+				while ((len = bin.read(buffer)) != -1) {
+					out.write(buffer, 0, len);
+				}
+				bin.close();
+
+			} catch (Exception e) {
+
+				errorMsgs.add("無法取得資料:" + e.getMessage());
+				RequestDispatcher failureView = req.getRequestDispatcher("/front-end/sitPhoto/sitPhotoUpload.jsp");
+				failureView.forward(req, res);
+			}
+		}
+		
 	}
 
 }
