@@ -1,0 +1,302 @@
+/* ------------addNewSitLic------------ */
+/* 內文位置下移 */
+.container {
+    position: relative;
+    top: 80px;
+    padding-bottom: 80px;
+}
+/* 隱藏不需要出現的資料 */
+.hideDiv {
+  display: none !important;
+}
+/* 上傳寵物相關證照點選標籤 */
+.myLabel {
+  vertical-align: center;
+}
+.preview {
+	min-height: 55px;
+  height: 100%;
+  width: 100%;
+}
+.preview::after {
+/*   content: ""; */
+/*   clear: both; */
+/*   display: block; */
+}
+div.info {
+  margin: 5px 0 0 15px;
+}
+div.info div.add-note {
+	font-size: 16px;
+	display: inline-block;
+}
+.errorList {
+/*   margin: 60px; */
+/*   display: block; */
+/*   position: relative; */
+/*   top: 70px; */
+/*   left: 50px; */
+/*   z-index: 10; */
+}
+
+/* 查詢全部 */
+.search {
+	width: 2em;
+	height: 2em;
+	font-size: 18px;
+	text-decoration:none;
+	float: right;
+	margin-right: 20px;
+	position: relative;
+    color: #FFE;
+    bottom: 5px;
+}
+.back {
+	width: 2em;
+	height: 2em;
+	font-size: 18px;
+	text-decoration:none;
+	float: left;
+	margin-left: 20px;
+	position: relative;
+    color: #FFE;
+    bottom: 5px;
+}
+.search:hover, .back:hover {
+	text-decoration: underline;
+	color: #FFF;
+}
+.bi-search {
+	width: 2em;
+	height: 2em;
+	float: right;
+	margin-right: 20px;
+	margin-bottom: 10px;
+}
+/* 回上一頁 */
+.bi-box-arrow-in-left {
+	width: 2em;
+	height: 2em;
+	float: left;
+	margin-left: 20px;
+	margin-bottom: 10px;
+}
+
+
+
+/* ---------------forTest--------------- */
+.test {
+  margin: 40px;
+  display: block;
+  position: relative;
+  top: 50px;
+  z-index: 10;
+  text-align: center;
+}
+.test a {
+  padding: 20px;
+  font-size: 20px;
+  font-weight: 300;
+}
+.test a:hover {
+	color: #FF7260;
+}
+
+div.prev {
+    position: relative;
+    top: 100px;
+    left: 220px;
+}
+div.prev a {
+	font-size: 24px;
+}
+
+/* -------------listUnverifiedLic----------- */
+.backFromDB {
+  margin: 10px auto 50px auto;
+  padding: 0;
+}
+.vrfTable {
+  margin-top: 50px;
+  min-width: 100%;
+  background-color: transparent;
+}
+.vrfTable tr {
+/* 	border: 1px solid rgba(80, 80, 80, 0.1); */
+  	background-color: rgba(255, 255, 255, 0.9) !important;
+}
+.vrfTable th {
+	padding: 10px;
+  	font-size: 20px;
+  	min-width: 180px;
+}
+.vrfTable th {
+	background-color: rgba(168, 218, 220, 0.7)
+}
+.vrfTable tr,
+th,
+td {
+  text-align: center;
+  margin: auto 0;
+}
+.vrfTable td {
+  	vertical-align: middle !important;
+  	font-size: 20px;
+  	border-bottom: 1px solid rgba(80, 80, 80, 0.1); */
+}
+.vrfTable tr:hover {
+	background-color: rgba(202, 240, 248, 0.3) !important;
+}
+.myLicPic {
+  width: 480px;
+  max-height: 200px;
+}
+.licPicImg {
+  max-width: 100%;
+  max-height: 400px;
+  padding: 10px;
+  margin: 0 auto;
+}
+
+
+
+
+/* ----------updateSitLic------------ */
+div.myOldPic {
+    width: 90%;
+    height: auto;
+    margin: 0px auto 30px auto;
+    margin-bottom: 30px;
+    text-align: center;
+}
+.addLic {
+	width: 8em;
+	height: 2em;
+	font-size: 18px;
+	text-decoration:none;
+	float: right;
+	position: relative;
+    color: #505050;
+    bottom: 5px;
+    right: 40px;
+}
+.addLic:hover {
+	color: #5D4660;
+}
+.bi-file-earmark-plus {
+	width: 2em;
+	height: 2em;
+	float: left;
+}
+
+
+/* ----------listOneSitAllLic---------- */
+.warrning {
+  color: red;
+}
+
+.vrfBtn {
+  width: 80px;
+  height: 30px;
+  margin:10px;
+  font-size: 18px;
+  box-shadow: 0 2px 2px 0 rgba(0,0,0,0.2), 0 3px 10px 0 rgba(0,0,0,0.19);
+  transition-duration: 0.4s;
+}
+.updBtn {
+  width: 120px;
+  height: 40px;
+  margin:10px;
+  font-size: 18px;
+  box-shadow: 0 2px 2px 0 rgba(0,0,0,0.2), 0 3px 10px 0 rgba(0,0,0,0.19);
+  transition-duration: 0.4s;
+}
+.updBtn:hover {
+	background-color: #5D4660;
+	color: #fff;
+}
+.vrfBtn:hover {
+	background-color: rgba(69, 123, 157, 0.7);
+	color: #fff;
+}
+
+/* 改版 */
+.wrap {
+	background-color:#ffffff; 
+	width: 100%;
+	height: 100%;
+	margin:0 auto;
+	color:#989A8F;
+	padding: 5px 10px;
+}
+
+.table {
+  background-color:#ffffff; 
+  height: 100%;
+  width: 95%;
+  margin:10px auto;  
+}
+
+.table ul li {
+  display: inline-block;
+  width: 32%;
+  text-align:center;
+  border:0.5px solid #DDDCD8;
+  margin: 10px 5px;
+}
+.table ul li:hover {
+	box-shadow: 0 2px 2px 0 rgba(0,0,0,0.2), 0 3px 10px 0 rgba(0,0,0,0.19);
+}
+.top {
+  background-color:#EAE9E4;
+  height:75px;
+}
+.top H1.licNameH1 {
+	padding-top:20px;
+	font-size: 1.8rem;
+}
+
+.circle {
+  font-size:20px;
+  line-height:60px;
+  text-align:center;
+  margin:10px auto 0 auto;
+}
+.circle .pimg {
+	width:150px;
+	height:150px;
+	margin:10px auto 0 auto;
+	padding: 10px;
+}
+.pimg:hover {
+	cursor: -moz-zoom-in; 
+	cursor: -webkit-zoom-in;
+	cursor: zoom-in;
+}
+.bottom {
+	margin-top: 150px;
+}
+.bottom p {
+	font-size:20px;
+     font-family: 'Droid Serif', sans-serif;
+     padding:5px;
+}
+.bottom p span {
+	font-weight:bold; 
+}
+.button {
+   padding: 10px 40px;
+   -webkit-border-radius: 6px;
+   -moz-border-radius: 6px;
+   border-radius: 6px;
+   color: #989A8F;
+   font-size: 14px;
+   text-decoration: none;
+   vertical-align: middle;
+    font-size:17px;
+  }
+
+
+
+
+

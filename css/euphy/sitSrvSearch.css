@@ -1,0 +1,460 @@
+/*basic reset*/
+* {margin: 0; padding: 0;}
+input, button {
+	outline: none;
+	border: none;
+}
+/* ------------整個搜尋頁面------------ */
+.container-fluid {
+	padding-right: 0;
+    padding-left: 0;
+}
+/* 背景大圖 */
+.banner {
+	background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url(/EA103G3/front-end/img/dogWalking.jpg);
+	background-size: cover;
+  	background-position: center;
+	min-height: 774px;
+}
+@media (max-width: 767.98px) {
+	.banner {
+		background-position: left;
+	}
+}
+
+/* 置中container */
+.container-wrap {
+	display: block;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    top: 79px;
+    z-index: 2;
+    width: 850px;
+	min-height: 695px;
+}
+@media (max-width: 767.98px) {
+	.container-wrap {
+		width: 100%;
+	}
+}
+/* 背景大字 */
+.container-wrap > h1 {
+	height: 150px;
+	line-height:50px;
+	margin:0 auto;
+	padding-top: 100px;
+	text-align:center;
+	width: 80%;
+	font-size: 3em;
+  	color: #FFF;
+	text-shadow: 0 1px 5px rgba(0,0,0,.6);
+}
+@media (max-width: 767.98px) {
+	.container-wrap > h1 {
+		top:115px;
+		font-size: 2.5em;
+	}
+}
+
+/* ------------搜尋框------------ */
+.search-container {
+    display: block;
+	margin: 30px auto;
+}
+.search-container form {
+	box-shadow: 0 3px 8px -2px rgba(0,0,0,.15);
+    border-radius: 4px;
+    background-color: #fff;
+    padding: 15px 25px;
+}
+.pet-type-select {
+	display: inline-flex;
+}
+.dog-size-select {
+	display: inline-flex;
+}
+
+.heading {
+	margin: auto;
+	font-size: 20px;
+    font-weight: 600;
+}
+.list {
+  margin: .5rem;  
+}
+
+.list__item {
+  margin: 0 0 .5rem 0;
+  padding: 0;
+}
+.label-checkbox {
+  position: relative;
+  margin: .5rem;
+  line-height: 135%;
+  cursor: pointer;
+  font-size: 20px;
+}
+.label-radio {
+	margin: 0;
+}
+.petTypCheckbox {
+  position: relative;
+  top: rem(-6);
+  
+  margin: 0 1rem 0 0 ;
+  
+  cursor: pointer;
+}
+.petTypCheckbox::before {
+    
+        content: "";
+    
+        position: absolute;
+        left: 0;
+        top: -5px;
+        z-index: 1;
+  
+        width: 1.6rem;
+        height: 1.6rem;
+    
+        border: 2px solid #c8c8c8; 
+        transition: all .3s ease-in-out;
+}
+  
+.petTypCheckbox:checked::before {
+
+  		transform: rotate(-45deg);
+        height: .8rem;
+  
+        border-color: #009688;
+        border-top-style: none;
+        border-right-style: none;
+
+  }
+  
+.petTypCheckbox:after {
+    content: "";
+    
+    position: absolute;
+    top: rem(-2);
+    left: 0;
+    
+    width: 1.1rem;
+    height: 1.1rem;
+    
+    background: #fff;
+    
+    cursor: pointer;
+
+}
+.service-select {
+	margin: 10px 0 5px 0;
+}
+.service-select-group {
+	height: calc(100% - 22px);
+    display: flex;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+}
+.service-select-div {
+	padding: 6px 5px 6px 0;
+    height: auto;
+    margin-left: 22px;
+} 
+.service-select-btn {
+/*     height: 100%; */
+    -webkit-box-flex: 1;
+    -ms-flex-positive: 1;
+    flex-grow: 1;
+    position: relative;
+    border: 1px solid #cfd7de;
+    border-radius: 4px;
+    background: #fff;
+    cursor: pointer;
+    text-align: center;
+	padding: 5px;
+}
+.service-icon {
+	color: #faa307;
+	font-size: 1.3em;
+    line-height: 1em;
+    vertical-align: middle;
+}
+.boarding-icon::after {
+	background-image: url("/EA103G3/front-end/img/pet-house.svg");
+    background-size: 30px 30px;
+    display: inline-block;
+    width: 30px; 
+    height: 30px;
+    content:"";
+}
+.daycare-icon::after {
+	background-image: url("/EA103G3/front-end/img/pet-milk.svg");
+    background-size: 30px 30px;
+    display: inline-block;
+    width: 30px; 
+    height: 30px;
+    content:"";
+}
+.dropin-icon::after {
+	background-image: url("/EA103G3/front-end/img/pet-food.svg");
+    background-size: 30px 30px;
+    display: inline-block;
+    width: 30px; 
+    height: 30px;
+    content:"";
+}
+.dogwalking-icon::after {
+	background-image: url("/EA103G3/front-end/img/walking-the-dog.svg");
+    background-size: 30px 30px;
+    display: inline-block;
+    width: 30px; 
+    height: 30px;
+    content:"";
+}
+.pettaxi-icon::after {
+	background-image: url("/EA103G3/front-end/img/pet-taxi.svg");
+    background-size: 30px 30px;
+    display: inline-block;
+    width: 30px; 
+    height: 30px;
+    content:"";
+}
+.line {
+	background-color: rgba(250,163,7,0.3);
+}
+
+.service-select-btn.line>a:after {
+	
+	position: absolute;
+    top: -1px;
+    left: 0;
+    right: 0;
+    height: 4px;
+    border-top: 3px solid #faa307;
+    border-radius: 4px;
+    content: "";
+}
+.hidden-xs {
+	margin: 5px 0;
+}
+@media (max-width: 767.98px) {
+	.hidden-xs {
+		display: none;
+	}
+}
+.searchQ {
+	margin: 10px 0 5px 0;
+}
+.search-loaction, .search-time {
+	min-width: 100px;
+	min-height: 30px;
+}
+.search-time-div {
+	position: relative;
+    margin: 0 -15px;
+    background-color: bisque;
+}
+.search-loaction-input {
+	float: left;
+	min-height: 35px;
+	width: 100%;
+	border-radius: 4px;
+    border: 1px solid #cfd7de;
+    padding: 0 10px;
+}
+
+.search-time-from, .search-time-end {
+	float: left;
+}
+.search-time-input {
+	width: 100%;
+	min-height: 35px;
+	border: 1px solid #cfd7de;
+	border-radius: 4px;
+	padding: 0 10px;
+}
+.betweenDiv {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+}
+.betweenIcon::after {
+	content: "\FF5E";
+	font-family: font-awesome;
+	margin: 0 -15px;
+	font-size: 22px;
+}
+.search-condition {
+	margin: 20px auto 10px auto ;
+}
+.search-condition-btn {
+	height: 40px;
+	width: 100%;
+	background-color: #faa307;
+	border-radius: 4px;
+	color: #fff;
+	cursor: pointer;
+}
+.search-condition-btn:hover {
+	background-color: #F48C06;
+}
+
+
+/* 搜尋頁面下方的介紹 */
+.about h2{
+    text-align: center;
+    position: relative;
+    margin: 50px auto;
+}
+.srvInfoDiv {
+	background-color: #fff;
+    padding: 15px 10px;
+    box-shadow: 0 1px 1px rgba(0,0,0,.05);
+    margin-bottom: 70px;
+	margin-right: 25px;
+    max-width: 30%;
+}
+.srvInfo {
+	display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    padding: 14px;
+}
+.srvInfo-icon {
+	margin-right: 18px;
+}
+.srvInfo-icon::after {
+	background-size: 2.5em;
+	width: 2.5em;
+	height: 2.5em;
+}
+.srvInfoDescript {
+	font-size: 16px;
+}
+.srvInfoDescript span {
+	color: #66727c;
+}
+.progressDiv {
+	background-color: #fff;
+    padding: 15px 0;
+    box-shadow: 0 1px 1px rgba(0,0,0,.05);
+    margin-bottom: 70px;
+}
+.progress_step_wrap {
+	display: flex;
+}
+.progress_step {
+	display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-flex: 1;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -ms-flex-line-pack: center;
+    align-content: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    text-align: center;
+    color: #1b1f23;
+    position: relative;
+    z-index: 1;
+
+}
+
+.step_line {
+    position: relative;
+    display: -webkit-inline-box;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -ms-flex-line-pack: center;
+    align-content: center;
+    width: 100%;
+}
+
+.step_number {
+	display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    height: 32px;
+    width: 32px;
+    text-align: center;
+    border: 1px solid;
+    border-color: #cfd7de;
+    border-radius: 50%;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    font-size: 12px;
+    line-height: 1;
+    background-color: #fff;
+    position: relative;
+    z-index: 10;
+}
+.step_line:before {
+	left: 0;
+}
+.step_line:after {
+	right: 0;
+}
+.step_line:before,.step_line:after {
+	content: "";
+    position: absolute;
+    height: 1px;
+    border-bottom: 1px solid #cfd7de;
+    width: 50%;
+    z-index: 0;
+    top: 50%;
+    -webkit-transform: translateY(-1px);
+    transform: translateY(-1px);
+	border-bottom: 1px solid #cfd7de;
+}
+.first_step .step_line:before {
+	content:none;
+}
+.last_step .step_line:after {
+	content:none;
+}
+.progress_step_info {
+	min-height:30px;
+	text-align: center;
+	padding: 15px
+}
+.progress_step_descript h4 {
+	margin: 8px;
+}
+.progress_step_descript span {
+    color: #66727c;
+	
+}
+.progress_step_img {
+	width: 55px;
+	height: 55px;
+}
