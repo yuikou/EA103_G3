@@ -49,5 +49,13 @@ public class SalonOrderService {
 	public List<SalonOrderVO> getAll(){
 		return dao.getall();
 	}
+	
+	public List<SalonOrderVO> getAllBYSalNo(String salNo){
+		return dao.getAllBySalNo(salNo);
+	}
+	
+	public List<SalonOrderVO> getALLBYMemNo(String memNo){
+		return dao.getAllByMemNo(memNo);
+	}
 
 }
