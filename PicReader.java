@@ -317,6 +317,75 @@ public class PicReader extends HttpServlet {
 				failureView.forward(req, res);
 			}
 		}
+		
+		/* ----------繼元---------- */
+		if ("employeePhoto".equals(action)) {
+			List<String> errorMsgs = new LinkedList<String>();
+			req.setAttribute("errorMsgs", errorMsgs);
+					
+			try {
+				/*************************** 1.接收請求參數 ****************************************/
+				String empno = req.getParameter("empNo");
+						
+				/***************************2.開始查詢資料*****************************************/
+				EmployeeService empSvc = new EmployeeService();
+				EmployeeVO employeeVO = empSvc.getOneEmployee(empno);
+		
+				res.setContentType("image/jpg");
+				ServletOutputStream out = res.getOutputStream();
+						
+				// byte[]轉InputStream
+				ByteArrayInputStream bin = new ByteArrayInputStream(employeeVO.getEmpPhoto());
+						
+				byte[] buffer = new byte[4*1024];
+				int len;
+				while ((len = bin.read(buffer)) != -1) {
+					out.write(buffer, 0 , len);
+				}
+				bin.close();
+						
+					
+			/***************************其他可能的錯誤處理*************************************/
+			} catch (Exception e) {
+				errorMsgs.add("無法取得資料:" + e.getMessage());
+				RequestDispatcher failureView = req.getRequestDispatcher("/sitLic/showOneSitLic.jsp");
+				failureView.forward(req, res);
+			}					
+		}
+		
+		if ("adPic".equals(action)) {
+			List<String> errorMsgs = new LinkedList<String>();
+			req.setAttribute("errorMsgs", errorMsgs);
+					
+			try {
+				/*************************** 1.接收請求參數 ****************************************/
+				String adno = req.getParameter("adNo");
+						
+				/***************************2.開始查詢資料*****************************************/
+				AdvertisementService adSvc = new AdvertisementService();
+				AdvertisementVO advertisementVO = adSvc.getOneAdvertisement(adno);
+		
+				res.setContentType("image/jpg");
+				ServletOutputStream out = res.getOutputStream();
+						
+				// byte[]轉InputStream
+				ByteArrayInputStream bin = new ByteArrayInputStream(advertisementVO.getAdPic());
+						
+				byte[] buffer = new byte[4*1024];
+				int len;
+				while ((len = bin.read(buffer)) != -1) {
+					out.write(buffer, 0 , len);
+				}
+				bin.close();
+											
+			/***************************其他可能的錯誤處理*************************************/
+			} catch (Exception e) {
+				errorMsgs.add("無法取得資料:" + e.getMessage());
+				RequestDispatcher failureView = req.getRequestDispatcher("/sitFollow/listSitFollow.jsp");
+				failureView.forward(req, res);
+			}					
+		}
+		
 	}
 
 	public void init() throws ServletException {
