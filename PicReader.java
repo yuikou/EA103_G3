@@ -104,7 +104,7 @@ public class PicReader extends HttpServlet {
 		
 		
 		/* 來自listAllAdopt.jsp的請求 - 顯示一張待領養寵物圖片 */
-<<<<<<< HEAD
+		
 //		if ("listAlladoPet".equals(action)) {
 //			
 //			List <String> errorMsgs = new LinkedList<String>();
