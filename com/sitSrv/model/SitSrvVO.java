@@ -1,7 +1,7 @@
 package com.sitSrv.model;
 
-public class SitSrvVO {
-	
+public class SitSrvVO implements java.io.Serializable{
+	private static final long serialVersionUID = 7421053430842908864L;
 	private String sitSrvNo;
 	private String sitSrvName;
 	private String sitSrvCode;
@@ -16,7 +16,7 @@ public class SitSrvVO {
 	private Integer overnightLoc;
 	private Integer SmkFree;
 	private Integer hasChild;
-	private Integer walkTime;
+	private String srvTime;
 	private Integer eqpt;
 	private Integer addBathing;
 	private Integer addPickup;
@@ -107,11 +107,11 @@ public class SitSrvVO {
 	public void setHasChild(Integer hasChild) {
 		this.hasChild = hasChild;
 	}
-	public Integer getWalkTime() {
-		return walkTime;
+	public String getSrvTime() {
+		return srvTime;
 	}
-	public void setWalkTime(Integer walkTime) {
-		this.walkTime = walkTime;
+	public void setSrvTime(String walkTime) {
+		this.srvTime = walkTime;
 	}
 	public Integer getEqpt() {
 		return eqpt;

@@ -12,8 +12,8 @@
 <title>假裝送出req查詢保姆</title>
 
 <!-- 匯入外部CSS -->
-<c:set var="path" value="/EA103G3/front-end" />
-<link rel="stylesheet" type="text/css" href="${path}/css/SF.css">
+<c:set var="cssPath" value="/EA103G3/css/euphy" />
+<link rel="stylesheet" type="text/css" href="${cssPath}/SF.css">
 
 </head>
 <body>

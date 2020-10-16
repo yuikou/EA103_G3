@@ -15,7 +15,6 @@ public class SitFollowServlet extends HttpServlet {
 	}
 
 	protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-		// 處理中文請求
 		String action = req.getParameter("action");
 		HttpSession session = req.getSession();
 		
@@ -35,7 +34,7 @@ public class SitFollowServlet extends HttpServlet {
 	
 				/*************************** 3.新增完成,準備轉交(Send the Success view) ***********/
 				session.setAttribute("list", list);
-				// 轉送
+
 				String url = "listSitFollowBySession.jsp";
 				RequestDispatcher sucessView = req.getRequestDispatcher(url);
 				sucessView.forward(req, res);
@@ -50,8 +49,6 @@ public class SitFollowServlet extends HttpServlet {
 		
 /* 來自會員【新增】追蹤保姆的請求 - by ajax */
 		if ("add".equals(action)) {
-//			List<String> errorMsgs = new LinkedList<String>();
-//			req.setAttribute("errorMsgs", errorMsgs);
 			PrintWriter out = res.getWriter();
 			
 			try {
@@ -75,18 +72,14 @@ public class SitFollowServlet extends HttpServlet {
 				
 			/***************************其他可能的錯誤處理*************************************/
 			} catch (Exception e) {
-//				errorMsgs.add(e.getMessage());
-//				RequestDispatcher failureView = req.getRequestDispatcher(location);
-//				failureView.forward(req, res);
-				out.write("error: " + e.getMessage());
+				e.printStackTrace();
+				out.write("error");
 			}
 		}
 		
 		
 /* 來自會員查看保姆頁面時【刪除】追蹤保姆的請求 - by ajax */
 		if ("del".equals(action)) {
-//			List<String> errorMsgs = new LinkedList<String>();
-//			req.setAttribute("errorMsgs", errorMsgs);
 			PrintWriter out = res.getWriter();
 			
 			try {
@@ -110,9 +103,6 @@ public class SitFollowServlet extends HttpServlet {
 				
 				/***************************其他可能的錯誤處理*************************************/
 			} catch (Exception e) {
-//				errorMsgs.add(e.getMessage());
-//				RequestDispatcher failureView = req.getRequestDispatcher(location);
-//				failureView.forward(req, res);
 				out.write("error: " + e.getMessage());
 			}
 		}

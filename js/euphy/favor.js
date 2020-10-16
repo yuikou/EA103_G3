@@ -23,8 +23,8 @@ function getFavor() {
         addFavor();
       } else if (xhr.responseText == 0) {
         delFavor();
-      } else {
-        alert("error");
+      } else if (xhr.responseText == "error"){
+        alert("不要重複一直點");
       }
     } else {
       alert(xhr.status);

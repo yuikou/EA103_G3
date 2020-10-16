@@ -1,0 +1,165 @@
+body {
+  height: 100%;
+  /*網站底色-米白色*/
+  background-color: rgba(252, 244, 217, 0.7) !important;
+  box-sizing: content-box !important;
+}
+/* 清除chrome自動填入後背景框變色的預設*/
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0px 1000px transparent inset; /*淡淡的白*/
+  transition: background-color 5000s ease-in-out 0s; /*透明*/
+}
+
+/*上傳圖檔的設定*/
+.myReview {
+  width: 90%;
+  height: auto;
+  margin: 20px;
+/*   margin-bottom: 30px; */
+  text-align: center;
+}
+.limiter {
+  margin: 40px 0;
+}
+.wrap-login100 {
+  width: 700px;
+}
+.login100-form-title {
+  background-color: rgba(255, 114, 96, 0.8);
+  height: 10px;
+  margin: 0 auto;
+  padding-top: 30px;
+  padding-bottom: 39px;
+}
+.terms:hover {
+  text-decoration: none;
+  color: #ff7260;
+}
+.txt2 {
+  color: #a8dadc;
+}
+.txt3 {
+  color: #a8dadc;
+}
+.login100-form-btn {
+  background-color: #a8dadc;
+  -webkit-transition: all 0s;
+  -o-transition: all 0s;
+  -moz-transition: all 0s;
+  transition: all 0s;
+}
+.login100-form-btn:hover {
+  background-color: rgba(255, 114, 96, 0.8);
+  color: #fff;
+}
+.input100 {
+	font-size: 18px;
+  	margin-top: 0px;
+  	color: #1d3557;
+  	background: #ebebeb;
+}
+/*營業執照跟圖片檔預覽的文字格式*/
+.myP {
+  padding-top: 15px;
+  color: #505050;
+  font-size: 20px;
+}
+.remove {
+  margin-bottom: 10px;
+  border: 1px solid;
+  width: 100px;
+  height: 30px;
+  float: right;
+}
+.myBox {
+  height: 100%;
+  margin-top: 0;
+}
+.myBox::after {
+  content: "";
+  clear: both;
+  display: block;
+}
+.upload_img {
+  display: inline;
+}
+/*服務條款超連結設定*/
+#myTerm {
+  text-align: center;
+}
+#myTitle {
+  text-align: center;
+  vertical-align: middle;
+}
+#salinfo {
+  line-height: 20px;
+  padding-top: 10px;
+  height: 100px;
+}
+textarea::-webkit-input-placeholder {
+  line-height: 50px;
+  font-size: 20px;
+  color: #505050;
+}
+input::-webkit-input-placeholder {
+  font-size: 20px;
+  color: #505050;
+}
+
+/* 大頭照 */
+.selfieDiv {
+  margin: 30px auto;
+  text-align: center;
+}
+.selfie {
+  width: 300px;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 50%;
+  /* 陰影 */
+  box-shadow: 5px 5px 10px 0 rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 5px 5px 10px 0 rgba(0, 0, 0, 0.2);
+  -webkit-box-shadow: 5px 5px 10px 0 rgba(0, 0, 0, 0.2);
+  -o-box-shadow: 5px 5px 10px 0 rgba(0, 0, 0, 0.2);
+  -ms-box-shadow: 5px 5px 10px 0 rgba(0, 0, 0, 0.2);
+}
+.myCity,
+.mySrv {
+  border: 0 !important;
+}
+.reviewImg {
+  max-width: 100%;
+  max-height: 400px;
+/*   margin-bottom: 20px; */
+}
+.boardingLic {
+  display: none;
+  /* border: 0; */
+}
+.myUpload {
+  width: 35px;
+  height: 35px;
+  /* border: 1px solid red; */
+}
+.myLabel {
+  margin-top: 5px;
+  margin-bottom: 3px;
+}
+.uploadTXT {
+  margin: 19px 0 0 15px;
+}
+.container-login100-form-btn {
+  margin-top: 30px;
+}
+.alert-validate::before {
+	visibility: visible;
+  	opacity: 1;
+}
+/* 提示文字 */
+input::placeholder {
+  color: rgba(80, 80, 80, 0.7);
+  font-size: 1.1em;
+}

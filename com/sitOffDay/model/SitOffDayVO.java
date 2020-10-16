@@ -2,7 +2,8 @@ package com.sitOffDay.model;
 
 import java.sql.Date;
 
-public class SitOffDayVO {
+public class SitOffDayVO implements java.io.Serializable{
+	private static final long serialVersionUID = 7436616734854606625L;
 	private String offDayNo;
 	private String sitSrvNo;
 	private Date offDay;

@@ -2,7 +2,8 @@ package com.sitLic.model;
 
 import java.sql.Date;
 
-public class SitLicVO {
+public class SitLicVO implements java.io.Serializable{
+	private static final long serialVersionUID = 1278779110787839547L;
 	private String licNo;
 	private String sitNo;
 	private String licName;

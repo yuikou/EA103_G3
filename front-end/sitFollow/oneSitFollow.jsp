@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page import="com.sitFollow.model.*, com.member.model.*, com.petSitter.model.*, java.util.*" %>
 <!DOCTYPE html>
-<html>
+<html lang="zh-Hant">
 <head>
 <!-- Required meta tags -->
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -13,12 +13,12 @@
 
 <!-- 匯入外部CSS -->
 <c:set var="path" value="/EA103G3/front-end" />
-
-<link rel="stylesheet" type="text/css" href="${path}/css/bootstrap.min.css">   
-<link rel="stylesheet" type="text/css" href="${path}/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" type="text/css" href="${path}/css/Main.css">
-<link rel="stylesheet" type="text/css" href="${path}/css/Petfect.css">
-<link rel="stylesheet" type="text/css" href="${path}/css/SF.css">
+<c:set var="cssPath" value="/EA103G3/css/euphy" />
+<link rel="stylesheet" type="text/css" href="${cssPath}/bootstrap.min.css">   
+<link rel="stylesheet" type="text/css" href="/EA103G3/front-end/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" type="text/css" href="${cssPath}/Main.css">
+<link rel="stylesheet" type="text/css" href="${cssPath}/Petfect.css">
+<link rel="stylesheet" type="text/css" href="${cssPath}/SF.css">
 <link rel="Shortcut Icon" type="image/x-icon" href="https://dzmg8959fhe1k.cloudfront.net/all/favicon.ico">
 
 </head>
@@ -50,7 +50,6 @@
 			PetSitterVO petSitterVO = (PetSitterVO) session.getAttribute("petSitterVO");
 			SitFollowService sfSrv = new SitFollowService();
 			
-			System.out.println(petSitterVO.getMemNo());
 			String attr = "fa fa-heart-o";
 			if (sfSrv.getAllByMemNo(memNo).contains(petSitterVO.getMemNo())) { 
 				attr = "fa fa-heart";
@@ -75,9 +74,10 @@
     <jsp:include page="../footer.jsp"/>
 
 <!-- 匯入js -->
-	<script src="${path}/js/jquery-3.2.1.min.js"></script>
-	<script src="${path}/js/popper.js"></script>
-	<script src="${path}/js/bootstrap.min.js"></script>
-	<script src="${path}/js/favor.js"></script>
+	<c:set var="jsPath" value="/EA103G3/js/euphy" />
+	<script src="${jsPath}/jquery-3.2.1.min.js"></script>
+	<script src="${jsPath}/popper.js"></script>
+	<script src="${jsPath}/bootstrap.min.js"></script>
+	<script src="${jsPath}/favor.js"></script>
 </body>
 </html>

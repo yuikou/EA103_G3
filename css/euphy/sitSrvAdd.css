@@ -1,0 +1,568 @@
+/*custom font*/
+@import url(https://fonts.googleapis.com/css?family=Montserrat);
+
+/*basic reset*/
+* {margin: 0; padding: 0;}
+
+html {
+	height: 100%;
+	/*Image only BG fallback*/
+}
+
+body {
+	font-family: montserrat, arial, verdana;
+}
+/* 內文位置下移 */
+.container {
+    position: relative;
+    top: 80px;
+    min-height: 1000px;
+    padding-bottom: 80px;
+}
+.errorList {
+    display: block;
+    position: relative;
+    top: 70px;
+    left: -110px;
+/*     border: 1px solid red; */
+    height: 50px;
+    width: 180px;
+}
+.addB, .addP {
+	display: none;
+}
+
+/* ---------------form styles--------------- */
+#msform {
+	width: 100%;
+	margin: 50px auto;
+	text-align: center;
+	position: relative;
+}
+#msform fieldset {
+	background: white;
+	border: 0 none;
+	border-radius: 3px;
+	box-shadow: 0 0 15px 1px rgba(0, 0, 0, 0.4);
+	padding: 20px 30px;
+	box-sizing: border-box;
+	width: 80%;
+	margin: 0 10%;
+	
+	/*stacking fieldsets above each other*/
+	position: relative;
+}
+/*Hide all except first fieldset*/
+#msform fieldset:not(:first-of-type) {
+	display: none;
+}
+/* ---------------inputs--------------- */
+#msform .input1, #msform .textarea {
+	padding: 16px;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	margin-bottom: 10px;
+	width: 100%;
+	box-sizing: border-box;
+	font-family: montserrat;
+	color: #2C3E50;
+	font-size: 16px;
+	z-index: 5;
+}
+#msform .input1:focus, #msform .textarea:focus {
+	border: 1px solid #1F89E5 !important;
+}
+/* ---------------buttons--------------- */
+#msform .action-button {
+	width: 100px;
+	background: #27AE60;
+	font-weight: bold;
+	color: white;
+	border: 0 none;
+	border-radius: 1px;
+	cursor: pointer;
+	padding: 10px 5px;
+	margin: 10px 5px;
+}
+#msform .action-button:hover, #msform .action-button:focus {
+	box-shadow: 0 0 0 2px white, 0 0 0 3px #27AE60;
+}
+/* ---------------headings--------------- */
+.fs-title {
+	font-size: 26px;
+	text-transform: uppercase;
+	color: #2C3E50;
+	margin-bottom: 10px;
+}
+.fs-subtitle {
+	font-weight: normal;
+	font-size: 16px;
+	color: #666;
+	margin-bottom: 20px;
+}
+/* ---------------progressbar--------------- */
+#progressbar {
+	margin-bottom: 30px;
+	overflow: hidden;
+	/*CSS counters to number the steps*/
+	counter-reset: step;
+}
+#progressbar .pgLi {
+/* 	list-style-type: none; */
+	color: #505050;
+	text-transform: uppercase;
+	font-size: 16px;
+	width: 24.33%;
+	float: left;
+	position: relative;
+}
+#progressbar .pgLi:before {
+	content: counter(step);
+	counter-increment: step;
+	width: 30px;
+	line-height: 30px;
+	display: block;
+	font-size: 20px;
+	color: #333;
+	background: #c8c8c8;
+	border-radius: 3px;
+	margin: 0 auto 5px auto;
+}
+/* ---------------progressbar connectors--------------- */
+#progressbar .pgLi:after {
+	content: '';
+	width: 100%;
+	height: 2px;
+	background: #c8c8c8;
+	position: absolute;
+	left: -50%;
+	top: 9px;
+	z-index: -1; /*put it behind the numbers*/
+}
+#progressbar .pgLi:first-child:after {
+	/*connector not needed before the first step*/
+	content: none; 
+}
+/*marking active/completed steps green*/
+/*The number of the step and the connector before it = green*/
+#progressbar .pgLi.active:before,  #progressbar .pgLi.active:after{
+	background: #ff7260;
+	color: white;
+}
+
+
+/* ---------------chooseSitSrv--------------- */
+.sitSrv {
+  position: absolute;
+  opacity: 0;
+  z-index: -1;
+}
+/* Accordion styles */
+.tabs {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 4px -2px rgba(0,0,0,0.5);
+}
+.tab {
+  width: 100%;
+  color: white;
+  overflow: hidden;
+}
+.tab-label {
+    display: flex;
+    justify-content: space-between;
+    padding: 1em;
+    background: #2c3e50;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 0;
+}
+/* Icon */
+.tab-label:hover {
+	background: #2c3e50;
+	filter: saturate(1.1);
+}
+.tab-label::after {
+	content: "\276F";
+	width: 1em;
+	height: 1em;
+	text-align: center;
+	transition: all .35s;
+}
+
+.tab-content {
+    max-height: 0;
+    padding: 0 1em;
+    color: #2c3e50;
+    background: white;
+    transition: all .35s;
+}
+.tab-content h5 {
+    text-align: left;
+    margin-bottom: 1rem;
+    color: #7AA3CC;
+    font-weight: 500;
+}
+.tab-content-info {
+    text-align: left;
+    margin-bottom: 0;
+    font-size: 20px;
+    font-weight: bold;
+}
+.tab-content-info small{
+    text-align: left;
+    margin-bottom: 0;
+    font-size: 14px;
+    color: rgba(80,80,80,0.7);
+}
+.tab-content h6 {
+	text-align: left;
+	color: cadetblue;
+	margin-bottom: 15px;
+}
+/* :checked */
+.sitSrv::checked + .tab-label {
+	background: #FFF;
+	filter: saturate(1.1);
+}
+.sitSrv:checked + .tab-label::after {
+	transform: rotate(90deg);
+}
+.sitSrv:checked ~.tab-content {
+    max-height: 100vh;
+    padding: 1em;
+    padding-bottom: 0;
+}
+
+
+
+/* ---------------input-number專用--------------- */
+.input-group {
+	margin-bottom: 10px;
+}
+.input-group span:first-child {
+	width: 230px;
+    font-size: 18px;
+    padding-top: 3px;
+    text-align: left;
+    display:block;
+}
+.input-group-btn {
+	position: relative;
+	left: 10px;
+}
+.input-group-btn button {
+	max-width: 50px !important;
+	padding: 8PX;
+	border: 1px solid #ccc;
+	border-radius: 3px !important;
+	top: -8px;
+	height: 39px;
+}
+.input-number {
+	max-width: 50px !important;
+    text-align: center;
+    padding: 8px !important;
+	top: 5px;
+	border-radius: 0 !important;
+}
+.form-control {
+	left: 10px;
+	border: none;
+	border-top: 1px solid #ccc;;
+	border-bottom: 1px solid #ccc;
+}
+
+/* ---------------checkbox & radio專用--------------- */
+label.btn span {
+	font-size: 1.5em ;
+}
+label input[type="radio"] ~ i.fa.fa-circle-o{
+    color: #c8c8c8;    display: inline;
+}
+label input[type="radio"] ~ i.fa.fa-check-circle-o{
+    display: none;
+}
+
+label input[type="radio"] ~ i.fa.fa-dot-circle-o{
+    display: none;
+}
+label input[type="radio"]:checked ~ i.fa.fa-circle-o{
+    display: none;
+}
+label input[type="radio"]:checked ~ i.fa.fa-check-circle-o{
+    color: #7AA3CC;    display: inline;
+}
+label input[type="radio"]:checked ~ i.fa.fa-dot-circle-o{
+    color: #7AA3CC;    display: inline;
+}
+label:hover input[type="radio"] ~ i.fa {
+color: #7AA3CC;
+}
+
+label input[type="checkbox"] ~ i.fa.fa-square-o{
+    color: #c8c8c8;    display: inline;
+}
+label input[type="checkbox"] ~ i.fa.fa-check-square-o{
+    display: none;
+}
+label input[type="checkbox"]:checked ~ i.fa.fa-square-o{
+    display: none;
+}
+label input[type="checkbox"]:checked ~ i.fa.fa-check-square-o{
+    color: #7AA3CC;    display: inline;
+}
+label:hover input[type="checkbox"] ~ i.fa {
+color: #7AA3CC;
+}
+
+div[data-toggle="buttons"] label.active{
+    color: #7AA3CC;
+}
+
+div[data-toggle="buttons"] label {
+display: inline-block;
+padding: 6px 12px;
+margin-bottom: 0;
+font-size: 14px;
+font-weight: normal;
+line-height: 2em;
+text-align: left;
+white-space: nowrap;
+vertical-align: top;
+cursor: pointer;
+background-color: none;
+border: 0px solid #c8c8c8;
+border-radius: 3px;
+color: rgba(80,80,80,0.7);
+-webkit-user-select: none;
+-moz-user-select: none;
+-ms-user-select: none;
+-o-user-select: none;
+user-select: none;
+}
+
+div[data-toggle="buttons"] label:hover {
+color: #7AA3CC;
+}
+
+div[data-toggle="buttons"] label:active, div[data-toggle="buttons"] label.active {
+-webkit-box-shadow: none;
+box-shadow: none;
+}
+
+.btn-group{
+    left: 0;
+    width: 100%;
+    margin-bottom: 10px;
+}
+.btn-row {
+	width: 33.33%;
+	float: left;
+	margin-bottom: 10px;
+    padding-bottom: 10px;
+	border-bottom: 1px solid #eee;
+	position: relative;
+	left: 0;
+}
+.inputQ {
+    width: 220px;
+    font-size: 18px;
+    padding: 10px;
+    padding-top: 0;
+    text-align: left;
+    display: block;
+}
+.inputQ::before {
+	content: "\f1b0";
+	font-family: FontAwesome;
+	display: inline-block;
+    position: relative;
+	z-index: 1100;
+	color: #ff7260;
+	font-size: 24px;
+	margin-right: 5px;
+}
+.addInputQ::before {
+	content: "\f1b0";
+	font-family: FontAwesome;
+	display: inline-block;
+    position: relative;
+	z-index: 1100;
+	color: #ff7260;
+	font-size: 24px;
+	margin-right: 5px;
+}
+
+
+.acpTyp {
+    width: 230px;
+    padding-bottom: 0;
+}
+.smallBtn {
+	font-size: 12px;
+}
+
+/* ---------------dogSize--------------- */
+.dogSize {
+	width: 100%;
+	clear: both;
+	display: none;
+}
+
+
+/* ---------------srvFee--------------- */
+.fee-group {
+	display: flex;
+}
+.fee-group-input {
+	width: 92px !important;
+    padding: 8px !important;
+	text-align: center;
+	font-size: 18px;
+	height: fit-content;
+	margin-bottom: 0px !important;
+    margin-top: 5px;
+}
+.fee-group-inputQ {
+	min-width: 120px !important;
+	padding: 8px !important;
+	text-align: center;
+	font-size: 18px;
+}
+.fee-group-inputQ::before {
+	content: "\f1b0";
+	font-family: FontAwesome;
+	display: inline-block;
+    position: relative;
+	z-index: 1100;
+	color: #ff7260;
+	font-size: 24px;
+	margin-right: 5px;
+}
+.unit {
+	padding: 14px 3px;
+    font-size: 18px;
+} 
+
+
+/* ---------------srvTime--------------- */
+.quantity {
+  position: relative;
+  display: flex;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button
+{
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number]
+{
+  -moz-appearance: textfield;
+}
+
+.quantity-inputQ {
+  	width: 120px !important;
+    padding: 8px !important;
+    text-align: center;
+    font-size: 18px;
+}
+.quantity-inputQ::before {
+	content: "\f1b0";
+	font-family: FontAwesome;
+	display: inline-block;
+    position: relative;
+	z-index: 1100;
+	color: #ff7260;
+	font-size: 24px;
+	margin-right: 5px;
+}
+
+.quantity-input {
+  width: 92px !important;
+  height: 42px;
+  line-height: 1.65;
+  float: left;
+  display: block;
+  padding-right: 36px !important;
+  margin: 0;
+  padding-left: 20px;
+  border: 1px solid #eee;
+  text-align: center;
+  margin-bottom: 0 !important;
+  margin-top: 5px;
+}
+
+.quantity-nav {
+  float: left;
+  position: relative;
+  height: 42px;
+  z-index: 5;
+  top: 5px;
+}
+
+.quantity-button {
+  position: relative;
+  cursor: pointer;
+  border-left: 1px solid #ddd;
+  width: 25px;
+  text-align: center;
+  color: #333;
+  font-size: 20px;
+  font-family: "Trebuchet MS", Helvetica, sans-serif !important;
+  line-height: 1;
+  -webkit-transform: translateX(-100%);
+  transform: translateX(-100%);
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+}
+
+.quantity-button.quantity-up {
+  position: absolute;
+  height: 50%;
+  top: 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.quantity-button.quantity-down {
+  position: absolute;
+  bottom: -1px;
+  height: 50%;
+}
+
+/* ---------------CKeditor--------------- */
+.ck-editor__editable {
+    border: 1px solid #eee;
+    min-height: 200px;
+}
+.ck-editor p {
+	font-size: 18px;
+}
+.ck-editor__editable ul li {
+	list-style-type: disc;
+    position: relative;
+    left: 20px;
+}
+.ck-editor__editable ol li {
+	list-style-type: decimal;
+	position: relative;
+    left: 20px;
+}
+
+/* ---------------上傳證照--------------- */
+.mybody {
+	padding-bottom: 25px;
+}
+.myP {
+    text-align: left;
+}
+.cover {
+    min-height: 0 !important;
+}
