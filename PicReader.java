@@ -406,6 +406,43 @@ public class PicReader extends HttpServlet {
 				ServletOutputStream out = res.getOutputStream();
 						
 				// byte[]轉InputStream
+
+				ByteArrayInputStream bin = new ByteArrayInputStream(salonVO.getSalPic());
+						
+				byte[] buffer = new byte[4*1024];
+				int len;
+				while ((len = bin.read(buffer)) != -1) {
+					out.write(buffer, 0 , len);
+				}
+				bin.close();
+						
+					
+			/***************************其他可能的錯誤處理*************************************/
+			} catch (Exception e) {
+				errorMsgs.add("無法取得資料:" + e.getMessage());
+				RequestDispatcher failureView = req.getRequestDispatcher("/sitLic/showOneSitLic.jsp");
+				failureView.forward(req, res);
+			}
+		}
+		
+		if ("salCertif".equals(action)) {
+			List<String> errorMsgs = new LinkedList<String>();
+			req.setAttribute("errorMsgs", errorMsgs);
+					
+			try {
+				/*************************** 1.接收請求參數 ****************************************/
+				String salNo = req.getParameter("salNo");
+						
+				/***************************2.開始查詢資料*****************************************/
+				SalonService salSvc = new SalonService();
+				SalonVO salonVO = salSvc.getonesalon(salNo);
+						
+				// 直接寫出
+				res.setContentType("image/jpg");
+				ServletOutputStream out = res.getOutputStream();
+						
+				// byte[]轉InputStream
+
 				ByteArrayInputStream bin = new ByteArrayInputStream(salonVO.getSalCertif());
 						
 				byte[] buffer = new byte[4*1024];
@@ -424,8 +461,8 @@ public class PicReader extends HttpServlet {
 			}
 		}
 		
-	}
 
+	}
 	public void init() throws ServletException {
 		try {
 			con = ds.getConnection();
