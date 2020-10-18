@@ -304,20 +304,19 @@ public class PicReader extends HttpServlet {
 				SitPhotoService sitPhotoSrv = new SitPhotoService();
 				SitPhotoVO sitPhotoVO = sitPhotoSrv.getByPK(sitPNo);
 				
-				if(sitPhotoVO != null) {
-					// 直接寫出
-					res.setContentType("image/jpg");
-					ServletOutputStream out = res.getOutputStream();
+				
+				// 直接寫出
+				res.setContentType("image/jpg");
+				ServletOutputStream out = res.getOutputStream();
 
-					// byte[]轉InputStream
-					ByteArrayInputStream bin = new ByteArrayInputStream(sitPhotoVO.getSitPhoto());
-					byte[] buffer = new byte[4 * 1024];
-					int len;
-					while ((len = bin.read(buffer)) != -1) {
-						out.write(buffer, 0, len);
-					}
-					bin.close();
+				// byte[]轉InputStream
+				ByteArrayInputStream bin = new ByteArrayInputStream(sitPhotoVO.getSitPhoto());
+				byte[] buffer = new byte[4 * 1024];
+				int len;
+				while ((len = bin.read(buffer)) != -1) {
+					out.write(buffer, 0, len);
 				}
+				bin.close();
 				
 
 			} catch (Exception e) {
