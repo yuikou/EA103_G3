@@ -34,6 +34,9 @@ import com.sitLic.model.SitLicVO;
 import com.sitPhoto.model.SitPhotoService;
 import com.sitPhoto.model.SitPhotoVO;
 import com.employee.model.*;
+import com.forum.model.ForumService;
+import com.forum.model.ForumVO;
+
 
 @WebServlet("/PicReader.do")
 @MultipartConfig
@@ -101,6 +104,7 @@ public class PicReader extends HttpServlet {
 		
 		
 		/* 來自listAllAdopt.jsp的請求 - 顯示一張待領養寵物圖片 */
+		
 //		if ("listAlladoPet".equals(action)) {
 //			
 //			List <String> errorMsgs = new LinkedList<String>();
@@ -356,6 +360,7 @@ public class PicReader extends HttpServlet {
 			}					
 		}
 		
+
 //		if ("adPic".equals(action)) {
 //			List<String> errorMsgs = new LinkedList<String>();
 //			req.setAttribute("errorMsgs", errorMsgs);
@@ -388,6 +393,7 @@ public class PicReader extends HttpServlet {
 //				failureView.forward(req, res);
 //			}					
 //		}
+
 		/* ----------政旭---------- */
 		if ("salPic".equals(action)) {
 			List<String> errorMsgs = new LinkedList<String>();
@@ -461,6 +467,44 @@ public class PicReader extends HttpServlet {
 			}
 		}
 		
+
+		/* ----------念群---------- */
+		if ("getPic".equals(action)) {
+			List<String> errorMsgs = new LinkedList<String>();
+			req.setAttribute("errorMsgs", errorMsgs);
+					
+			try {
+				/*************************** 1.接收請求參數 ****************************************/
+				String forumNo = req.getParameter("forumNo");
+						
+				/***************************2.開始查詢資料*****************************************/
+				ForumService forumSvc = new ForumService();
+				ForumVO forumVO = forumSvc.getOneForum(forumNo);
+		
+				res.setContentType("image/jpg");
+				ServletOutputStream out = res.getOutputStream();
+						
+				// byte[]轉InputStream
+				ByteArrayInputStream bin = new ByteArrayInputStream(forumVO.getForumPic());
+						
+				byte[] buffer = new byte[4*1024];
+				int len;
+				while ((len = bin.read(buffer)) != -1) {
+					out.write(buffer, 0 , len);
+				}
+				bin.close();
+						
+					
+			/***************************其他可能的錯誤處理*************************************/
+			} catch (Exception e) {
+				errorMsgs.add("無法取得資料:" + e.getMessage());
+				RequestDispatcher failureView = req.getRequestDispatcher("/front-end/forum/forumDisplay.jsp");
+				failureView.forward(req, res);
+			}
+					
+		}
+
+	}
 
 	}
 	public void init() throws ServletException {
