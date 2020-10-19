@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page
     import="com.petSitter.model.*, com.sitSrv.model.*, com.sitOrder.model.*,
-    com.sitPhoto.model.*,com.member.model.*, java.util.*"%>
+    com.sitPhoto.model.*,com.member.model.*, java.util.*, java.text.DecimalFormat"%>
 <%
     PetSitterVO petSitterVO = (PetSitterVO) request.getAttribute("petSitterVO");
 %>
@@ -29,6 +29,7 @@
     <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/css-ching/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/css-ching/index.css">
     <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/css-ching/listOneSitter.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.rateit/1.1.3/rateit.css"  />
     <link rel="Shortcut Icon" type="image/x-icon" href="https://dzmg8959fhe1k.cloudfront.net/all/favicon.ico">
     <link rel="stylesheet" href="<%=request.getContextPath()%>/css/css-ching/lightslider.css" />
 </head>
@@ -64,21 +65,17 @@
                     <div class="row">
                         <div class="col-5"><img id="userPhoto" src="<%=request.getContextPath()%>/images/pet.jpg"></div>
                         <div class="col-7">
-<%--                             <%=petSitterVO.getTotalComm() / petSitterVO.getTotalCus()%> --%>
+                        <%
+                          double comm = 0.0;
+                          if(petSitterVO.getTotalComm()!=0){
+                            DecimalFormat df = new DecimalFormat("##.0");
+                            comm = Double.parseDouble(df.format(petSitterVO.getTotalComm() / petSitterVO.getTotalCus()));
+                          }
+                        %>
                             <div>
-                                <%
-                                   String[] arr = {"/images/user_suc.png", "/images/user_fail.png"};
-                                   String accStatus = arr[petSitterVO.getSitAccStatus()];
-                                   pageContext.setAttribute("accStatus", accStatus);
-                                %>
-<%--                                 <img src="<%=request.getContextPath()%><%=accStatus%>" width="30"> --%>
-                                <img src="<%=request.getContextPath()%>/images/starred.png" width="20">
-                                <img src="<%=request.getContextPath()%>/images/starred.png" width="20">
-                                <img src="<%=request.getContextPath()%>/images/starred.png" width="20">
-                                <img src="<%=request.getContextPath()%>/images/starred.png" width="20">
-                                <img src="<%=request.getContextPath()%>/images/star.png" width="20">
+                            <div class="rateit" data-rateit-value="<%=comm %>" data-rateit-ispreset="true" data-rateit-readonly="true"></div>(<%=comm %>)    
                             </div>
-                            <div><img src="<%=request.getContextPath()%>/images/repeat.png" width="30"> <b>回頭客</b>
+                            <div><img src="<%=request.getContextPath()%>/images/repeat.png" width="20"> <b>重複預訂</b>
                                 <%=petSitterVO.getRepeatCus()%> 人</div>
                         </div>
                     </div>
@@ -196,6 +193,7 @@
     <!-- footer -->
     <jsp:include page="/front-end/footer.jsp" />
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.rateit/1.1.3/jquery.rateit.min.js"></script>
     <script src="<%=request.getContextPath()%>/js/js-ching/lightslider.js"></script>
     <script>
         $(document).ready(function() {

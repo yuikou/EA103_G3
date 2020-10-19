@@ -38,6 +38,7 @@
     <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/css-ching/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/css-ching/index.css">
     <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/css-ching/listOneSitter.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.rateit/1.1.3/rateit.css"  />
     <link rel="Shortcut Icon" type="image/x-icon" href="https://dzmg8959fhe1k.cloudfront.net/all/favicon.ico">
     <link rel="stylesheet" href="<%=request.getContextPath()%>/css/css-ching/lightslider.css" />
 </head>
@@ -80,23 +81,16 @@
                           }
                         %>
                             <div>
-                                <%
-                                    String[] arr = {"/images/user_suc.png", "/images/user_fail.png"};
-                                    String accStatus = arr[petSitterVO.getSitAccStatus()];
-                                    pageContext.setAttribute("accStatus", accStatus);
-                                 %>
-<%--                                 <img src="<%=request.getContextPath()%><%=accStatus%>" width="30"> --%>
-                                <img src="<%=request.getContextPath()%>/images/starred.png" width="15">
-                                <img src="<%=request.getContextPath()%>/images/starred.png" width="15">
-                                <img src="<%=request.getContextPath()%>/images/starred.png" width="15">
-                                <img src="<%=request.getContextPath()%>/images/starred.png" width="15">
-                                <img src="<%=request.getContextPath()%>/images/star.png" width="15">(<%=comm %>)
+                               <div class="rateit" data-rateit-value="<%=comm %>" data-rateit-ispreset="true" data-rateit-readonly="true"></div>(<%=comm %>)
                             </div>
-                            <div><img src="<%=request.getContextPath()%>/images/repeat.png" width="22"> <b>回頭客</b>
+                            <div><img src="<%=request.getContextPath()%>/images/repeat.png" width="20"> <b>重複預訂</b>
                                 <%=petSitterVO.getRepeatCus()%> 人</div>
                         </div>
                     </div>
+                    <div>
+                    </div>
                     <div class="srvPhoto">
+                    <div><b>提供服務</b></div>
                     <c:forEach var="sitSrvVO" items="${list}">
 							<c:if test="${sitSrvVO.sitSrvCode == 'Boarding'}">
 							<img src="<%=request.getContextPath()%>/images/pet-house.svg" width="50">
@@ -228,6 +222,7 @@
     <!-- footer -->
     <jsp:include page="/front-end/footer.jsp" />
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.rateit/1.1.3/jquery.rateit.min.js"></script>
     <script src="<%=request.getContextPath()%>/js/js-ching/lightslider.js"></script>
     <script>
         $(document).ready(function() {
