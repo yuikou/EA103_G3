@@ -22,47 +22,34 @@ public class PetSitterServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		req.setCharacterEncoding("UTF-8");
-//      res.setContentType("text/html; charset=UTF-8");
-//      PrintWriter out = res.getWriter();
+        res.setContentType("text/html; charset=UTF-8");
+        PrintWriter out = res.getWriter();
+        
+		HttpSession session = req.getSession();
+		
 
         String action = req.getParameter("action");
 
         //--------------前台(front-end)--------------
         
-        if ("getOneSitter_forDisplay".equals(action)) { //from sitterFront.jsp
+        if ("getOneSitter_forDisplay".equals(action) || "getOneSitter_DisplayForMem".equals(action)) { //from sitterFront.jsp
 
             List<String> errorMsgs = new LinkedList<String>();
             req.setAttribute("errorMsgs", errorMsgs);
-
+            
+            
             try {
                 
-                String sitNo = req.getParameter("sitNo");
-                if (sitNo == null || (sitNo.trim().length() == 0)) {
-                    errorMsgs.add("請輸入保母編號");
+                String sitNo = (String) session.getAttribute("sitNo");
+                if (sitNo == null) {
+                	sitNo = (String) req.getParameter("sitNo");
                 }
                 
-                if (!errorMsgs.isEmpty()) {
-                    RequestDispatcher failureView = req
-                            .getRequestDispatcher("/front-end/sitterFront.jsp");
-                    failureView.forward(req, res);
-                    return;                 
-                }
-                
-                String sitNoReg = "[S][0-9]{3}";
-                if(!sitNo.trim().matches(sitNoReg)) {
-                    errorMsgs.add("請輸入正確格式");
-                }
-                
-                if (!errorMsgs.isEmpty()) {
-                    RequestDispatcher failureView = req
-                            .getRequestDispatcher("/front-end/sitterFront.jsp");
-                    failureView.forward(req, res);
-                    return;                 
-                }
                                 
                 PetSitterService petSitSrv = new PetSitterService();
                 PetSitterVO petSitterVO = petSitSrv.getByPK(sitNo);
-                if (petSitterVO == null) {
+                
+                if (petSitterVO  == null) {
                     errorMsgs.add("查無資料");
                 }
                 if (!errorMsgs.isEmpty()) {
@@ -71,8 +58,13 @@ public class PetSitterServlet extends HttpServlet {
                     failureView.forward(req, res);
                     return;                 
                 }
+                
+                String url = null;
+				if ("getOneSitter_forDisplay".equals(action))
+					url = "/front-end/petSitter/listOneSitter.jsp";
+				else if ("getOneSitter_DisplayForMem".equals(action))
+					url = "/front-end/petSitter/listOneSitterForMem.jsp";
                 req.setAttribute("petSitterVO", petSitterVO);
-                String url = "/front-end/petSitter/listOneSitter.jsp";
                 RequestDispatcher successView = req.getRequestDispatcher(url);
                 successView.forward(req, res);
                 
@@ -95,12 +87,12 @@ public class PetSitterServlet extends HttpServlet {
         	
         	try {
         		
-        		String sitNo = req.getParameter("sitNo");
+        		String sitNo = (String) session.getAttribute("sitNo");
         		PetSitterService petSitterSrv = new PetSitterService();
         		PetSitterVO petSitterVO = petSitterSrv.getByPK(sitNo);
         		
         		req.setAttribute("petSitterVO", petSitterVO);
-        		String url = "/front-end/petSitter/sitUpdatePage.jsp";
+        		String url = "/front-end/petSitter/updatePetSitter.jsp";
         		RequestDispatcher successView = req
         				.getRequestDispatcher(url);
         		successView.forward(req, res);
@@ -121,8 +113,8 @@ public class PetSitterServlet extends HttpServlet {
             
         	try {
         		
-        		String sitNo = req.getParameter("sitNo").trim();
-        		String memNo = req.getParameter("memNo").trim();
+        		String memNo = (String) session.getAttribute("memNo");
+        		String sitNo = (String) session.getAttribute("sitNo");
         		
         		String sitInfo = req.getParameter("sitInfo").trim();
         		if (sitInfo == null || sitInfo.trim().length() == 0) {
@@ -148,8 +140,8 @@ public class PetSitterServlet extends HttpServlet {
                 String srvSTime = req.getParameter("srvSTime").trim();
                 String srvETime = req.getParameter("srvETime").trim();               
                 Integer sitAccStatus = new Integer(req.getParameter("sitAccStatus").trim());
-                Integer totalComm = new Integer(req.getParameter("totalComm").trim());
-                Integer totalCus = new Integer(req.getParameter("totalCus").trim());
+                Double totalComm = Double.parseDouble(req.getParameter("totalComm"));
+                Double totalCus = Double.parseDouble(req.getParameter("totalCus"));
                 Integer repeatCus = new Integer(req.getParameter("repeatCus").trim());
                 
                 PetSitterVO petSitterVO = new PetSitterVO();
@@ -168,7 +160,7 @@ public class PetSitterServlet extends HttpServlet {
                 if(!errorMsgs.isEmpty()) {
                 	req.setAttribute("petSitterVO", petSitterVO);
                 	RequestDispatcher failureView = req
-                			.getRequestDispatcher("/front-end/petSitter/sitUpdatePage.jsp");
+                			.getRequestDispatcher("/front-end/petSitter/updatePetSitter.jsp");
                 	failureView.forward(req, res);
                 	return;
                 }
@@ -184,7 +176,7 @@ public class PetSitterServlet extends HttpServlet {
         	} catch (Exception e) {
         		
         		errorMsgs.add("修改資料失敗:"+e.getMessage());
-                String url = "/front-end/petSitter/sitUpdatePage.jsp";
+                String url = "/front-end/petSitter/updatePetSitter.jsp";
                 RequestDispatcher successView = req.getRequestDispatcher(url);
                 successView.forward(req, res);
                 
@@ -196,11 +188,11 @@ public class PetSitterServlet extends HttpServlet {
         	
         	List<String> errorMsgs = new LinkedList<String>();
 			req.setAttribute("errorMsgs", errorMsgs);
-        	
+			
 			try {
 				
-				String memNo = req.getParameter("memNo").trim();
-	            
+				
+				String memNo = (String) session.getAttribute("memNo");
 	            String sitInfo = req.getParameter("sitInfo").trim();
         		if (sitInfo == null || sitInfo.trim().length() == 0) {
         			errorMsgs.add("保母資訊請勿空白");
@@ -222,15 +214,21 @@ public class PetSitterServlet extends HttpServlet {
 	            	errorMsgs.add("請輸入16碼銀行帳號");
 	            }
 	            
-	            String srvSTime = req.getParameter("srvSTime").trim();
-	            if (srvSTime == null) {
-	            	errorMsgs.add("請選擇可服務開始時間");                	
-	            }
+	            String srvSTime = req.getParameter("srvSTime");
+//	            if (srvSTime == null) {
+//	            	errorMsgs.add("請選擇可服務開始時間");                	
+//	            }
 	            
-	            String srvETime = req.getParameter("srvETime").trim();
+	            String srvETime = req.getParameter("srvETime");
 //	            if (srvETime == null) {
 //	            	errorMsgs.add("請選擇可服務結束時間");                	
 //	            }
+	            
+	            Integer sitAccStatus = 0;
+	            Double totalComm = 0.0;
+	            Double totalCus = 0.0;
+	            Integer repeatCus = 0;
+
 	            
 	            PetSitterVO petSitterVO = new PetSitterVO();
 	            petSitterVO.setMemNo(memNo);
@@ -239,6 +237,10 @@ public class PetSitterServlet extends HttpServlet {
 	            petSitterVO.setSrvETime(srvETime);
 	            petSitterVO.setBankCode(bankCode);
 	            petSitterVO.setBankAcc(bankAcc);
+	            petSitterVO.setSitAccStatus(sitAccStatus);
+	            petSitterVO.setTotalComm(totalComm);
+	            petSitterVO.setTotalCus(totalCus);
+	            petSitterVO.setRepeatCus(repeatCus);
 	            
 	            if (!errorMsgs.isEmpty()) {
 					req.setAttribute("petSitterVO", petSitterVO); // 含有輸入格式錯誤的empVO物件,也存入req
@@ -249,7 +251,7 @@ public class PetSitterServlet extends HttpServlet {
 				}
 	            
 	            PetSitterService petSitterSrv = new PetSitterService();
-	            petSitterVO = petSitterSrv.insert(memNo,sitInfo,srvSTime,srvETime,bankCode,bankAcc);
+	            petSitterVO = petSitterSrv.insert(memNo,sitInfo,srvSTime,srvETime,bankCode,bankAcc,sitAccStatus,totalComm,totalCus,repeatCus);
 	            req.setAttribute("petSitterVO", petSitterVO);
 	            String url = "/front-end/petSitter/listOneSitter.jsp";
 	            RequestDispatcher successView = req.getRequestDispatcher(url);
@@ -263,14 +265,109 @@ public class PetSitterServlet extends HttpServlet {
                 successView.forward(req, res);
                 
 			}
-            
         }
+        
+        
         
         //--------------後台(back-end)--------------
         
+        if ("getOneSitter_forBack".equals(action)) { //from sitterBack.jsp
+
+            List<String> errorMsgs = new LinkedList<String>();
+            req.setAttribute("errorMsgs", errorMsgs);
+
+            try {
+                
+                String sitNo = req.getParameter("sitNo");
+                if (sitNo == null || (sitNo.trim().length() == 0)) {
+                    errorMsgs.add("請輸入保母編號");
+                }
+                
+                if (!errorMsgs.isEmpty()) {
+                    RequestDispatcher failureView = req
+                            .getRequestDispatcher("/back-end/sitterBack.jsp");
+                    failureView.forward(req, res);
+                    return;                 
+                }
+                
+                String sitNoReg = "[S][0-9]{3}";
+                if(!sitNo.trim().matches(sitNoReg)) {
+                    errorMsgs.add("請輸入正確格式");
+                }
+                
+                if (!errorMsgs.isEmpty()) {
+                    RequestDispatcher failureView = req
+                            .getRequestDispatcher("/back-end/sitterBack.jsp");
+                    failureView.forward(req, res);
+                    return;                 
+                }
+                                
+                PetSitterService petSitSrv = new PetSitterService();
+                PetSitterVO petSitterVO = petSitSrv.getByPK(sitNo);
+                
+                if (petSitterVO  == null) {
+                    errorMsgs.add("查無資料");
+                }
+                if (!errorMsgs.isEmpty()) {
+                    RequestDispatcher failureView = req
+                            .getRequestDispatcher("/back-end/sitterBack.jsp");
+                    failureView.forward(req, res);
+                    return;                 
+                }
+                                
+                req.setAttribute("petSitterVO", petSitterVO);
+                String url = "/back-end/petSitter/listOneSitterBack.jsp";
+                RequestDispatcher successView = req.getRequestDispatcher(url);
+                successView.forward(req, res);
+                
+            } catch (Exception e) {
+                
+                errorMsgs.add("無法取得資料:" + e.getMessage());
+                RequestDispatcher failureView = req
+                        .getRequestDispatcher("/back-end/sitterBack.jsp");
+                failureView.forward(req, res);                 
+            }
+
+        }
+       
         
-        
-        
+        if ("change_sitAccStatus".equals(action)) {
+        	
+        	List<String> errorMsgs = new LinkedList<String>();
+            req.setAttribute("errorMsgs", errorMsgs);
+            
+            String sitNo = req.getParameter("sitNo");
+            PetSitterService petSitterSrv = new PetSitterService();
+            PetSitterVO petSitterVO = petSitterSrv.getByPK(sitNo);
+            
+            String memNo = petSitterVO.getMemNo();
+            String sitInfo = petSitterVO.getSitInfo();
+            String srvSTime = petSitterVO.getSrvSTime();
+            String srvETime = petSitterVO.getSrvETime();
+            String bankCode = petSitterVO.getBankCode();
+            String bankAcc = petSitterVO.getBankAcc();
+            Integer sitAccStatus = petSitterVO.getSitAccStatus();
+            Double totalComm = petSitterVO.getTotalComm();
+            Double totalCus = petSitterVO.getTotalCus();
+            Integer repeatCus = petSitterVO.getRepeatCus();
+            
+            
+            if (petSitterVO != null) {
+            	if (sitAccStatus == 0) {	
+            		sitAccStatus = 1;
+            	} else {
+            		sitAccStatus = 0;
+            	}
+            }
+            System.out.println(sitAccStatus);
+            petSitterVO = petSitterSrv.update(sitNo, memNo, sitInfo, srvSTime, srvETime, bankCode, bankAcc, sitAccStatus, totalComm, totalCus, repeatCus);
+            
+            req.setAttribute("petSitterVO", petSitterVO);
+            String url = "/back-end/petSitter/listOneSitterBack.jsp";
+            RequestDispatcher successView = req.getRequestDispatcher(url);
+            successView.forward(req, res);
+            
+        }
         
     }
 
