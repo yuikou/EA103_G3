@@ -1,0 +1,12 @@
+    body {
+      margin-top: 90px;
+      background-color: rgba(252, 244, 217, 0.4);
+    }
+    .back_img {
+      width: 60px;
+      height: 60px;
+    }
+    .info {
+      width: 200px;
+      height: 500px;
+    }

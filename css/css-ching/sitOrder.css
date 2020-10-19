@@ -1,0 +1,159 @@
+body {
+	margin-top: 100px;
+	height: 1000px;
+	width: 100vw;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	font-family: 'Poppins';
+	font-size: 14px;
+}
+.empty{
+	height: 500px;
+}
+.main-footer {
+	¡@height: 100px;
+	¡@position: relative;
+	¡@margin-top: -100px;
+}
+.tableBox {
+	width: 1100px;
+	border-collapse: collapse;
+	margin: 25px 0;
+	text-align: center;
+	color: #505050;
+	box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+	color: rgba(0, 0, 0, 0.45);
+}
+
+.tableBox thead tr {
+	background-color: #f1c40f;
+	font-weight: bold;
+}
+
+.tableBox tbody tr {
+	color: #444;
+	text-align: center;
+}
+
+.tableBox tbody tr:nth-of-type(even) {
+	background-color: rgba(241, 196, 15, 0.30);
+}
+
+.talbeBox tbody tr:last-of-type {
+	border-bottom: 2px solid #f1c40f;
+}
+
+.thBox {
+	text-align: center;
+	font-size: 17px;
+}
+.tableBox_D {
+	width: 1100px;
+	border-collapse: collapse;
+	margin: 25px 0;
+	text-align: center;
+	color: #505050;
+	box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+	color: rgba(0, 0, 0, 0.45);
+}
+
+.tableBox_D thead tr {
+	background-color: #9BD7D5;
+	font-weight: bold;
+}
+.tableBox_D thead th {
+	height: 60px;
+}
+
+.tableBox_D tbody tr {
+	color: #444;
+	text-align: center;
+}
+.tableBox_D tbody td {
+	height: 60px;
+}
+
+.tableBox_D tbody tr:nth-of-type(even) {
+	background-color: rgba(241, 196, 15, 0.30);
+}
+
+.thBox_D {
+	text-align: center;
+	font-size: 17px;
+}
+
+td, th {
+	width: 95px;
+	height: 80px;
+}
+.lightbox {
+  display: none;
+  animation-name: test;
+  animation-duration: 0.5s;
+  position: relative;
+}
+
+/* Opened lightbox */
+.lightbox:target {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+}
+
+/* Lightbox content */
+.lightbox figcaption {
+  width: 25rem;
+  position: relative;
+  padding: 1.5em;
+  background-color:	rgba(168, 218, 220, 0.8);
+}
+
+/* Close button */
+.lightbox .close {
+  position: relative;
+  display: block;
+}
+
+.lightbox .close::after {
+  right: -1rem;
+  top: -1rem;
+  width: 2rem;
+  height: 2rem;
+  position: absolute;
+  display: flex;
+  z-index: 99;
+  align-items: center;
+  justify-content: center;
+  background-color: black;
+  border-radius: 50%;
+  color: white;
+  content: "x";
+  cursor: pointer;
+}
+
+/* Lightbox overlay */
+.lightbox .close::before {
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  content: "";
+  cursor: default;
+}
+@keyframes test{
+	0% {opacity: 0.5;}
+	25% {opacity: 0.6;}
+	50% {opacity: 0.7;}
+	75% {opacity: 0.8;}
+	100% {opacity: 0.9;}
+}
+
