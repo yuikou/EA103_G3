@@ -6,10 +6,9 @@
 
         function getAjax() {
             if ($("#followIcon").hasClass("fa-heart-o")) {
-                /* 空心, 呼叫insert然後轉愛心為實心 */
                 $.ajax({
                     type: "POST",
-                    url: "<%=request.getContextPath()%>/salf/salf.do?action=insert",
+                    url: "salf.do?action=insert",
                     data: {
                         "memNo": $("[name='memNo']").val(),
                         "salno=": $("[name='salno']").val()
@@ -22,10 +21,10 @@
                     }
                 })
 
-            } else { /* 實心, 呼叫delete然後轉愛心為空心 */
+            } else { 
                 $.ajax({
                     type: "POST",
-                    url: "<%=request.getContextPath()%>/salf/salf.do?action=delete",
+                    url: "salf.do?action=delete",
                     data: {
                         "memNo": $("[name='memNo']").val(),
                         "salno=": $("[name='salno']").val()

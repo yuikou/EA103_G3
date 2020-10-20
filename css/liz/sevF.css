@@ -1,0 +1,29 @@
+        .myInfo {
+            font-size: 12px;
+            color: #aaa;
+            margin-right: 10px;
+        }
+        img {
+            width: 25px;
+            margin-right: 5px;
+        }
+        .m-10 {
+            font-size: 10px;
+            color: #aaa;
+        }
+        .salvtime {
+            font-size: 16px;
+            color: #bbc2c8;
+        }
+        .myIcon {
+            width: 40px;
+        }
+        .sevpr {
+            font-size: 20px;
+            color: #b3d887;
+        }
+        @media (max-width: 991px) {
+            h5 {
+                display: block;
+            }
+        }
