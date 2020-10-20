@@ -25,6 +25,7 @@
                                 var img = document.createElement('img');
                                 //賦予屬性
                                 img.setAttribute('src', e.target.result);
+                                img.setAttribute('style', "width: 280px");
 
                                 //新增一個div包住img
                                 var box = document.createElement('td');

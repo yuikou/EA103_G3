@@ -36,6 +36,12 @@ import com.sitPhoto.model.SitPhotoVO;
 import com.employee.model.*;
 import com.forum.model.ForumService;
 import com.forum.model.ForumVO;
+<<<<<<< HEAD
+=======
+import com.grm.model.GrmService;
+import com.salon.model.SalonService;
+import com.salonAlbum.model.SalonAlbService;
+>>>>>>> Liz
 
 
 @WebServlet("/PicReader.do")
@@ -506,6 +512,67 @@ public class PicReader extends HttpServlet {
 					
 		}
 
+<<<<<<< HEAD
+=======
+		/* ----------菱琦---------- */
+		//從DB讀取美容師照片
+		if ("grmPic".equals(action)) {
+			List<String> errorMsgs = new LinkedList<String>();
+			req.setAttribute("errorMsgs", errorMsgs);
+					
+			try {
+				res.setContentType("image/*");
+				ServletOutputStream out = res.getOutputStream();
+				String grmNo = req.getParameter("grmPic").toString();
+				GrmService gsv = new GrmService();
+				byte[] gPic = gsv.getOneGrm(grmNo).getGroomerPic();
+				out.write(gPic);
+			
+			} catch (Exception e) {
+				errorMsgs.add("無法取得資料:" + e.getMessage());
+				System.out.println(e.getMessage());
+			}
+		}
+		//從DB讀取美容店相簿的相片		
+		if("salAlbNo".equals(action)) {
+			List<String> errorMsgs = new LinkedList<String>();
+			req.setAttribute("errorMsgs", errorMsgs);
+					
+			try {
+				res.setContentType("image/*");
+				ServletOutputStream out = res.getOutputStream();
+			
+				String salAlbNo = req.getParameter("salAlbNo");
+				SalonAlbService sbsv = new SalonAlbService();
+				byte[] salAlbPic = sbsv.getOnePic(salAlbNo).getSalAlbPic();
+				out.write(salAlbPic);
+				
+			} catch (Exception e) {
+				errorMsgs.add("無法取得資料:" + e.getMessage());
+				System.out.println(e.getMessage());
+			}
+		}
+		//從DB讀取美容業者(Salon)的相片
+		if("salPic".equals(action)) {
+			List<String> errorMsgs = new LinkedList<String>();
+			req.setAttribute("errorMsgs", errorMsgs);
+					
+			try {
+				res.setContentType("image/*");
+				ServletOutputStream out = res.getOutputStream();
+				
+				String salno = req.getParameter("salPic").toString();
+				SalonService salSvc = new SalonService();
+				byte[] salPic = salSvc.getOneSalon(salno).getSalPic();
+				out.write(salPic);
+			
+			} catch (Exception e) {
+				errorMsgs.add("無法取得資料:" + e.getMessage());
+				System.out.println(e.getMessage());
+			}
+		}
+
+>>>>>>> Liz
 	}
 
 	}
