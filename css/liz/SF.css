@@ -1,0 +1,244 @@
+.test {
+  display: inline;
+  float: left;
+}
+.trackBtn {
+  width: 50px;
+  height: 50px;
+  background-color: transparent;
+}
+/*以下是追蹤body設定*/
+.container {
+  position: relative;
+  top: 20px;
+  margin: 60px auto;
+  width: 100% !important;
+}
+.myH1 {
+  color: #ff7a5a;
+  font-weight: 900;
+  margin: 40px auto;
+}
+.myFavorites {
+  border: none !important;
+  color: rgba(80, 80, 80, 0.7);
+  font-weight: 800;
+  font-size: 20px;
+  padding-right: 5px;
+}
+.myFavorites:hover {
+  border: none !important;
+  color: rgba(80, 80, 80, 0.9);
+  /* background-color: rgba(255, 114, 95, 0.5); */
+  /* border: 1px solid rgba(255, 114, 95, 0.2) !important; */
+}
+.myFavorites:focus {
+  border: 0 !important;
+  color: rgba(80, 80, 80, 0.9);
+  /*暫時先用背景顏色代替，想要改成出現愛心*/
+  /* background-color: #FF7260; */
+}
+
+/*以下是追蹤小卡*/
+.nav-tabs {
+  border-bottom: 1px solid rgba(80, 80, 80, 0.3);
+  width: 95%;
+  margin: 0 auto;
+}
+.myRow {
+  text-align: center;
+  margin: 0 auto;
+  width: 95%;
+  padding-top: 10px;
+}
+.card {
+  background-color: #fff;
+  border: 1px solid rgba(80, 80, 80, 0.1);
+  margin: 10px;
+  max-width: 230px;
+  height: 100%;
+  padding: 0px;
+  border-radius: 5px;
+  overflow: hidden;
+}
+.card-body {
+  padding: 20px;
+}
+/*卡片大小*/
+.card > img {
+  margin: 0px auto;
+  height: 230px;
+  width: 230px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  object-fit: cover;
+}
+h5 {
+  font-weight: 700;
+}
+.card-link {
+  float: right;
+}
+.text-muted {
+  float: left;
+}
+.right-array {
+  width: 30px;
+  height: 30px !important;
+}
+.srvImgInfo {
+  font-size: 100%;
+  padding-left: 50px;
+  padding-right: 15px;
+}
+img.srvImg {
+  width: 25px;
+  height: 25px;
+  opacity: 0.5;
+}
+.cutePage {
+  height: 120px;
+  text-align: center;
+}
+.page {
+  width: 40px;
+  height: 40px;
+  display: inline-block;
+  margin: 10px;
+}
+/*以上為body設定*/
+
+/* -------愛心動畫效果-------- */
+@import url(//fonts.googleapis.com/css?family=Open+Sans:600,400&subset=latin,cyrillic);
+.myClick {
+  font-size: 38px;
+  color: rgba(0, 0, 0, 0.5);
+  width: 38px;
+  height: 38px;
+  margin: 0 auto;
+  position: relative;
+  top: 5px;
+  cursor: pointer;
+}
+.myFavor {
+  margin: 0;
+}
+.myFavor span:hover {
+  color: #fff;
+}
+.myClick span {
+  margin-top: 3px;
+  z-index: 999;
+  position: absolute;
+  color: red;
+}
+.myClick span:hover {
+  opacity: 0.8;
+}
+.myClick span:active {
+  transform: scale(0.93, 0.93) translateY(2px);
+}
+.ring,
+.ring2 {
+  opacity: 0;
+  background: red;
+  width: 1px;
+  height: 1px;
+  position: absolute;
+  top: 19px;
+  left: 18px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.myClick span,
+.active-2 span {
+  color: red !important;
+}
+.active-2 .ring {
+  width: 58px !important;
+  height: 58px !important;
+  top: -10px !important;
+  left: -10px !important;
+  position: absolute;
+  border-radius: 50%;
+  opacity: 1 !important;
+}
+
+.active-2 .ring {
+  background: pink !important;
+}
+
+.active-2 .ring2 {
+  background: #fff !important;
+}
+
+.active-3 .ring2 {
+  width: 60px !important;
+  height: 60px !important;
+  top: -11px !important;
+  left: -11px !important;
+  position: absolute;
+  border-radius: 50%;
+  opacity: 1 !important;
+}
+
+.info {
+  font-family: "Open Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: pink;
+  position: relative;
+  top: 30px;
+  left: -46px;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+.info-tog {
+  color: red;
+  position: relative;
+  top: 45px;
+  left: -8px;
+  opacity: 1;
+}
+* {
+  transition: all 0.32s ease;
+}
+/* -------愛心動畫效果-------- */
+
+/*電腦螢幕*/
+@media (min-width: 992px) {
+}
+
+/* 平板、手機等中螢幕 */
+@media (max-width: 991px) {
+  .container {
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+  /*卡片photo長度縮減*/
+  .card img {
+    height: 180px;
+  }
+  .card-body {
+    padding: 5px;
+  }
+}
+/*手機RWD*/
+@media (max-width: 767.98px) {
+  .myH1 {
+    margin: 20px auto;
+  }
+}
+@media (max-width: 575.98px) {
+  .myRow {
+    text-align: center;
+    width: 80%;
+    margin: 0 auto;
+  }
+  /*卡片photo寬度縮減*/
+  .card > img {
+    width: 100%;
+  }
+}

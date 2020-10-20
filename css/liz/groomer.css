@@ -69,9 +69,13 @@ input.gInfo {
 .card{
 	margin: 15px 25px;
 }
-.card-img-top {
-	width: 100%;
+.grmPic{
+	object-fit: contain;
+    height: 100%;
 }
+/*.card-img-top {
+	width: 100%;
+}*/
 .grmbtn {
 	justify-content: center;
 	align-items: center;
@@ -130,3 +134,24 @@ td.salsevpr{
 .sabCard{
     margin: 10px 5px;
 }
+/*相簿後台預覽頁面設定*/
+.back-salonAlb{
+	object-fit: contain;
+    height: 80%;	
+}
+.mySev{
+	width: 100%;
+	margin: 15px 5px 0px 0px;
+	padding: 15px 15px 15px 10px;
+	border: 1px #E0E0E0 solid;
+	border-radius:5px;
+	background-color: #fff;
+	color: #aaa;
+	box-shadow: 4px 4px 12px -12px rgba(20%, 20%, 40%, 0.5);
+}
+p.sevName{
+	font-size: 20px;
+	color: #457B9D;
+	font-weight: bold;
+}
+
