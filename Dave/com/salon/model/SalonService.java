@@ -13,7 +13,7 @@ public class SalonService {
 
 	public SalonVO addsalon(String salName, String salOwner, String salPh, String salMail, String salCity,
 			String salDist, String salAdr, String salAc, String salPw, String salSTime, String salETime,
-			String salRemit, String bankCode, Integer salStatus, String salInfo, Integer salPetType, byte[] salCertif) {
+			String salRemit, String bankCode, Integer salStatus, String salInfo, Integer salPetType, byte[] salCertif,byte[] salPic) {
 		SalonVO salonVO = new SalonVO();
 
 		salonVO.setSalName(salName);
@@ -33,6 +33,7 @@ public class SalonService {
 		salonVO.setSalInfo(salInfo);
 		salonVO.setSalPetType(salPetType);
 		salonVO.setSalCertif(salCertif);
+		salonVO.setSalPic(salPic);
 		dao.insert(salonVO);
 
 		return salonVO;
@@ -40,7 +41,7 @@ public class SalonService {
 
 	public SalonVO updatesalon(String salNo,String salName, String salOwner, String salPh, String salMail, String salCity,
 			String salDist, String salAdr, String salSTime, String salETime, String salRemit, String bankCode,
-			String salInfo, Integer salPetType,byte[] salCertif) {
+			String salInfo, Integer salPetType,byte[] salCertif,byte[] salPic) {
 		SalonVO salonVO = new SalonVO();
 
 		salonVO.setSalNo(salNo);
@@ -58,6 +59,7 @@ public class SalonService {
 		salonVO.setSalInfo(salInfo);
 		salonVO.setSalPetType(salPetType);
 		salonVO.setSalCertif(salCertif);
+		salonVO.setSalPic(salPic);
 		dao.update(salonVO);
 
 		return salonVO;

@@ -5,8 +5,12 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.salonOrderDetail.model.SalonOrderDetailJDBCDAO;
+import com.salonOrderDetail.model.SalonOrderDetailVO;
 
 public class SalonOrderJDBCDAO implements SalonOrderDAO_interface{
 	String driver ="oracle.jdbc.driver.OracleDriver" ;
@@ -21,7 +25,7 @@ public class SalonOrderJDBCDAO implements SalonOrderDAO_interface{
 	private static final String UPDATE =
 			"UPDATE SALONORDER SET memno=?, petno=?, salno=? , salorderdate=?, saltp=?, orderstatus=? WHERE salorderno=?" ;
 	private static final String GET_ALL_STMT=
-			"SELECT salorderno,memno,petno,salno,salorderdate,saltp,orderstatus FROM SALONORDER ORDER BY salorderno";
+			"SELECT * FROM SALONORDER ORDER BY salorderno";
 	private static final String  GET_ALL_BY_SALNO=
 			"SELECT * FROM SALONORDER  WHERE SALNO = ? ORDER BY salorderdate" ;
 	private static final String  GET_ALL_BY_MEMNO=
@@ -351,9 +355,125 @@ public class SalonOrderJDBCDAO implements SalonOrderDAO_interface{
 		return list;
 	} 
 	
+	@Override
+	public void insertWithOrderDetail(SalonOrderVO salonOrderVO, List<SalonOrderDetailVO> list) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		try {
+			Class.forName(driver);
+			con = DriverManager.getConnection(url, userid, passwd);
+			
+			// 1●設定於 pstm.executeUpdate()之前
+    		con.setAutoCommit(false);
+    		
+    		//先新增訂單
+    		String cols[] = {"salorderno"};
+    		pstmt = con.prepareStatement(INSERT_STMT,cols);
+		
+			pstmt.setString(1,salonOrderVO.getMemNo());
+			pstmt.setString(2,salonOrderVO.getPetNo());
+			pstmt.setString(3,salonOrderVO.getSalNo());			
+			pstmt.setInt(4,salonOrderVO.getSalTp());
+			pstmt.setInt(5,salonOrderVO.getOrderStatus());
+			pstmt.executeUpdate();
+			//掘取對應的自增主鍵值
+			String salOrderNo = null;		
+			ResultSet rs = pstmt.getGeneratedKeys();
+			if(rs.next()) {
+				salOrderNo = rs.getString(1);			
+				System.out.println("自增主鍵值= " + salOrderNo +"(剛新增成功的訂單編號)");
+			}else {
+				System.out.println("未取得自增主鍵值");
+			}
+			rs.close();
+			//同時新增訂單明細
+			SalonOrderDetailJDBCDAO dao = new SalonOrderDetailJDBCDAO();
+			System.out.println("list.size()-A="+list.size());
+			for(SalonOrderDetailVO salOD : list) {
+				salOD.setSalOrderNo(new String(salOrderNo));
+				dao.insertSalonOrderDetail(salOD,con);	
+			}
+			// 2●設定於 pstm.executeUpdate()之後
+			con.commit();
+			con.setAutoCommit(true);
+			
+			System.out.println("list.size()-B="+list.size());
+			System.out.println("新增訂單編號" + salOrderNo + "時,共有明細" + list.size()
+					+ "筆同時被新增");
+			
+		}catch (ClassNotFoundException e) {
+			throw new RuntimeException("Couldn't load database driver. "
+					+ e.getMessage());
+			// Handle any SQL errors
+		} catch (SQLException se) {
+			if (con != null) {
+				try {
+					// 3●設定於當有exception發生時之catch區塊內
+					System.err.print("Transaction is being ");
+					System.err.println("rolled back-由-Order");
+					con.rollback();
+				} catch (SQLException excep) {
+					throw new RuntimeException("rollback error occured. "
+							+ excep.getMessage());
+				}
+			}
+			throw new RuntimeException("A database error occured. "
+					+ se.getMessage());
+			// Clean up JDBC resources
+		} finally {
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
+		
+	}
+	
 	
 	public static void main(String [] args) {
 		SalonOrderJDBCDAO dao = new SalonOrderJDBCDAO();
+		
+		SalonOrderVO salonOrderVO = new  SalonOrderVO();
+		salonOrderVO.setMemNo("M001");
+		salonOrderVO.setPetNo("P001");
+		salonOrderVO.setSalNo("B001");
+		salonOrderVO.setSalTp(new Integer(1000));
+		salonOrderVO.setOrderStatus(0);
+		
+		
+		List<SalonOrderDetailVO> testList = new ArrayList<SalonOrderDetailVO>();
+		SalonOrderDetailVO salOrderDetailxx = new SalonOrderDetailVO();
+		salOrderDetailxx.setGroomerNo("G001");		
+		salOrderDetailxx.setSalSevNo("BS001");
+		salOrderDetailxx.setSalSevPr(new Integer(500));
+		salOrderDetailxx.setOffNo("GD016");
+		
+		
+		SalonOrderDetailVO salOrderDetailyy = new SalonOrderDetailVO();
+		salOrderDetailyy.setGroomerNo("G002");		
+		salOrderDetailyy.setSalSevNo("BS001");
+		salOrderDetailyy.setSalSevPr(new Integer(500));
+		salOrderDetailyy.setOffNo("GD017");
+		
+		testList.add(salOrderDetailxx);
+		testList.add(salOrderDetailyy);
+		
+		dao.insertWithOrderDetail(salonOrderVO, testList);
+		
+		
+	
+		
+	
 		
 		//新增
 //		SalonOrderVO salonOrderVO1 = new SalonOrderVO();
@@ -397,18 +517,18 @@ public class SalonOrderJDBCDAO implements SalonOrderDAO_interface{
 //		}
 		
 		//查美容店訂單
-		List<SalonOrderVO> list = dao.getAllBySalNo("B001");
-		
-		for(SalonOrderVO asalonOrder :list) {
-			System.out.println(asalonOrder.getSalOrderNo() +",");
-			System.out.println(asalonOrder.getMemNo() +",");
-			System.out.println(asalonOrder.getPetNo() +",");
-			System.out.println(asalonOrder.getSalNo() +",");
-			System.out.println(asalonOrder.getSalOrderDate() +",");
-			System.out.println(asalonOrder.getSalTp() +",");
-			System.out.println(asalonOrder.getOrderStatus() +",");
-			System.out.println("=========================================");
-		}
+//		List<SalonOrderVO> list = dao.getAllBySalNo("B001");
+//		
+//		for(SalonOrderVO asalonOrder :list) {
+//			System.out.println(asalonOrder.getSalOrderNo() +",");
+//			System.out.println(asalonOrder.getMemNo() +",");
+//			System.out.println(asalonOrder.getPetNo() +",");
+//			System.out.println(asalonOrder.getSalNo() +",");
+//			System.out.println(asalonOrder.getSalOrderDate() +",");
+//			System.out.println(asalonOrder.getSalTp() +",");
+//			System.out.println(asalonOrder.getOrderStatus() +",");
+//			System.out.println("=========================================");
+//		}
 		
 	
 		//客人查詢自己的訂單
@@ -425,6 +545,7 @@ public class SalonOrderJDBCDAO implements SalonOrderDAO_interface{
 //			System.out.println("=========================================");
 //		}
 	}
+	
 	
 		
 }

@@ -383,6 +383,20 @@ public class SalonJDBCDAO implements SalonDAO_interface {
 
 		return baos.toByteArray();
 	}
+	
+	@Override
+	public void updateStatus(String salNo, Integer salStatus) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean checkAc(String salAc) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	
 
 //´ú¸Õ¥Î
 	public static void main(String[] args) {
@@ -486,11 +500,5 @@ public class SalonJDBCDAO implements SalonDAO_interface {
 //	System.out.println(salVO3.getSalPetType() + ",");
 	}
 
-	@Override
-	public void updateStatus(String salNo, Integer salStatus) {
-		// TODO Auto-generated method stub
-		
-	}
 
-	
 }

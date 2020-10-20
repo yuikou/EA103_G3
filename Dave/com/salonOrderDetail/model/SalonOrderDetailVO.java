@@ -5,8 +5,15 @@ public class SalonOrderDetailVO {
 	private String salSevNo;
 	private String groomerNo;
 	private Integer salSevPr;
+	private String offNo; 
 	
 	
+	public String getOffNo() {
+		return offNo;
+	}
+	public void setOffNo(String offNo) {
+		this.offNo = offNo;
+	}
 	public String getSalOrderNo() {
 		return salOrderNo;
 	}
