@@ -12,11 +12,11 @@
 <TITLE>新增證書</TITLE>
 
 <!-- 匯入外部CSS -->
-<c:set var="path" value="/EA103G3/front-end" />
-<c:set var="cssPath" value="/EA103G3/css/euphy" />
+<c:set var="path" value="${pageContext.request.contextPath}/front-end" />
+<c:set var="cssPath" value="${pageContext.request.contextPath}/css/euphy" />
 <link rel="stylesheet" type="text/css" href="${cssPath}/bootstrap.min.css">    
 <link rel="stylesheet" type="text/css" href="${cssPath}/Main.css">
-<link rel="stylesheet" type="text/css" href="${path}/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" type="text/css" href="${cssPath}/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" type="text/css" href="${cssPath}/animate.css">
 <link rel="stylesheet" type="text/css" href="${cssPath}/animsition.min.css">
 <link rel="stylesheet" type="text/css" href="${cssPath}/util.css">
@@ -78,7 +78,7 @@
 
 
 <!-- 匯入js -->
-	<c:set var="jsPath" value="/EA103G3/js/euphy" />
+	<c:set var="jsPath" value="${pageContext.request.contextPath}/js/euphy" />
 	<script src="${jsPath}/jquery-3.2.1.min.js"></script>
 	<script src="${jsPath}/animsition.min.js"></script>
 	<script src="${jsPath}/popper.js"></script>

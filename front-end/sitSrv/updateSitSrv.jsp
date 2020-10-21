@@ -1,6 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="BIG5"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page import="com.sitSrv.model.*"%>
+<%@ page import="com.sitSrv.model.*, java.util.*"%>
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
@@ -12,10 +12,9 @@
 <title>修改托養服務</title>
 
 <!-- 匯入外部CSS -->
-<c:set var="path" value="/EA103G3/front-end" />
-<c:set var="cssPath" value="/EA103G3/css/euphy" />
+<c:set var="cssPath" value="${pageContext.request.contextPath}/css/euphy" />
 <link rel="stylesheet" type="text/css" href="${cssPath}/bootstrap.min.css">
-<link rel="stylesheet" type="text/css" href="${path}/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" type="text/css" href="${cssPath}/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" type="text/css" href="${cssPath}/Petfect.css">
 <link rel="stylesheet" type="text/css" href="${cssPath}/sitSrvAdd.css">
 <link rel="stylesheet" type="text/css" href="${cssPath}/sitSrvAll.css">
@@ -25,7 +24,7 @@
 <body>
 
 <!-------------------- nav -------------------->
-	<jsp:include page="/front-end/nav.jsp"/>
+	<jsp:include page="/front-end/header.jsp"/>
     
 <!------------------ 內文body ------------------>
 
@@ -42,35 +41,39 @@
 				</ul>
 			</c:if>
 		</div>
+		
+		<jsp:useBean id="sitSrvSvc" class="com.sitSrv.model.SitSrvService"/>
 	
-	
-		<div class="wrap updateBox">
-			<h3>
+		<form>
+			<h3 class="sitSrcCodeInfo">
 			<c:out value="${ssVO.sitSrvCode=='Boarding'?'寵物住宿寄養':''}"/>
 			<c:out value="${ssVO.sitSrvCode=='DayCare'?'寵物日托安親':''}"/>
 			<c:out value="${ssVO.sitSrvCode=='DropIn'?'到府寵物保姆':''}"/>
 			<c:out value="${ssVO.sitSrvCode=='DogWalking'?'遛狗服務':''}"/>
 			<c:out value="${ssVO.sitSrvCode=='PetTaxi'?'寵物計程車':''}"/>
 			</h3>
-			<div class="tab-content">
-				<span class="inputQ" style="width: 100%;">服務名稱</span>
-				<div class="tab-content-info"><small> 您可以結合城市名稱、服務類型或是您所服務的寵物類型，作為您的服務名稱更容易讓飼主記住喔~</small></div>
-			    <input class="input1 ssName" type="text" name="sitSrvName" maxlength="20" value="${ssVO.sitSrvName}"/>
-			    <div class="btn-group" data-toggle="buttons">
-        			<label class="btn">
-          				<input class="input1" type="checkbox" name='addBathing' value="1" 
-          				<c:if test="${ssVO.addBathing=='1'}"> checked='checked'</c:if>
-          				><i class="fa fa-square-o fa-2x"></i><i class="fa fa-check-square-o fa-2x"></i><span> 加價洗澡</span>
-        			</label>
-        			<label class="btn">
-          				<input class="input1" type="checkbox" name='addPickup' value="1" 
-          				<c:if test="${ssVO.addPickup=='1'}"> checked='checked'</c:if>
-          				><i class="fa fa-square-o fa-2x"></i><i class="fa fa-check-square-o fa-2x"></i><span> 加價接送</span>
-        			</label>
-      			</div>
-        	</div>
+			<div class="wrap updateBox">
+				<input type="hidden" name="sitSrvNo" value="${ssVO.sitSrvNo}">
+				<input type="hidden" name="sitSrvCode" value="${ssVO.sitSrvCode}">
+				<div class="tab-content">
+					<span class="inputQ" style="width: 100%;">服務名稱</span>
+					<div class="tab-content-info"><small> 您可以結合城市名稱、服務類型或是您所服務的寵物類型，作為您的服務名稱更容易讓飼主記住喔~</small></div>
+				    <input class="input1 ssName" type="text" name="sitSrvName" maxlength="20" value="${ssVO.sitSrvName}"/>
+				    <div class="btn-group" data-toggle="buttons">
+	        			<label class="btn">
+	          				<input class="input1" type="checkbox" name='addBathing' value="1" 
+	          				<c:if test="${ssVO.addBathing=='1'}"> checked='checked'</c:if>
+	          				><i class="fa fa-square-o fa-2x"></i><i class="fa fa-check-square-o fa-2x"></i><span> 加價洗澡</span>
+	        			</label>
+	        			<label class="btn">
+	          				<input class="input1" type="checkbox" name='addPickup' value="1" 
+	          				<c:if test="${ssVO.addPickup=='1'}"> checked='checked'</c:if>
+	          				><i class="fa fa-square-o fa-2x"></i><i class="fa fa-check-square-o fa-2x"></i><span> 加價接送</span>
+	        			</label>
+	      			</div>
+	        	</div>
 			<!-- srvArea -->
-			    <div class="btn-group" data-toggle="buttons" style="margin-top: 10px;border-bottom: 1px solid #eee; padding: 5px 0 10px 0;">
+			    <div class="btn-group" data-toggle="buttons" style="margin-top: 10px;padding: 5px 0 10px 0;">
 			    	<span class="inputQ">可服務距離</span>
 	        		<label class="btn">
 	          			<input type="radio" name='srvArea' value="0" 
@@ -96,11 +99,13 @@
 <!-- acpPetTyp-1 -->
       			<div class="btn-group" data-toggle="buttons">
         			<span class="inputQ">接受的寵物類型</span>
+        			<c:if test="${ssVO.sitSrvCode!='DogWalking'}">
         			<label class="btn">
           				<input class="input1" type="checkbox" name='acpPetTypPart0' value="cat" 
           				<c:if test="${ssVO.acpPetTyp<=4}"> checked='checked'</c:if>
           				><i class="fa fa-square-o fa-2x"></i><i class="fa fa-check-square-o fa-2x"></i><span> 貓</span><small>one size</small>
         			</label>
+        			</c:if>
         			<label class="btn">
           				<input class="input1 acpDog" type="checkbox" name='acpPetTypPart1' value="dog" 
           				<c:if test="${ssVO.acpPetTyp>0}"> checked='checked'</c:if>
@@ -249,7 +254,7 @@
 	        		</label>
       			</div>
 <!-- eqpt -->      			
-      			<div class="btn-group eqptDiv" data-toggle="buttons">
+      			<div class="btn-group eqptDiv" data-toggle="buttons" style="display: none;">
 			    	<span class="inputQ">提供的寵物運輸設備</span>
 	        		<label class="btn">
 	          			<input type="radio" name='eqpt' value="0" 
@@ -274,11 +279,13 @@
 			    	<input class="input1 fee-group-input" name="srvFee" placeholder="200" onkeyup="value=value.replace(/[^\d]/g,'')" 
 			    		value="${ssVO.srvFee}" ><span class="unit srvFeeUnit"> / 晚</span>
 			    	<span class="fee-group-inputQ addB">加價洗澡價格</span>
+			    	<input type="hidden" name="addBathingNo" value="${addBathingNo}">
 			    	<input class="input1 fee-group-input addB" name="addBathingFee" placeholder="100" onkeyup="value=value.replace(/[^\d]/g,'')" 
-			    		value="${addBathingFee==null?'':addBathingFee}" ><span class="unit addBathingUnit addB">/次</span>
+			    		value="${sitSrvSvc.get_OneSit_OneSrv(addBathingNo).srvFee}" ><span class="unit addBathingUnit addB">/次</span>
 			    	<span class="fee-group-inputQ addP">加價接送價格</span>
+			    	<input type="hidden" name="addPickupNo" value="${addPickupNo}">
 			    	<input class="input1 fee-group-input addP" name="addPickupFee" placeholder="30" onkeyup="value=value.replace(/[^\d]/g,'')" 
-			    		value="${addPickupFee==null?'':addPickupFee}" ><span class="unit addPickupUnit addP">/公里</span>
+			    		value="${sitSrvSvc.get_OneSit_OneSrv(addPickupNo).srvFee}" ><span class="unit addPickupUnit addP">/公里</span>
 			    </div>
 <!-- srvTime -->
 			    <div class="quantity hide-srvTime">
@@ -286,21 +293,19 @@
   					<input class="input1 quantity-input" type="number" onfocus=this.blur() min="0" max="8" step="1" name="srvTimeH" 
   						value="${ssVO.srvTime==null?'1':ssVO.srvTime.substring(0,1)}" ><span class="unit">小時</span>
   					<input class="input1 quantity-input" type="number" onfocus=this.blur() min="0" max="30" step="30" name="srvTimeM" 
-  						value="${ssVO.srvTime==null?'0':ssVO.srvTime.substring(1,2)}" ><span class="unit">分</span>
+  						value="${ssVO.srvTime==null?'0':ssVO.srvTime.substring(1)=='50'?'30':'0'}" ><span class="unit">分</span>
 				</div>
 <!-- srvInfo -->	
 			    <span class="inputQ" style="padding-top: 10px;">服務內容包含</span>
-<!-- 			    <div id="toolbar-container"></div> -->
-<!--     			<div id="editor1"></div> -->
-<%-- 			    <input type="hidden" name="srvInfo" value="${param.srvInfo==null?'':param.srvInfo}"> --%>
 				<textarea id="editor1" name="srvInfo" value="${ssVO.srvInfo==null?'':ssVO.srvInfo}"></textarea>
-		</div>
+			</div>
+			<div class="btnGp">
+				<input type="button" class="action-button" value="取消修改" onclick="history.back()"/>
+				<input type="hidden" name="action" value="update">
+				<input type="button" class="submit action-button" value="送出修改" />
+			</div>
+		</form>
 
-		<div class="btnGp">
-			<input type="button" name="previous" class="cancel action-button" value="取消修改" />
-			<input type="hidden" name="action" value="update">
-			<input type="button" class="submit action-button" value="送出修改" />
-		</div>
 		
 	</div>
 
@@ -309,14 +314,107 @@
 
 
 <!-- 匯入js -->
-	<script src="/EA103G3/js/euphy/jquery-3.2.1.min.js"></script>
+	<script src="${pageContext.request.contextPath}/js/euphy/jquery-3.2.1.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
 	<script src="https://cdn.ckeditor.com/ckeditor5/23.0.0/classic/ckeditor.js"></script>
 	<script src="https://cdn.ckeditor.com/ckeditor5/23.0.0/classic/translations/zh.js"></script>
-	<script src="/EA103G3/js/euphy/acpPetNum.js"></script>
+	<script src="${pageContext.request.contextPath}/js/euphy/acpPetNum.js"></script>
 	<script>
 	$(document).ready(function(){
+		var addBathing = $('input[name="addBathing"]');
+		var addPickup = $('input[name="addPickup"]');
 		
+		
+		// ------------------------------addBathing--------------------------------
+		
+		addBathing.each(function(){
+			if ($(this).prop("checked")==true){
+				$(".addB").show();
+			}
+			
+			var addBathLabel = $(this).parent();
+			
+			addBathLabel.click(function(){
+				setTimeout(function () {
+					if (addBathLabel.find('input[name="addBathing"]').prop("checked")==true){
+						$(".addB").show();
+					} else {
+						$(".addB").hide();
+					}
+				},150);
+			});
+		});
+		// ------------------------------addPickup---------------------------------
+		
+		addPickup.each(function(){
+			if ($(this).prop("checked")==true){
+				$(".addP").show();
+			}
+			
+			var addPickLabel = $(this).parent();
+			
+			addPickLabel.click(function(){
+				setTimeout(function () {
+					if (addPickLabel.find('input[name="addPickup"]').prop("checked")==true){
+						$(".addP").show();
+					} else {
+						$(".addP").hide();
+					}
+				},150);
+			});
+		});
+		// -------------------------------acpDog-----------------------------------
+		var acpDog = $(".acpDog");
+		var acpPetTyp = ${ssVO.acpPetTyp};
+		if (acpPetTyp > 0){
+			$(".dogSize").show(1000);
+		}
+
+		acpDog.parent().click(function(){
+			console.log(acpDog.prop("checked"))
+			if (acpDog.prop("checked")==true) {
+				$(".dogSize").toggle(1000);
+			}
+		});
+		
+		// -------------------------------其他各種條件-----------------------------------
+		var ssCode = $("[name='sitSrvCode']").val();
+		switch (ssCode) {
+		case 'Boarding':
+			$(".hide-show1").show();
+			$(".hide-show12").show();
+			$(".btn-row").css("width", "33.33%");
+			$(".srvFeeUnit").text(" / 晚");
+			$(".hide-srvTime").hide();
+			break;
+		case 'DayCare':
+			$(".hide-show12").show();
+			$(".hide-show1").hide();
+			$(".btn-row").css("width", "50%");
+			$(".srvFeeUnit").text(" / 天");
+			$(".hide-srvTime").hide();
+			break;
+		case 'DropIn':
+			$(".hide-show12").hide();
+			$(".hide-show1").hide();
+			$(".srvFeeUnit").text(" / 次");
+			$(".hide-srvTime").show();
+			break;
+		case 'DogWalking':
+			$(".hide-show12").hide();
+			$(".hide-show1").hide();
+			$(".eqptDiv").hide();
+			$(".srvFeeUnit").text(" / 次");
+			$(".hide-srvTime").show();
+			break;
+		case 'PetTaxi':
+			$(".hide-show12").hide();
+			$(".hide-show1").hide();
+			$(".eqptDiv").show();
+			$(".srvFeeUnit").text(" / 公里");
+			$(".hide-srvTime").show();
+			break;
+		}
 		
 // ----------------------------------srvTime----------------------------------
 		
@@ -381,6 +479,11 @@
 // 			tempInfo = tempInfo.substring(3, tempInfo.length-4);
 			editor.append(tempInfo);
 		}
+		
+		
+		$(".submit").click(function(e){
+			$("form").submit();				    
+		});
 	});
 	
 	

@@ -13,11 +13,11 @@
 <TITLE>修改證書</TITLE>
 
 <!-- 匯入外部CSS -->
-<c:set var="path" value="/EA103G3/front-end" />
-<c:set var="cssPath" value="/EA103G3/css/euphy" />
+<c:set var="path" value="${pageContext.request.contextPath}/front-end" />
+<c:set var="cssPath" value="${pageContext.request.contextPath}/css/euphy" />
 <link rel="stylesheet" type="text/css" href="${cssPath}/bootstrap.min.css">   
 <link rel="stylesheet" type="text/css" href="${cssPath}/Main.css">
-<link rel="stylesheet" type="text/css" href="${path}/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" type="text/css" href="${cssPath}/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" type="text/css" href="${cssPath}/animate.css">
 <link rel="stylesheet" type="text/css" href="${cssPath}/animsition.min.css">
 <link rel="stylesheet" type="text/css" href="${cssPath}/util.css">
@@ -30,7 +30,7 @@
 <BODY>
 
 <!-------------------- nav -------------------->
-	<jsp:include page="/front-end/nav.jsp"/>
+	<jsp:include page="/front-end/header.jsp"/>
     
 <!------------------ 內文body ------------------>
     <div class="container">
@@ -52,17 +52,17 @@
 	        <div class="container-login100 cover">
 	            <div class="wrap-login100 mybody">
 					<FORM class="login100-form validate-form p-l-55 p-r-55 p-t-70" 
-						action="sitLic.do" method="post"
+						action="${pageContext.request.contextPath}/sitLic/sitLic.do" method="post"
 						enctype="multipart/form-data">
 						<span class="login100-form-title">
-							<a class="back" href="listOneSitAllLic.jsp">
+							<a class="back" href="${pageContext.request.contextPath}/front-end/sitLic/listOneSitAllLic.jsp">
 							<svg viewBox="0 0 16 16" class="bi bi-box-arrow-in-left" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
   								<path fill-rule="evenodd" d="M10 3.5a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 1 1 0v2A1.5 1.5 0 0 1 9.5 14h-8A1.5 1.5 0 0 1 0 12.5v-9A1.5 1.5 0 0 1 1.5 2h8A1.5 1.5 0 0 1 11 3.5v2a.5.5 0 0 1-1 0v-2z"/>
   								<path fill-rule="evenodd" d="M4.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H14.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z"/>
 							</svg>
 							</a>
 				                               修改保姆證照
-				            <a class="search" href="listOneSitAllLic.jsp" style="visibility: hidden;">
+				            <a class="search" href="${pageContext.request.contextPath}/front-end/sitLic/listOneSitAllLic.jsp" style="visibility: hidden;">
 	                        	<svg viewBox="0 0 16 16" class="bi bi-search" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
   									<path fill-rule="evenodd" d="M10.442 10.442a1 1 0 0 1 1.415 0l3.85 3.85a1 1 0 0 1-1.414 1.415l-3.85-3.85a1 1 0 0 1 0-1.415z"/>
 									<path fill-rule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"/>
@@ -114,8 +114,17 @@
 					        <div class="wrap-input100 validate-input input100 myP preview" style="margin-top:0;padding-bottom:5px;">
 					                                圖片檔預覽<button class="login100-form-btn remove hideDiv">刪除</button>
 					        </div>
+					        <!-- 先創建Svc -->
+							<jsp:useBean id="sitSrvSvc" class="com.sitSrv.model.SitSrvService"></jsp:useBean>
 					        <div class="container-login100-form-btn p-b-40">
 						   		<input type="hidden" name="action" value="update">
+						   		<c:if test="${sitLicVO.licName == '特定寵物業許可證'}">
+						   		<c:forEach var="ssVO" items="${sitSrvSvc.get_OneSit_AllSrv(sitLicVO.sitNo)}">
+								<c:if test="${ssVO.sitSrvCode == 'Boarding'}">
+								<input type="hidden" name="sitSrvNo" value="${ssVO.sitSrvNo}">
+								</c:if>
+								</c:forEach>
+						   		</c:if>
 						   		<input class="login100-form-btn input100" id="send" type="submit" value="修改">
                         	</div>
 						</div>
@@ -130,7 +139,7 @@
     
     
 <!-- 匯入js -->
-	<c:set var="jsPath" value="/EA103G3/js/euphy" />
+	<c:set var="jsPath" value="${pageContext.request.contextPath}/js/euphy" />
 	<script src="${jsPath}/jquery-3.2.1.min.js"></script>
 	<script src="${jsPath}/animsition.min.js"></script>
 	<script src="${jsPath}/popper.js"></script>

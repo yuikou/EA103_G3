@@ -13,12 +13,11 @@
 <TITLE>保姆的時間安排</TITLE>
 
 <!-- 匯入外部CSS -->
-<c:set var="path" value="/EA103G3/front-end" />
-<c:set var="cssPath" value="/EA103G3/css/euphy" />
+<c:set var="cssPath" value="${pageContext.request.contextPath}/css/euphy" />
 <link rel="stylesheet" type="text/css" href="${cssPath}/bootstrap.min.css">  
 <link rel="stylesheet" type="text/css" href="${cssPath}/bootstrap.minty.min.css">
 <link rel="stylesheet" type="text/css" href="${cssPath}/Main.css">
-<link rel="stylesheet" type="text/css" href="${path}/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" type="text/css" href="${cssPath}/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" type="text/css" href="${cssPath}/Petfect.css">
 <link rel="stylesheet" type="text/css" href="${cssPath}/fullcalendar.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/6.10.3/sweetalert2.css" />
@@ -30,7 +29,7 @@
 <BODY>
 
 <!-------------------- nav -------------------->
-	<jsp:include page="../nav.jsp"/>
+	<jsp:include page="/front-end/header.jsp"/>
     
 <!------------------ 內文body ------------------>
     <div class="container">
@@ -50,13 +49,15 @@
 		
 		<!-- 測試先鎖定sitNo=S005 -->
         <jsp:useBean id="sitSrvSvc" class="com.sitSrv.model.SitSrvService"/>
+        <jsp:useBean id="petSitterVO" scope="session" class="com.petSitter.model.PetSitterVO"/>
 		<% 
-			session.setAttribute("sitNo","S001");
-			List<SitSrvVO> list = sitSrvSvc.get_OneSit_AllSrv("S001");
+			List<SitSrvVO> list = sitSrvSvc.get_OneSit_AllSrv(petSitterVO.getSitNo());
 			// 為了全選設定的
 			List<String> sitSrvArrList = new ArrayList<String>();
 			for (SitSrvVO ssVO : list) {
-				sitSrvArrList.add(ssVO.getSitSrvNo());
+				if (!"Bathing".equals(ssVO.getSitSrvCode()) && !"Pickup".equals(ssVO.getSitSrvCode())) {
+					sitSrvArrList.add(ssVO.getSitSrvNo());
+				}
 			}
 			session.setAttribute("sitSrvArrList", sitSrvArrList);
 		%>
@@ -65,12 +66,14 @@
             <h1 class="myH1">寵物保姆服務日程</h1>
             <div class="section-line">
             	<select id="mySrv1" name="sitSrvNo">
-	            <c:forEach var="sitSrvVO" items="${sitSrvSvc.get_OneSit_AllSrv(sitNo)}">
+	            <c:forEach var="sitSrvVO" items="${sitSrvSvc.get_OneSit_AllSrv(petSitterVO.sitNo)}">
+	            	<c:if test="${sitSrvVO.outOfSrv == 0 && sitSrvVO.sitSrvCode != 'Bathing' && sitSrvVO.sitSrvCode != 'Pickup'}">
 					<c:if test="${sitSrvVO.sitSrvNo == sitSrvNoRN}">
 				    <option name="sitSrvNo" value="${sitSrvVO.sitSrvNo}" selected>${sitSrvVO.sitSrvName}</option>
 				    </c:if>
 				    <c:if test="${sitSrvVO.sitSrvNo != sitSrvNoRN}">
 				    <option name="sitSrvNo" value="${sitSrvVO.sitSrvNo}">${sitSrvVO.sitSrvName}</option>
+				    </c:if>
 				    </c:if>
 				</c:forEach>
 	            </select>
@@ -95,7 +98,7 @@
 		            </div>
 		        </div>
             	
-            	<Form id="odForm" class="odForm" action="sitOffDay.do" method="post">
+            	<Form id="odForm" class="odForm" action="${pageContext.request.contextPath}/sitOffDay/sitOffDay.do" method="post">
 					<span class="myform-title">
 	                       	設定休假日
 	                </span>            	
@@ -114,8 +117,10 @@
 	                            <select class="input100 mySrv" id="mySrv2" name="sitSrvNo" multiple>
 				           			<option value="all" selected>全選</option>
 	                            
-	                            <c:forEach var="sitSrvVO" items="${sitSrvSvc.get_OneSit_AllSrv(sitNo)}">
+	                            <c:forEach var="sitSrvVO" items="${sitSrvSvc.get_OneSit_AllSrv(petSitterVO.sitNo)}">
+	                            	<c:if test="${sitSrvVO.outOfSrv == 0 && sitSrvVO.sitSrvCode != 'Bathing' && sitSrvVO.sitSrvCode != 'Pickup'}">
 				           			<option value="${sitSrvVO.sitSrvNo}">${sitSrvVO.sitSrvName}</option>
+				           			</c:if>
 				           		</c:forEach>
 	                            
 	                            </select>
@@ -175,7 +180,7 @@
     <jsp:include page="../footer.jsp"/>
     
     <!-- 匯入js -->
-    <c:set var="jsPath" value="/EA103G3/js/euphy" />
+    <c:set var="jsPath" value="${pageContext.request.contextPath}/js/euphy" />
 	<script src="${jsPath}/jquery-3.2.1.min.js"></script>
 	<script src="${jsPath}/popper.js"></script>
 	<!-- moment.js -->
@@ -281,7 +286,7 @@
 		        	if (isConfirm) {
 		        		$.ajax({
 		                    type: "POST",
-		                    url: "sitOffDay.do",
+		                    url: "${pageContext.request.contextPath}/sitOffDay/sitOffDay.do",
 		                    data: {
 		                    	action:"update",
 		                    	groupId: $("[name='groupId']").val(),
@@ -336,7 +341,7 @@
 		            var events = [];
 		            $.ajax({
 		            	type: "GET",
-		           		url: "sitOffDay.do?action=getAll",
+		           		url: "${pageContext.request.contextPath}/sitOffDay/sitOffDay.do?action=getAll",
 		       			data: {sitSrvNo: $("#mySrv1").val(),},
 		            	dataType: "json",
 		            	eventLimit: true,
@@ -388,7 +393,7 @@
 			var events = [];
 			$.ajax({
 		        type: "GET",
-		       	url: "sitOffDay.do?action=getAll",
+		       	url: "${pageContext.request.contextPath}/sitOffDay/sitOffDay.do?action=getAll",
 		   		data: {sitSrvNo: $("#mySrv1").val(),},
 		        dataType: "json",
 		        eventLimit: true,

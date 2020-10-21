@@ -1,6 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="BIG5"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ page import="com.sitSrv.model.*"%>
+<%@ page import="com.sitSrv.model.*, java.util.*"%>
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
@@ -12,10 +12,9 @@
 <title>新增托養服務</title>
 
 <!-- 匯入外部CSS -->
-<c:set var="path" value="/EA103G3/front-end" />
-<c:set var="cssPath" value="/EA103G3/css/euphy" />
+<c:set var="cssPath" value="${pageContext.request.contextPath}/css/euphy" />
 <link rel="stylesheet" type="text/css" href="${cssPath}/bootstrap.min.css">
-<link rel="stylesheet" type="text/css" href="${path}/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" type="text/css" href="${cssPath}/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" type="text/css" href="${cssPath}/Petfect.css">
 <link rel="stylesheet" type="text/css" href="${cssPath}/sitSrvAdd.css">
 <link rel="Shortcut Icon" type="image/x-icon" href="https://dzmg8959fhe1k.cloudfront.net/all/favicon.ico">
@@ -24,7 +23,7 @@
 <body>
 
 <!-------------------- nav -------------------->
-	<jsp:include page="/front-end/nav.jsp"/>
+	<jsp:include page="/front-end/header.jsp"/>
     
 <!------------------ 內文body ------------------>
     <div class="container">
@@ -41,11 +40,9 @@
 			</c:if>
 		</div>
 		
-		<% SitSrvVO ssVO = (SitSrvVO) request.getAttribute("ssVO"); %>
-    
 		<section>
 			<!-- multistep form -->
-			<form id="msform" action="sitSrv.do" method="post" enctype="multipart/form-data">
+			<form id="msform" action="${pageContext.request.contextPath}/sitSrv/sitSrv.do" method="post" enctype="multipart/form-data">
 			  <!-- progressbar -->
 			  <ul id="progressbar">
 			    <li class="active pgLi">免費添加您的服務</li>
@@ -60,7 +57,7 @@
 			    <span class="inputQ" style="width: 100%;">請選擇您所要提供的服務</span>
 <!-- sitSrvCode & sitSrvName -->
 			    <div class="tabs">
-      				<div class="tab">
+      				<div class="tab  <c:if test="${sitSrvCodeList.contains('Boarding')}"> sistSrvHide </c:if>" >
         				<input class="input1 sitSrv" type="radio" id="rd1" name='sitSrvCode' value="Boarding" <c:if test="${ssVO.sitSrvCode=='Boarding'}"> checked='checked'</c:if> >
         				<label class="tab-label" for="rd1">寵物住宿寄養</label>
         				<div class="tab-content">
@@ -82,7 +79,7 @@
       						</div>
         				</div>
       				</div>
-      				<div class="tab">
+      				<div class="tab  <c:if test="${sitSrvCodeList.contains('DayCare')}"> sistSrvHide </c:if>">
         				<input class="input1 sitSrv" type="radio" id="rd2" name='sitSrvCode' value="DayCare" <c:if test="${ssVO.sitSrvCode=='DayCare'}"> checked='checked'</c:if> >
 				        <label class="tab-label" for="rd2">寵物日托安親</label>
 				        <div class="tab-content">
@@ -104,7 +101,7 @@
       						</div>
 				        </div>
       				</div>
-      				<div class="tab">
+      				<div class="tab  <c:if test="${sitSrvCodeList.contains('DropIn')}"> sistSrvHide </c:if>">
         				<input class="input1 sitSrv" type="radio" id="rd3" name='sitSrvCode' value="DropIn" <c:if test="${ssVO.sitSrvCode=='DropIn'}"> checked='checked'</c:if> >
 				        <label class="tab-label" for="rd3">到府寵物保姆</label>
 				        <div class="tab-content">
@@ -121,7 +118,7 @@
       						</div>
 				        </div>
       				</div>
-      				<div class="tab">
+      				<div class="tab  <c:if test="${sitSrvCodeList.contains('DogWalking')}"> sistSrvHide </c:if>">
         				<input class="input1 sitSrv" type="radio" id="rd4" name='sitSrvCode' value="DogWalking" <c:if test="${ssVO.sitSrvCode=='DogWalking'}"> checked='checked'</c:if> >
 				        <label class="tab-label" for="rd4">遛狗服務</label>
 				        <div class="tab-content">
@@ -138,7 +135,7 @@
       						</div>
 				        </div>
       				</div>
-      				<div class="tab">
+      				<div class="tab  <c:if test="${sitSrvCodeList.contains('PetTaxi')}"> sistSrvHide </c:if>">
         				<input class="input1 sitSrv" type="radio" id="rd5" name='sitSrvCode' value="PetTaxi" <c:if test="${ssVO.sitSrvCode=='PetTaxi'}"> checked='checked'</c:if> >
 				        <label class="tab-label" for="rd5">寵物計程車</label>
 				        <div class="tab-content">
@@ -149,6 +146,7 @@
 				        </div>
       				</div>
     			</div>
+    			<input type="button" name="cancel" class="cancel action-button" value="取消新增" onclick="location.href='${pageContext.request.contextPath}/front-end/petSitter/listOneSitter.jsp'"/>
 			    <input type="button" name="next" class="next action-button" value="下一頁" />
 			  </fieldset>
 			  <fieldset>
@@ -181,11 +179,13 @@
 <!-- acpPetTyp-1 -->
       			<div class="btn-group" data-toggle="buttons">
         			<span class="inputQ">接受的寵物類型</span>
+        			<c:if test="${ssVO.sitSrvCode!='DogWalking'}">
         			<label class="btn">
           				<input class="input1" type="checkbox" name='acpPetTypPart0' value="cat" 
           				<c:if test="${ssVO.acpPetTyp<=4}"> checked='checked'</c:if>
           				><i class="fa fa-square-o fa-2x"></i><i class="fa fa-check-square-o fa-2x"></i><span> 貓</span><small>one size</small>
         			</label>
+        			</c:if>
         			<label class="btn">
           				<input class="input1 acpDog" type="checkbox" name='acpPetTypPart1' value="dog" 
           				<c:if test="${ssVO.acpPetTyp>0}"> checked='checked'</c:if>
@@ -292,7 +292,7 @@
 	        		<label class="btn">
 	          			<input type="radio" name='overnightLoc' value="1" 
 	          			<c:if test="${ssVO.overnightLoc=='1'}"> checked='checked'</c:if>
-	          			><i class="fa fa-circle-o fa-2x"></i><i class="fa fa-check-circle-o fa-2x"></i><span> 在床上</span>
+	          			><i class="fa fa-circle-o fa-2x"></i><i class="fa fa-check-circle-o fa-2x"></i><span> 在保姆床上</span>
 	        		</label>
 	        		<label class="btn">
 	          			<input type="radio" name='overnightLoc' value="2" 
@@ -406,12 +406,12 @@
 
 
 <!-- 匯入js -->
-	<script src="/EA103G3/js/euphy/jquery-3.2.1.min.js"></script>
+	<script src="${pageContext.request.contextPath}/js/euphy/jquery-3.2.1.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
 	<script src="https://cdn.ckeditor.com/ckeditor5/23.0.0/classic/ckeditor.js"></script>
 	<script src="https://cdn.ckeditor.com/ckeditor5/23.0.0/classic/translations/zh.js"></script>
 <!-- 	<script src="https://cdn.ckeditor.com/ckeditor5/23.0.0/decoupled-document/ckeditor.js"></script> -->
-	<script src="/EA103G3/js/euphy/acpPetNum.js"></script>
+	<script src="${pageContext.request.contextPath}/js/euphy/acpPetNum.js"></script>
 	<script>
 	$(document).ready(function(){
 		
@@ -521,6 +521,7 @@
 			var checkVal = $(".sitSrv:checked").val();
 			switch (checkVal) {
 			case 'Boarding':
+				$("[name='acpPetTypPart0']").parent().show();
 				$(".hide-show1").show();
 				$(".hide-show12").show();
 				$(".btn-row").css("width", "33.33%");
@@ -528,6 +529,7 @@
 				$(".hide-srvTime").hide();
 				break;
 			case 'DayCare':
+				$("[name='acpPetTypPart0']").parent().show();
 				$(".hide-show12").show();
 				$(".hide-show1").hide();
 				$(".btn-row").css("width", "50%");
@@ -535,12 +537,14 @@
 				$(".hide-srvTime").hide();
 				break;
 			case 'DropIn':
+				$("[name='acpPetTypPart0']").parent().show();
 				$(".hide-show12").hide();
 				$(".hide-show1").hide();
 				$(".srvFeeUnit").text(" / 次");
 				$(".hide-srvTime").show();
 				break;
 			case 'DogWalking':
+				$("[name='acpPetTypPart0']").parent().hide();
 				$(".hide-show12").hide();
 				$(".hide-show1").hide();
 				$(".eqptDiv").hide();
@@ -548,10 +552,11 @@
 				$(".hide-srvTime").show();
 				break;
 			case 'PetTaxi':
+				$("[name='acpPetTypPart0']").parent().show();
 				$(".hide-show12").hide();
 				$(".hide-show1").hide();
 				$(".eqptDiv").show();
-				$(".srvFeeUnit").text(" / 趟");
+				$(".srvFeeUnit").text(" / 公里");
 				$(".hide-srvTime").show();
 				break;
 			}

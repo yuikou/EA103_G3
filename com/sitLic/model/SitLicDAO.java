@@ -6,6 +6,8 @@ import java.util.*;
 import javax.naming.*;
 import javax.sql.DataSource;
 
+import com.sitSrv.model.SitSrvDAO;
+
 public class SitLicDAO implements SitLicDAO_interface{
 
 	private static DataSource ds = null;
@@ -73,7 +75,7 @@ public class SitLicDAO implements SitLicDAO_interface{
 	}
 
 	@Override
-	public void update(SitLicVO sitLic) {
+	public void update(SitLicVO sitLic, String sitSrvNo) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		
@@ -87,18 +89,30 @@ public class SitLicDAO implements SitLicDAO_interface{
 			pstmt.setDate(3, sitLic.getLicEXP());
 			pstmt.setInt(4, sitLic.getLicStatus());
 			pstmt.setString(5, sitLic.getLicNo());
-			
 			pstmt.executeUpdate();
+			
+			// 再來修改服務狀態
+			SitSrvDAO ssdao = new SitSrvDAO();
+			if (sitSrvNo!=null) {
+				System.out.println("已修改"+sitSrvNo+"的outOfSrv=2");
+				ssdao.updateStatus(sitSrvNo, 2, 0);
+			} 
 			con.commit();
+			con.setAutoCommit(true);
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
-			try {
-				con.rollback();
-				throw new RuntimeException("A database error occured. "+e.getMessage());
-			} catch (SQLException e1) {
-				e1.printStackTrace();
+			if (con != null) {
+				try {
+					System.err.println("rolled back-由-sitLic_update");
+					con.rollback();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+					throw new RuntimeException("rollback error occured. "
+							+ e1.getMessage());
+				}
 			}
+			throw new RuntimeException("新增失敗: " + e.getMessage());
 		} finally {
 			if(pstmt != null) {
 				try {
@@ -280,7 +294,7 @@ public class SitLicDAO implements SitLicDAO_interface{
 	}
 
 	@Override
-	public Boolean updateStatus(String licNo, Integer licStatus) {
+	public Boolean updateStatus(String licNo, Integer licStatus, String sitSrvNo) {
 		Boolean updateOK = false;
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -292,20 +306,35 @@ public class SitLicDAO implements SitLicDAO_interface{
 			pstmt = con.prepareStatement(UPDATE_STATUS_PSTMT);
 			pstmt.setInt(1, licStatus);
 			pstmt.setString(2, licNo);
-			
-			if (pstmt.executeUpdate() == 1) {
-				updateOK = true;
-				con.commit();
+			pstmt.executeUpdate();
+
+			// 再來修改服務狀態
+			SitSrvDAO ssdao = new SitSrvDAO();
+			if (sitSrvNo!=null && licStatus==1) {
+				ssdao.updateStatus(sitSrvNo, 0, 0);
+				System.out.println("證照通過，已修改"+sitSrvNo+"的outOfSrv=0");
+			} else if (sitSrvNo!=null && licStatus==2){
+				ssdao.updateStatus(sitSrvNo, 3, 0);
+				System.out.println("不通過，已修改"+sitSrvNo+"的outOfSrv=3");
 			}
+			
+			con.commit();
+			updateOK = true;
+			con.setAutoCommit(true);
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
-			try {
-				con.rollback();
-				throw new RuntimeException("A database error occured. "+e.getMessage());
-			} catch (SQLException e1) {
-				e1.printStackTrace();
+			if (con != null) {
+				try {
+					System.err.println("rolled back-由-sitLic_updateStatus");
+					con.rollback();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+					throw new RuntimeException("rollback error occured. "
+							+ e1.getMessage());
+				}
 			}
+			throw new RuntimeException("新增失敗: " + e.getMessage());
 		} finally {
 			if(pstmt != null) {
 				try {
@@ -326,7 +355,7 @@ public class SitLicDAO implements SitLicDAO_interface{
 	}
 
 	public void addFromSitSrv(SitLicVO sitLic, Connection con) {
-PreparedStatement pstmt = null;
+		PreparedStatement pstmt = null;
 		
 		try {
 			pstmt = con.prepareStatement(ADD_PSTMT);
@@ -342,7 +371,7 @@ PreparedStatement pstmt = null;
 			e.printStackTrace();
 			if (con != null) {
 				try {
-					System.err.println("345.rolled back-由-emp");
+					System.err.println("345.rolled back-由-addFromSitSrv");
 					con.rollback();
 				} catch (SQLException e1) {
 					e1.printStackTrace();

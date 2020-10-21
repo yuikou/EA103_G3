@@ -1,6 +1,7 @@
 package com.sitSrv.model;
 
 import java.util.List;
+import java.util.Map;
 
 import com.sitLic.model.SitLicVO;
 
@@ -70,35 +71,34 @@ public class SitSrvService {
 		
 	}
 	
-	public SitSrvVO update(String ssName, String ssCode, String sitNo, Integer srvFee, String srvInfo,
+	public SitSrvVO update(String sitSrvNo, String ssName, String ssCode, String sitNo, Integer srvFee, String srvInfo,
 			   Integer srvArea, Integer acpPetNum, Integer acpPetTyp, Integer careLevel,
 			   Integer stayLoc, Integer overnightLoc, Integer smkFree, Integer hasChild,
 			   String srvTime, Integer Eqpt, Integer addBathing, Integer addPicking,
-			   Integer outOfSrv, Integer isDel) {
-		SitSrvVO ssVO = new SitSrvVO();
+			   SitSrvVO sitSrv2, SitSrvVO sitSrv3) {
+		SitSrvVO sitSrv = new SitSrvVO();
 		
-		ssVO.setSitSrvName(ssName);
-		ssVO.setSitSrvCode(ssCode);
-		ssVO.setSitNo(sitNo);
-		ssVO.setSrvFee(srvFee);
-		ssVO.setSrvInfo(srvInfo);
-		ssVO.setSrvArea(srvArea);
-		ssVO.setAcpPetNum(acpPetNum);
-		ssVO.setAcpPetTyp(acpPetTyp);
-		ssVO.setCareLevel(careLevel);
-		ssVO.setStayLoc(stayLoc);
-		ssVO.setOvernightLoc(overnightLoc);
-		ssVO.setSmkFree(smkFree);
-		ssVO.setHasChild(hasChild);
-		ssVO.setSrvTime(srvTime);
-		ssVO.setEqpt(Eqpt);
-		ssVO.setAddBathing(addBathing);
-		ssVO.setAddPickup(addPicking);
-		ssVO.setOutOfSrv(outOfSrv);
-		ssVO.setIsDel(isDel);
-		ssDAO.update(ssVO);
+		sitSrv.setSitSrvNo(sitSrvNo);
+		sitSrv.setSitSrvName(ssName);
+		sitSrv.setSitSrvCode(ssCode);
+		sitSrv.setSitNo(sitNo);
+		sitSrv.setSrvFee(srvFee);
+		sitSrv.setSrvInfo(srvInfo);
+		sitSrv.setSrvArea(srvArea);
+		sitSrv.setAcpPetNum(acpPetNum);
+		sitSrv.setAcpPetTyp(acpPetTyp);
+		sitSrv.setCareLevel(careLevel);
+		sitSrv.setStayLoc(stayLoc);
+		sitSrv.setOvernightLoc(overnightLoc);
+		sitSrv.setSmkFree(smkFree);
+		sitSrv.setHasChild(hasChild);
+		sitSrv.setSrvTime(srvTime);
+		sitSrv.setEqpt(Eqpt);
+		sitSrv.setAddBathing(addBathing);
+		sitSrv.setAddPickup(addPicking);
+		ssDAO.update(sitSrv, sitSrv2, sitSrv3);
 		
-		return ssVO;
+		return sitSrv;
 	}
 
 	public Boolean updateStatus(String sitSrvNo, Integer outOfSrv, Integer isDel) {
@@ -113,8 +113,8 @@ public class SitSrvService {
 		return ssDAO.get_OneSit_AllSrv(sitNo);
 	}
 	
-	public List<SitSrvVO> choose_SitSrv(String sitSrvCode, Object[] acpPetTyp, String appendSQL) {
-		return ssDAO.choose_SitSrv(sitSrvCode, acpPetTyp, appendSQL);
+	public List<SitSrvVO2> choose_SitSrv(String sitSrvCode, Object[] acpPetTyp, Map<String, String[]> map) {
+		return ssDAO.choose_SitSrv(sitSrvCode, acpPetTyp, map);
 	}
 	
 }

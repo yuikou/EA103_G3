@@ -12,10 +12,10 @@
 <title>我的最愛保姆</title>
 
 <!-- 匯入外部CSS -->
-<c:set var="path" value="/EA103G3/front-end" />
-<c:set var="cssPath" value="/EA103G3/css/euphy" />
+<c:set var="path" value="${pageContext.request.contextPath}/front-end" />
+<c:set var="cssPath" value="${pageContext.request.contextPath}/css/euphy" />
 <link rel="stylesheet" type="text/css" href="${cssPath}/bootstrap.min.css">   
-<link rel="stylesheet" type="text/css" href="/EA103G3/front-end/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" type="text/css" href="${cssPath}/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" type="text/css" href="${cssPath}/Main.css">
 <link rel="stylesheet" type="text/css" href="${cssPath}/Petfect.css">
 <link rel="stylesheet" type="text/css" href="${cssPath}/SF.css">
@@ -26,7 +26,7 @@
 <body>
 
 <!-------------------- nav -------------------->
-	<jsp:include page="../nav.jsp"/>
+	<jsp:include page="/front-end/header.jsp"/>
     
 <!------------------ 內文body ------------------>
     <div class="container">
@@ -82,7 +82,7 @@
         <c:forEach var="mem" items="${sfSvc.getAllByMemNo(memNo)}">
         
 			<div class="col-6 col-md-3 col-sm-4 card">
-            	<img src="${pageContext.request.contextPath}/PicReader.do?action=sitFollow&memNo=${mem}" class="card-img-top" alt="...">
+            	<img src="${pageContext.request.contextPath}/PicReader.do?action=getMemPic&memNo=${mem}" class="card-img-top" alt="...">
                 <div class="card-body">
                     <h5 class="card-title">${memSvc.getOneMem(mem).memName}</h5>
                     <p class="card-text">
@@ -140,7 +140,7 @@
     <jsp:include page="../footer.jsp"/>
 
 <!-- 匯入js -->
-	<c:set var="jsPath" value="/EA103G3/js/euphy" />
+	<c:set var="jsPath" value="${pageContext.request.contextPath}/js/euphy" />
 	<script src="${jsPath}/jquery-3.2.1.min.js"></script>
 	<script src="${jsPath}/popper.js"></script>
 	<script src="${jsPath}/bootstrap.min.js"></script>

@@ -12,10 +12,9 @@
 <title>我的最愛保姆test</title>
 
 <!-- 匯入外部CSS -->
-<c:set var="path" value="/EA103G3/front-end" />
-<c:set var="cssPath" value="/EA103G3/css/euphy" />
+<c:set var="cssPath" value="${pageContext.request.contextPath}/css/euphy" />
 <link rel="stylesheet" type="text/css" href="${cssPath}/bootstrap.min.css">   
-<link rel="stylesheet" type="text/css" href="/EA103G3/front-end/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" type="text/css" href="${cssPath}/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" type="text/css" href="${cssPath}/Main.css">
 <link rel="stylesheet" type="text/css" href="${cssPath}/Petfect.css">
 <link rel="stylesheet" type="text/css" href="${cssPath}/SF.css">
@@ -24,9 +23,6 @@
 </head>
 
 <body>
-
-<!-------------------- nav -------------------->
-	<jsp:include page="../nav.jsp"/>
     
 <!------------------ 內文body ------------------>
     <div class="container">
@@ -47,20 +43,17 @@
 		<!-- 取得追蹤的保姆的會員編號 -->
 		<%
         	String memNo = (String) session.getAttribute("memNo");
-			PetSitterVO petSitterVO = (PetSitterVO) session.getAttribute("petSitterVO");
 			SitFollowService sfSrv = new SitFollowService();
 			
 			String attr = "fa fa-heart-o";
-			if (sfSrv.getAllByMemNo(memNo).contains(petSitterVO.getMemNo())) { 
+			if (sfSrv.getAllByMemNo(memNo).contains("M001")) { 
 				attr = "fa fa-heart";
 			}
 			pageContext.setAttribute("attr", attr);
         %>
         
-		<p style="text-align:center; padding-top:20px">測試：我是S005保姆</p>
-		
 		<input type="hidden" name="memNo" value="${memNo}">
-		<input type="hidden" name="sitNo" value="${petSitterVO.sitNo}">
+		<input type="hidden" name="sitNo" value="S001">
 		<div class="myClick" onClick="getFavor()">
 			<span class="${attr}" style="color:red;"></span>
 			<div class="ring"></div>
@@ -70,11 +63,8 @@
     </div>
 
 
-<!------------------ footer ------------------>
-    <jsp:include page="../footer.jsp"/>
-
 <!-- 匯入js -->
-	<c:set var="jsPath" value="/EA103G3/js/euphy" />
+	<c:set var="jsPath" value="${pageContext.request.contextPath}/js/euphy" />
 	<script src="${jsPath}/jquery-3.2.1.min.js"></script>
 	<script src="${jsPath}/popper.js"></script>
 	<script src="${jsPath}/bootstrap.min.js"></script>

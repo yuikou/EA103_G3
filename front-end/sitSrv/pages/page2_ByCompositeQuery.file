@@ -1,0 +1,28 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="Big5"%>
+
+<div class="col-md-12 column">
+	<ul class="pagination text-center" role="navigation" aria-label="Pagination">
+		
+<%if (rowsPerPage<rowNumber) {%>
+		            
+   		<li class="pagination-li pagination-first">
+   			<div>
+   				<i class="material-icons" style="color:#AFAFAF;">first_page</i>
+   			</div>
+   		</li>
+		<li class="pagination-li pagination-prev">
+			<div>
+				<i class="material-icons" style="color:#AFAFAF;">chevron_left</i>
+			</div>
+		</li>
+
+		<li class="current"><%=whichPage%></li>	
+        
+        <li class="pagination-li pagination-next"><div><i class="material-icons" style="color:#AFAFAF;">chevron_right</i></div></li>
+        <li class="pagination-li pagination-final"><div><i class="material-icons" style="color:#AFAFAF;">last_page</i></div></li>
+		            
+<%}%>
+
+	</ul>
+</div>
+
