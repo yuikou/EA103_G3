@@ -80,6 +80,7 @@
                         </div>
                     </div>
                     <div class="srvPhoto">
+                    <div><b>提供服務</b></div>
                     <c:forEach var="sitSrvVO" items="${list}">
                         
                             <c:if test="${sitSrvVO.sitSrvCode == 'Boarding'}">

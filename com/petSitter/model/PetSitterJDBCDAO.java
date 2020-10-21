@@ -430,9 +430,9 @@ public class PetSitterJDBCDAO implements PetSitterDAO_interface {
 //		dao.update_totalComm(petSitterVO);
 		
 //		PetSitterVO petSitterVO = new PetSitterVO();
-//		petSitterVO.setTotalCus(12.0);
-//		petSitterVO.setRepeatCus(4);
-//		petSitterVO.setSitNo("S006");
+//		petSitterVO.setTotalCus(11.0);
+//		petSitterVO.setRepeatCus(2);
+//		petSitterVO.setSitNo("S001");
 //		dao.update_repeat_totalCus(petSitterVO);
 		
 		

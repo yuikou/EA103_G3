@@ -9,10 +9,11 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 
+import com.member.model.MemService;
 import com.petSitter.model.*;
 import com.sitOrder.model.*;
 
-@WebServlet("/PetSitterServlet")
+@WebServlet("/petSitter/petSitter.do")
 public class PetSitterServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -32,19 +33,53 @@ public class PetSitterServlet extends HttpServlet {
 
         //--------------前台(front-end)--------------
         
-        if ("getOneSitter_forDisplay".equals(action) || "getOneSitter_DisplayForMem".equals(action)) { //from sitterFront.jsp
+        if ("getOneSitter_forDisplay".equals(action)) { //from sitterFront.jsp
 
             List<String> errorMsgs = new LinkedList<String>();
             req.setAttribute("errorMsgs", errorMsgs);
             
             
             try {
+                //屬於擁有保姆資格的會員
+                String sessionSitNo = (String) session.getAttribute("sessionSitNo");
+                                
+                PetSitterService petSitSrv = new PetSitterService();
+                PetSitterVO petSitterVO = petSitSrv.getByPK(sessionSitNo);
                 
-                String sitNo = (String) session.getAttribute("sitNo");
-                if (sitNo == null) {
-                	sitNo = (String) req.getParameter("sitNo");
+                if (petSitterVO  == null) {
+                    errorMsgs.add("查無資料");
+                }
+                if (!errorMsgs.isEmpty()) {
+                    RequestDispatcher failureView = req
+                            .getRequestDispatcher("/front-end/sitterFront.jsp");
+                    failureView.forward(req, res);
+                    return;                 
                 }
                 
+                req.setAttribute("petSitterVO", petSitterVO);
+                String url = "/front-end/petSitter/listOneSitter.jsp";
+                RequestDispatcher successView = req.getRequestDispatcher(url);
+                successView.forward(req, res);
+                
+            } catch (Exception e) {
+                
+                errorMsgs.add("無法取得資料:" + e.getMessage());
+                RequestDispatcher failureView = req
+                        .getRequestDispatcher("/front-end/sitterFront.jsp");
+                failureView.forward(req, res);                 
+            }
+
+        }
+        
+        if ("getOneSitter_DisplayForMem".equals(action)) { //from sitterFront.jsp
+
+            List<String> errorMsgs = new LinkedList<String>();
+            req.setAttribute("errorMsgs", errorMsgs);
+            
+            
+            try {
+                // 頁面點選保母後
+                String sitNo = (String) req.getParameter("sitNo");
                                 
                 PetSitterService petSitSrv = new PetSitterService();
                 PetSitterVO petSitterVO = petSitSrv.getByPK(sitNo);
@@ -59,12 +94,8 @@ public class PetSitterServlet extends HttpServlet {
                     return;                 
                 }
                 
-                String url = null;
-				if ("getOneSitter_forDisplay".equals(action))
-					url = "/front-end/petSitter/listOneSitter.jsp";
-				else if ("getOneSitter_DisplayForMem".equals(action))
-					url = "/front-end/petSitter/listOneSitterForMem.jsp";
                 req.setAttribute("petSitterVO", petSitterVO);
+                String url = "/front-end/petSitter/listOneSitterForMem.jsp";
                 RequestDispatcher successView = req.getRequestDispatcher(url);
                 successView.forward(req, res);
                 
@@ -87,9 +118,9 @@ public class PetSitterServlet extends HttpServlet {
         	
         	try {
         		
-        		String sitNo = (String) session.getAttribute("sitNo");
+        		String sessionSitNo = (String) session.getAttribute("sessionSitNo");
         		PetSitterService petSitterSrv = new PetSitterService();
-        		PetSitterVO petSitterVO = petSitterSrv.getByPK(sitNo);
+        		PetSitterVO petSitterVO = petSitterSrv.getByPK(sessionSitNo);
         		
         		req.setAttribute("petSitterVO", petSitterVO);
         		String url = "/front-end/petSitter/updatePetSitter.jsp";
@@ -114,7 +145,7 @@ public class PetSitterServlet extends HttpServlet {
         	try {
         		
         		String memNo = (String) session.getAttribute("memNo");
-        		String sitNo = (String) session.getAttribute("sitNo");
+        		String sessionSitNo = (String) session.getAttribute("sessionSitNo");
         		
         		String sitInfo = req.getParameter("sitInfo").trim();
         		if (sitInfo == null || sitInfo.trim().length() == 0) {
@@ -145,7 +176,7 @@ public class PetSitterServlet extends HttpServlet {
                 Integer repeatCus = new Integer(req.getParameter("repeatCus").trim());
                 
                 PetSitterVO petSitterVO = new PetSitterVO();
-                petSitterVO.setSitNo(sitNo);
+                petSitterVO.setSitNo(sessionSitNo);
                 petSitterVO.setMemNo(memNo);
                 petSitterVO.setSitInfo(sitInfo);
                 petSitterVO.setSrvSTime(srvSTime);
@@ -164,7 +195,7 @@ public class PetSitterServlet extends HttpServlet {
                 	failureView.forward(req, res);
                 	return;
                 }
-                
+                String sitNo = sessionSitNo;
                 PetSitterService petSitterSrv = new PetSitterService();
                 petSitterVO = petSitterSrv.update(sitNo,memNo,sitInfo,srvSTime,srvETime,bankCode,bankAcc,sitAccStatus,totalComm,totalCus,repeatCus);
                 
@@ -243,7 +274,7 @@ public class PetSitterServlet extends HttpServlet {
 	            petSitterVO.setRepeatCus(repeatCus);
 	            
 	            if (!errorMsgs.isEmpty()) {
-					req.setAttribute("petSitterVO", petSitterVO); // 含有輸入格式錯誤的empVO物件,也存入req
+					req.setAttribute("petSitterVO", petSitterVO);
 					RequestDispatcher failureView = req
 							.getRequestDispatcher("/front-end/petSitter/addPetSitter.jsp");
 					failureView.forward(req, res);
@@ -253,6 +284,12 @@ public class PetSitterServlet extends HttpServlet {
 	            PetSitterService petSitterSrv = new PetSitterService();
 	            petSitterVO = petSitterSrv.insert(memNo,sitInfo,srvSTime,srvETime,bankCode,bankAcc,sitAccStatus,totalComm,totalCus,repeatCus);
 	            req.setAttribute("petSitterVO", petSitterVO);
+	            
+	            
+	            //會員升級成保母
+	            MemService memSrv = new MemService();
+	            memSrv.upgradeMemToSit(memNo);
+	            
 	            String url = "/front-end/petSitter/listOneSitter.jsp";
 	            RequestDispatcher successView = req.getRequestDispatcher(url);
 	            successView.forward(req, res);

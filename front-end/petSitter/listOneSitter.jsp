@@ -7,22 +7,22 @@
     PetSitterVO petSitterVO = (PetSitterVO) request.getAttribute("petSitterVO");
 %>
 <%
-    String sitNo = (String) session.getAttribute("sitNo");
+    String sessionSitNo = (String) session.getAttribute("sessionSitNo");
     if(petSitterVO==null){
         PetSitterService petSitSrv = new PetSitterService();
-        petSitterVO = petSitSrv.getByPK(sitNo);
+        petSitterVO = petSitSrv.getByPK(sessionSitNo);
         pageContext.setAttribute("petSitterVO", petSitterVO);
     }
     
 %>
 <%
     SitSrvService sitSrvSrv = new SitSrvService();
-    List<SitSrvVO> list = sitSrvSrv.get_OneSit_AllSrv(sitNo);
+    List<SitSrvVO> list = sitSrvSrv.get_OneSit_AllSrv(sessionSitNo);
     pageContext.setAttribute("list", list);
 %>
 <%
     SitPhotoService sitPSrv = new SitPhotoService();
-    List<SitPhotoVO> sitPhotoList = sitPSrv.getAll(sitNo);
+    List<SitPhotoVO> sitPhotoList = sitPSrv.getAll(sessionSitNo);
     pageContext.setAttribute("sitPhotoList", sitPhotoList);
 %>
 <!DOCTYPE html>
@@ -188,7 +188,7 @@
 <!--                 </div>  -->
          <%
            SitOrderService sitOSrv = new SitOrderService();
-           Set<SitOrderVO> sitOVOSet = sitOSrv.getByFK_sitNo(sitNo);
+           Set<SitOrderVO> sitOVOSet = sitOSrv.getByFK_sitNo(sessionSitNo);
            pageContext.setAttribute("sitOVOSet", sitOVOSet);
          %>
                 <div class="title">托養評價</div>

@@ -43,31 +43,6 @@
             </ul>
         </c:if>
             <table class="table">
-                <tr class="row1">
-                    <th scope="row"><img src="<%=request.getContextPath()%>/images/calendar.png" width="40"> 請選擇需托養日期:</th>
-                    <td>
-        <div class='col-md-5'>開始日期
-            <div class="form-group">
-                <div class="input-group date" id="sitSDate" data-target-input="nearest">
-                    <input type="text" class="form-control datetimepicker-input" data-target="#sitSDate" name="sitSDate" value="${sitOrderVO.sitSDate}"/>
-                    <div class="input-group-append" data-target="#sitSDate" data-toggle="datetimepicker">
-                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class='col-md-5'>結束日期
-            <div class="form-group">
-                <div class="input-group date" id="sitEDate" data-target-input="nearest">
-                    <input type="text" class="form-control datetimepicker-input" data-target="#sitEDate" name="sitEDate" value="${sitOrderVO.sitEDate}"/>
-                    <div class="input-group-append" data-target="#sitEDate" data-toggle="datetimepicker">
-                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-                    </td>
-                </tr>
          <%
            PetService petSrv = new PetService();
            List<PetVO> petList = petSrv.getAllPet(memNo);
@@ -218,14 +193,38 @@
 	                    </td>
                     </c:if>
                 	</c:forEach>
-                	
                 </tr>
+                <tr class="row2" id="orderDate" style="display:none;">
+                    <th scope="row"><img src="<%=request.getContextPath()%>/images/calendar.png" width="40"> 請選擇需托養日期:</th>
+                    <td>
+                      <div class='col-md-5'>開始日期
+                        <div class="form-group">
+                          <div class="input-group date" id="sitSDate" data-target-input="nearest">
+                            <input type="text" class="form-control datetimepicker-input" data-target="#sitSDate" name="sitSDate" value="${sitOrderVO.sitSDate}"/>
+                          <div class="input-group-append" data-target="#sitSDate" data-toggle="datetimepicker">
+                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                          </div>
+                        </div>
+                       </div>
+                     </div>
+                    <div class='col-md-5'>結束日期
+                      <div class="form-group">
+                        <div class="input-group date" id="sitEDate" data-target-input="nearest">
+                          <input type="text" class="form-control datetimepicker-input" data-target="#sitEDate" name="sitEDate" value="${sitOrderVO.sitEDate}"/>
+                        <div class="input-group-append" data-target="#sitEDate" data-toggle="datetimepicker">
+                          <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                        </div>
+                      </div>
+                     </div>
+                   </div>
+                 </td>
+               </tr>
                 <%
                   MemService memSrv = new MemService();
                   MemVO memVO = memSrv.getOneMem(memNo);
                   pageContext.setAttribute("memVO", memVO);
                 %>
-                <tr class="row2">
+                <tr class="row1">
                     <th scope="row">
                         <img src="<%=request.getContextPath()%>/images/car.png" width="40"> 接送地址:
                         <p style="display: none; color: #E63946;" id="addressInfo" name="mainSrvHide"><i>* 請填寫此欄 *</i></p>
@@ -257,7 +256,7 @@
                         </div>
                     </td>
                 </tr>
-                <tr class="row1">
+                <tr class="row2">
                     <th scope="row"><img src="<%=request.getContextPath()%>/images/coin.png" width="40"> 總金額:</th>
                     <td>$1,500
                         <%
@@ -295,28 +294,31 @@
     <script type="text/javascript" src="<%=request.getContextPath()%>/js/js-ching/tw-districts.js"></script>
     <script>
     
-    $(function() {
-        $('#sitSDate').datetimepicker({
-            format: "L",
-            format: "yyyy-MM-DD",
-            minDate: new Date(),
-        });
-        $('#sitEDate').datetimepicker({
-            format: "L",
-            format: "yyyy-MM-DD",
-            useCurrent: false
-        });
-        $("#sitSDate").on("change.datetimepicker", function(e) {
-            $('#sitEDate').datetimepicker('minDate', e.date);
-        });
-        $("#sitEDate").on("change.datetimepicker", function(e) {
-            $('#sitSDate').datetimepicker('maxDate', e.date);
-        });
-    });
+//     $(function() {
+//         $('#sitSDate').datetimepicker({
+//             format: "L",
+//             format: "yyyy-MM-DD",
+//             minDate: new Date(),
+//         });
+//         $('#sitEDate').datetimepicker({
+//             format: "L",
+//             format: "yyyy-MM-DD",
+//             useCurrent: false
+//         });
+//         $("#sitSDate").on("change.datetimepicker", function(e) {
+//             $('#sitEDate').datetimepicker('minDate', e.date);
+//         });
+//         $("#sitEDate").on("change.datetimepicker", function(e) {
+//             $('#sitSDate').datetimepicker('maxDate', e.date);
+//         });
+//     });
+
         	
 
         function toggleSvc() {
 
+        	$("#orderDate").fadeIn("slow");
+        	
             var n = $("#mainSrv").find("option:selected").attr("data-type");
             var sitSrvNo =  $("#mainSrv").find("option:selected").val();
             var data_bathing = $("#mainSrv").find("option:selected").attr("data-bathing");
@@ -327,7 +329,8 @@
         	// 首次建立月曆時(oneSrv)發送ajax取得資料
         	$.ajax({
 		        type: "GET",
-		       	url: "/EA103G3/front-end/sitOffDay/sitOffDay.do?action=getOneSitSrvOffDay",
+// 		       	url: "/EA103G3/front-end/sitOffDay/sitOffDay.do?action=getOneSitSrvOffDay",
+		url: "<%=request.getContextPath()%>/sitOffDay/sitOffDay.do?action=getOneSitSrvOffDay",
 		   		data: {sitSrvNo: sitSrvNo,},
 		        dataType: "json",
 		        cache: false,
@@ -348,30 +351,25 @@
 		        	}); 
 		            console.log(disabledDates)
 		            
-		            $('#from').datetimepicker({
-		            	format: 'Y-m-d',
-		            	timepicker: false,
-// 		            	onShow: function() {
-// 		                    this.setOptions({
-// 		                        maxDate: $('#to').val() ? $('#to').val() : false
-// 		                    })
-// 		                },
-        				disabledDates: disabledDates,
-        				minDate: new Date(),
-        				maxDate: new Date(new Date().setDate(new Date().getDate() + 30)),
-        	        });
-		            $('#to').datetimepicker({
-		                format: 'Y-m-d',
-		                timepicker: false,
-// 		                onShow: function() {
-// 		                    this.setOptions({
-// 		                        minDate: $('#from').val() ? $('#from').val() : false
-// 		                    })
-// 		                },
-		                disabledDates: disabledDates,
-        				minDate: new Date(),
-        				maxDate: new Date(new Date().setDate(new Date().getDate() + 30)),
+		            $('#sitSDate').datetimepicker({
+		                format: "L",
+		                format: "yyyy-MM-DD",
+		                minDate: new Date(),
+		                disabledDates: disabledDates
 		            });
+		            $('#sitEDate').datetimepicker({
+		                format: "L",
+		                format: "yyyy-MM-DD",
+		                useCurrent: false,
+		                disabledDates: disabledDates
+		            });
+		            $("#sitSDate").on("change.datetimepicker", function(e) {
+		                $('#sitEDate').datetimepicker('minDate', e.date);
+		            });
+		            $("#sitEDate").on("change.datetimepicker", function(e) {
+		                $('#sitSDate').datetimepicker('maxDate', e.date);
+		            });
+		            
 		      	},
 		      	error: function (xhr, ajaxOptions, thrownError) {
                 	console.log("ajax失敗");
@@ -439,10 +437,10 @@
             }
         }
         
+        
         $(document).ready(function() {
 
             $("#success").click(function() {
-            	console.log($("[name='sitSDate']").val());
 
                 $.ajax({
                     url: "<%=request.getContextPath()%>/sitOrder/sitOrder.do",
@@ -466,7 +464,7 @@
                     },
                     success: function(data) {
                         if (data == "reserve") {
-                        	console.log('yssss');
+                        	console.log('data傳回成功');
                         	swal({
                         		  title: "恭喜你!",
                         		  text: "成功為你毛小孩預約了一位保母,請等待保母確認",
