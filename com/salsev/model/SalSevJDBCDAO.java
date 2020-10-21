@@ -23,11 +23,12 @@ public class SalSevJDBCDAO implements SalsevDAO_interface {
 	// 一間美容店show出所有服務項目
 	private static final String GET_ONE_STMT = "SELECT SALSEVNO, SALNO, PETCAT, SALSEVNAME, SALSEVINFO, SALSEVTIME, SALSEVPR, STATUS FROM SALONSERVICE WHERE salno=?";
 	private static final String GET_ONE_SEV = "SELECT SALSEVNO, SALNO, PETCAT, SALSEVNAME, SALSEVINFO, SALSEVTIME, SALSEVPR, STATUS FROM SALONSERVICE WHERE SALSEVNO=?";
+	private static final String GET_PETCAT = "SELECT SALSEVNO, PETCAT, SALSEVNAME, SALSEVINFO, SALSEVTIME, SALSEVPR FROM SALONSERVICE WHERE salno=? AND petcat=? AND status=0";
 
 	// 以下測試用
 //	public static void main(String[] args) {
 //		SalsevVO vo = new SalsevVO();
-//		
+		
 //		vo.setSalno("B002");
 //		vo.setPetcat(4);
 //		vo.setSalsevname("基礎美容123");
@@ -43,7 +44,7 @@ public class SalSevJDBCDAO implements SalsevDAO_interface {
 //		test.delete(vo.getSalsevno());
 //		test.findByPrimaryKey(vo.getSalno());
 //		test.getAll(vo.getSalno());
-
+//		test.getByPetcat("B002", 1);
 //	}
 
 	@Override
@@ -355,6 +356,70 @@ public class SalSevJDBCDAO implements SalsevDAO_interface {
 			}
 		}
 		return savVO;
+	}
+	
+	public List<SalsevVO> getByPetcat(String salno, Integer petcat){
+		List<SalsevVO> list = new ArrayList<SalsevVO>();
+		SalsevVO savVO = null;	
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		try {
+			
+			Class.forName(driver);
+			con = DriverManager.getConnection(url, userid, passwd);
+			pstmt = con.prepareStatement(GET_PETCAT);
+			pstmt.setString(1, salno);
+			pstmt.setInt(2, petcat);
+
+			rs = pstmt.executeQuery();
+			
+			while (rs.next()) {
+				savVO = new SalsevVO();
+				savVO.setSalsevno(rs.getString("salsevno"));
+				savVO.setPetcat(rs.getInt("petcat"));
+				savVO.setSalsevname(rs.getString("salsevname"));
+				savVO.setSalSevInfo(rs.getString("salsevinfo"));
+				savVO.setSalsevtime(rs.getInt("salsevtime"));
+				savVO.setSalsevpr(rs.getInt("salsevpr"));
+				list.add(savVO);
+				
+//				System.out.println("美容服務項目號碼"+rs.getString("salSevNo"));
+//				System.out.println("寵物類型:"+rs.getInt("petcat"));
+//				System.out.println("服務名稱"+rs.getString("salSevName"));
+//				System.out.println("服務內容:"+rs.getString("salSevInfo"));
+//				System.out.println("所需時間"+ rs.getInt("salSevTime"));
+//				System.out.println("價格: $"+rs.getInt("salSevPr"));
+			}
+			// Handle any driver errors
+		} catch (SQLException | ClassNotFoundException se) {
+			throw new RuntimeException("A database error occured. " + se.getMessage());
+			// Clean up JDBC resources
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
+		return list;
 	}
 
 }

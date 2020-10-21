@@ -64,6 +64,8 @@ public class SalonFServlet extends HttpServlet {
 			} 
 			if (errorMsgs.isEmpty()) {
 				out.write('1');
+				out.flush();
+				out.close();
 			}
 		}
 		
@@ -85,6 +87,8 @@ public class SalonFServlet extends HttpServlet {
 			}
 			if (errorMsgs.isEmpty()) {
 				out.write('0');
+				out.flush();
+				out.close();
 			}
 		}
 		
