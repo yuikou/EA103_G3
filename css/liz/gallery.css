@@ -1,0 +1,53 @@
+.pic-wrapper a img {
+	display: inline-block;
+	vertical-align: top;
+	width: 100%;
+	padding: 8px;
+}
+
+.blueimp-gallery>.indicator>li {
+	display: inline-block;
+	width: 50px;
+	height: 50px;
+	margin: 6px 3px 0 3px;
+	-webkit-box-sizing: content-box;
+	-moz-box-sizing: content-box;
+	box-sizing: content-box;
+	border: 1px solid transparent;
+	background: #ccc;
+	background: rgba(255, 255, 255, 0.25) center no-repeat;
+	border-radius: 2px;
+	box-shadow: 0 0 2px #000;
+	opacity: 0.5;
+	cursor: pointer;
+}
+
+.blueimp-gallery>.indicator {
+	overflow-x: auto;
+	overflow-y: hidden;
+	white-space: nowrap;
+	-webkit-overflow-scrolling: touch;
+	-ms-overflow-style: -ms-autohiding-scrollbar;
+}
+
+/*實現瀑布流*/
+/*相片區大小*/
+.container {
+	column-width: 150px;
+	-moz-column-width: 150px;
+	column-gap: 5px;
+	-moz-column-gap: 5px;
+}
+
+.container div {
+	margin: 5px 0;
+}
+
+.item {
+	box-shadow: 0 4px 8px 0 rgba(29, 53, 87, 0.2);
+	border-radius: 3px;
+}
+
+.item:hover {
+	transform: translateY(-1rem);
+}

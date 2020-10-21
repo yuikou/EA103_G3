@@ -29,17 +29,9 @@ public class SalonServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-		doPost(req, res);
-
-	}
-
-	protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		req.setCharacterEncoding("UTF-8");
-		String action = req.getParameter("action");
-		HttpSession session = req.getSession();
-
+		
 		 
-		if("checkAc".equals(action)) {
 			System.out.println(123);
 			String salAc = req.getParameter("salAc");
 			  SalonService salSvc = new SalonService();
@@ -50,7 +42,18 @@ public class SalonServlet extends HttpServlet {
 			   res.getWriter().print(false);
 			  }
 			 
-		}
+		
+		
+		doPost(req, res);
+
+	}
+
+	protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		req.setCharacterEncoding("UTF-8");
+		String action = req.getParameter("action");
+		HttpSession session = req.getSession();
+
+		 
 		
 		
 		
@@ -154,7 +157,7 @@ public class SalonServlet extends HttpServlet {
 				} catch (NumberFormatException e) {
 					errorMsgs.add("請選擇接受寵物類型");
 				}
-
+                //上傳執照
 				byte[] salCertif = null;
 				byte[] buf = null;
 
@@ -163,6 +166,16 @@ public class SalonServlet extends HttpServlet {
 				buf = new byte[in.available()];
 				in.read(buf);
 				salCertif = buf;
+				
+				//上傳大頭貼
+				byte[] salPic = null;
+				byte[] buf2 = null;
+				
+				Part part2 =req.getPart("salPic");
+				InputStream in2 = part2.getInputStream();
+				buf2 = new byte[in2.available()];
+				in2.read(buf2);
+				salPic = buf2;
 
 				SalonVO salonVO = new SalonVO();
 				salonVO.setSalName(salName);
@@ -180,6 +193,7 @@ public class SalonServlet extends HttpServlet {
 				salonVO.setSalStatus(salStatus);
 				salonVO.setSalPetType(salPetType);
 				salonVO.setSalCertif(salCertif);
+				salonVO.setSalPic(salPic);
 
 				if (!errorMsgs.isEmpty()) {
 					req.setAttribute("salonVO", salonVO);
@@ -191,12 +205,13 @@ public class SalonServlet extends HttpServlet {
 				// 開始新增資料
 				SalonService salonSvc = new SalonService();
 				salonVO = salonSvc.addsalon(salName, salOwner, salPh, salMail, salCity, salDist, salAdr, salAc, salPw,
-						salSTime, salETime, salRemit, bankCode, salStatus, salInfo, salPetType, salCertif);
+						salSTime, salETime, salRemit, bankCode, salStatus, salInfo, salPetType, salCertif,salPic);
 				req.setAttribute("salonVO", salonVO);
 				// 新增成功
-				String url = "/front-end/salon/index.jsp";
-				RequestDispatcher successView = req.getRequestDispatcher(url); // 新增成功後轉交
-				successView.forward(req, res);
+//				String url = "/front-end/salon/index.jsp";
+//				RequestDispatcher successView = req.getRequestDispatcher(url); // 新增成功後轉交
+//				successView.forward(req, res);
+				res.sendRedirect(req.getContextPath() + "/front-end/salon/index.jsp");
 
 			} catch (Exception e) {
 				errorMsgs.add(e.getMessage());
@@ -210,6 +225,7 @@ public class SalonServlet extends HttpServlet {
 			List<String> errorMsgs = new LinkedList<String>();
 
 			req.setAttribute("errorMsgs", errorMsgs);
+			
 
 			try {
 				
@@ -291,15 +307,44 @@ public class SalonServlet extends HttpServlet {
 				} catch (NumberFormatException e) {
 					errorMsgs.add("請選擇接受寵物類型");
 				}
-
+                
+//上傳證照
+				SalonService salSvc = new SalonService();
+				
 				byte[] salCertif = null;
 				byte[] buf = null;
 				Part part = req.getPart("salCertif");
 				InputStream in = part.getInputStream();
 				buf = new byte[in.available()];
-				in.read(buf);
-				salCertif = buf;
-
+				
+				if(buf.length == 0) {
+					salCertif = salSvc.getonesalon(salNo).getSalCertif();
+				}else {
+					part = req.getPart("salCertif");
+					 in = part.getInputStream();
+					buf = new byte[in.available()];
+					in.read(buf);
+					salCertif = buf;
+				}
+												
+//上傳大頭貼
+				byte[] salPic = null;
+				byte[] buf2 = null;
+				Part part2 =req.getPart("salPic");
+				InputStream in2 = part2.getInputStream();
+				buf2 = new byte[in2.available()];
+				
+				if(buf2.length == 0) {
+					salPic = salSvc.getonesalon(salNo).getSalPic();
+				}else {
+					part2 =req.getPart("salPic");
+					in2 = part2.getInputStream();
+					buf2 = new byte[in2.available()];
+					in2.read(buf2);
+					salPic = buf2;
+				}
+				
+					
 				SalonVO salonVO = new SalonVO();
 				salonVO.setSalNo(salNo);
 				salonVO.setSalName(salName);
@@ -316,20 +361,22 @@ public class SalonServlet extends HttpServlet {
 				salonVO.setSalInfo(salInfo);
 				salonVO.setSalPetType(salPetType);
 				salonVO.setSalCertif(salCertif);
-
+				salonVO.setSalPic(salPic);
+			
 				if (!errorMsgs.isEmpty()) {
 					req.setAttribute("salonVO", salonVO); // 含有輸入格式錯誤的empVO物件,也存入req
-					RequestDispatcher failureView = req.getRequestDispatcher("/front-end/salon/fail.jsp");
+					RequestDispatcher failureView = req.getRequestDispatcher("/front-end/salon/updateSalon.jsp");
 					failureView.forward(req, res);
 					return; // 程式中斷
 				}
 
-				SalonService salSvc = new SalonService();
+				salSvc = new SalonService();				
 				salonVO = salSvc.updatesalon(salNo, salName, salOwner, salPh, salMail, salCity, salDist, salAdr,
-						salSTime, salETime, salRemit, bankCode, salInfo, salPetType, salCertif);
+						salSTime, salETime, salRemit, bankCode, salInfo, salPetType, salCertif,salPic);
+				
 
 				req.setAttribute("salonVO", salonVO);
-				String url = "/front-end/salon/salonindex.jsp";
+				String url = "/front-end/salon/index.jsp";
 				RequestDispatcher successView = req.getRequestDispatcher(url); // 修改成功後,轉交listOneEmp.jsp
 				successView.forward(req, res);
 

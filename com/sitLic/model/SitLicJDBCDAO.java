@@ -4,6 +4,8 @@ import java.io.*;
 import java.sql.*;
 import java.util.*;
 
+import com.sitSrv.model.SitSrvDAO;
+
 public class SitLicJDBCDAO implements SitLicDAO_interface {
 	private static String driver = "oracle.jdbc.driver.OracleDriver";
 	private static String url = "jdbc:oracle:thin:@localhost:1521:xe";
@@ -68,7 +70,7 @@ public class SitLicJDBCDAO implements SitLicDAO_interface {
 	}
 
 	@Override
-	public void update(SitLicVO sitLic) {
+	public void update(SitLicVO sitLic, String sitSrvNo) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 
@@ -118,7 +120,7 @@ public class SitLicJDBCDAO implements SitLicDAO_interface {
 	}
 
 	@Override
-	public Boolean updateStatus(String licNo, Integer licStatus) {
+	public Boolean updateStatus(String licNo, Integer licStatus, String sitSrvNo) {
 		Boolean updateOK = false;
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -130,23 +132,36 @@ public class SitLicJDBCDAO implements SitLicDAO_interface {
 			pstmt = con.prepareStatement(UPDATE_STATUS_PSTMT);
 			pstmt.setInt(1, licStatus);
 			pstmt.setString(2, licNo);
-			
-			if (pstmt.executeUpdate() == 1) {
-				updateOK = true;
-				con.commit();
+			pstmt.executeUpdate();
+
+			// 再來修改服務狀態
+			SitSrvDAO ssdao = new SitSrvDAO();
+			if (licStatus==1) {
+				ssdao.updateStatus(sitSrvNo, 0, 0);
+			} else if ((licStatus==2)){
+				ssdao.updateStatus(sitSrvNo, 3, 0);
 			}
+			
+			con.commit();
+			updateOK = true;
+			con.setAutoCommit(true);
 			
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 			throw new RuntimeException("Couldn't load database driver. " + e.getMessage());
 		} catch (SQLException e) {
 			e.printStackTrace();
-			try {
-				con.rollback();
-				throw new RuntimeException("修改失敗： " + e.getMessage());
-			} catch (SQLException e1) {
-				e1.printStackTrace();
+			if (con != null) {
+				try {
+					System.err.println("rolled back-由-sitLic_updateStatus");
+					con.rollback();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+					throw new RuntimeException("rollback error occured. "
+							+ e1.getMessage());
+				}
 			}
+			throw new RuntimeException("新增失敗: " + e.getMessage());
 		} finally {
 			if(pstmt != null) {
 				try {
@@ -371,7 +386,7 @@ public class SitLicJDBCDAO implements SitLicDAO_interface {
 		
 		
 		// 修改狀態
-		jdbcdao.updateStatus("SL001", 1);
+//		jdbcdao.updateStatus("SL001", 1, "SS001");
 		
 		
 		// 查詢one

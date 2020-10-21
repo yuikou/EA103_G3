@@ -1,347 +1,751 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="BIG5"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ page import="com.sitSrv.model.*,com.sitFollow.model.*, com.petSitter.model.*, java.text.DecimalFormat" %>
+
+<jsp:useBean id="sitSrvVOlist" scope="request" type="java.util.List<SitSrvVO2>" />
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
 <!-- Required meta tags -->
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <!-- 瀏覽器版本相容性 -->
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
 <title>瀏覽托養服務</title>
 
 <!-- 匯入外部CSS -->
-<c:set var="path" value="/EA103G3/front-end" />
-<c:set var="cssPath" value="/EA103G3/css/euphy" />
+<c:set var="path" value="${pageContext.request.contextPath}/front-end" />
+<c:set var="cssPath" value="${pageContext.request.contextPath}/css/euphy" />
 <link rel="stylesheet" type="text/css" href="${cssPath}/bootstrap.min.css">
-<link rel="stylesheet" type="text/css" href="${path}/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" type="text/css" href="${cssPath}/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" type="text/css" href="${cssPath}/jquery.datetimepicker.css" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.rateit/1.1.3/rateit.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/rangeslider.js/2.3.0/rangeslider.min.css" />
 <link rel="stylesheet" type="text/css" href="${cssPath}/Petfect.css">
-<link rel="stylesheet" type="text/css" href="${cssPath}/sitSrvSearch.css">
+<link rel="stylesheet" type="text/css" href="${cssPath}/sitSrvBrowse.css">
 <link rel="Shortcut Icon" type="image/x-icon" href="https://dzmg8959fhe1k.cloudfront.net/all/favicon.ico">
 </head>
 
 <body>
 
-<!-------------------- nav -------------------->
-	<jsp:include page="/front-end/nav.jsp"/>
-    
-<!------------------ 內文body ------------------>
-	<div class="container-fluid">
-	
-		<div class="banner">
-    		<div class="container-wrap">
-    			<h1>幫您尋找最符合的寵物托養保姆</h1>
-<!-- acpPetTyp-1 -->
-		  		<div class="search-container">
-		  			<form action="sitSrv.do" method="post">
-		  			
-		  				<div class="pet-type-select">
-						    <div class="heading"> 我的寵物類型: </div>
-						    <div>
+	<!-------------------- nav -------------------->
+	<jsp:include page="/front-end/header.jsp" />
+
+	<!------------------ 內文body ------------------>
+	<div class="container container-width">
+
+		<!-- 錯誤列表 -->
+		<div class="errorList">
+			<c:if test="${not empty errorMsgs}">
+				<font style="color: red;">發生以下錯誤：</font>
+				<ul>
+					<c:forEach var="msg" items="${errorMsgs}">
+						<li style="color: red;">${msg}</li>
+					</c:forEach>
+				</ul>
+			</c:if>
+		</div>
+
+		<form id="form1" action="${pageContext.request.contextPath}/sitSrv/sitSrv.do" method="post">
+<!-- pages1 -->		
+		<div class="row" style="display:none;">
+			<%@ include file="pages/page1_ByCompositeQuery.file" %>
+		</div>
+		
+		
+		<div class="main-wrapper col-md-12 ">
+
+<!-- search-sideBar -->
+			<div class="col-lg-3 col-md-12 search-sideBar">
+				<div class="search-sideBar-wrapper">
+					<!-- sitSrvCode -->
+					<div class="search-sideBar-filter sitSrvCode-div">
+						<div class="row sitSrvCode-row">
+							<div class="heading">尋找的服務:</div>
+							<input type="hidden" name="sitSrvCode" value="${param.sitSrvCode==''? 'Boarding': param.sitSrvCode}">
+							<button class="service-seleced-btn">
+								<div class="col-2 service-icon-div"><i class="service-icon <c:out value="${param.sitSrvCode==''? 'Boarding': param.sitSrvCode}"/>-icon"></i></div>
+								<div class="col-8 service-seleced-name"></div>
+								<div class="col-2 select-icon"><i class="material-icons">keyboard_arrow_down</i></div>
+							</button>
+							<ul class="sitSrvCode-select" style="display: none;">
+								<li class="selectMe <c:out value=" ${(param.sitSrvCode=='Boarding'|| param.sitSrvCode=='')?'is-selected':''}"/>" data-value="Boarding">
+									<div class="hidden-xs">
+										<i class="service-icon Boarding-icon"></i>
+									</div>
+									<div>
+										<div class="service-name">寄養<small>寵物到您家中過夜</small></div>
+									</div>
+								</li>
+								<li class="selectMe <c:out value=" ${param.sitSrvCode=='DayCare' ? 'is-selected':''}"/>" data-value="DayCare">
+									<div class="hidden-xs">
+										<i class="service-icon DayCare-icon"></i>
+									</div>
+									<div>
+										<div class="service-name">日托<small>寵物到您家中溜達</small></div>
+									</div></li>
+								<li class="selectMe <c:out value=" ${param.sitSrvCode=='DropIn' ? 'is-selected':''}"/>" data-value="DropIn">
+									<div class="hidden-xs">
+										<i class="service-icon DropIn-icon"></i>
+									</div>
+									<div>
+										<div class="service-name">到府<small>去寵物家餵食與清潔</small></div>
+									</div></li>
+								<li class="selectMe <c:out value=" ${param.sitSrvCode=='DogWalking' ? 'is-selected':''}"/>" data-value="DogWalking">
+									<div class="hidden-xs">
+										<i class="service-icon DogWalking-icon"></i>
+									</div>
+									<div>
+										<div class="service-name">遛狗<small>帶寵物外出透氣</small></div>
+									</div></li>
+								<li class="selectMe <c:out value=" ${param.sitSrvCode=='PetTaxi' ? 'is-selected':''}"/>" data-value="PetTaxi">
+									<div class="hidden-xs">
+										<i class="service-icon PetTaxi-icon"></i>
+									</div>
+									<div>
+										<div class="service-name">寵物Taxi<small>載送寵物服務</small></div>
+									</div></li>
+							</ul>
+						</div>
+					</div>
+
+					<!-- nearAddr -->
+					<div class="search-sideBar-filter nearAddr-div">
+						<div class="row nearAddr-row">
+							<div class="heading">我的位置:</div>
+							<span id="panel"><input type="text" id="keyword" class="search-loaction-input" name="nearAddr"></span>
+<!-- 							<input class="search-input" type="text" name="nearAddr"> -->
+						</div>
+					</div>
+
+					<!-- dateFrom & dateTo -->
+					<div class="search-sideBar-filter date-div">
+						<div class="row date-row">
+							<div class="heading">選擇日期:</div>
+							<div class="col-sm-6 search-time-from"> 
+								<input class="search-input search-time-input" type="text" id="start_dateTime" name="dateFrom" value="${dateFrom}" placeholder="開始日期" autocomplete="off">
+							</div>
+							<div class="betweenDiv"><i class="betweenIcon"></i></div>
+							<div class="col-sm-6 search-time-end">
+								<input class="search-input search-time-input" type="text" id="end_dateTime" name="dateTo" value="${dateTo}" placeholder="結束日期" autocomplete="off">
+							</div>
+						</div>
+					</div>
+
+					<!-- acpPetTyp-1 -->
+					<div class="search-sideBar-filter acpPetTyp1-div">
+						<div class="row acpPetTyp-row">
+							<div class="heading">我的寵物類型:</div>
+							<div>
 						        <ul class="list">
 						            <li class="list-item">
 						                <label class="label-checkbox">
-						                	<input type="checkbox" name="acpPetTypPart0" class="petTypCheckbox" value="cat">貓
+						                	<input type="checkbox" name="acpPetTypPart0" class="petTypCheckbox" value="cat" <c:out value="${param.acpPetTypPart0!=null ?'checked':''}"/> >貓
 						                </label>
 						                <label class="label-checkbox">
-						                	<input type="checkbox" name="acpPetTypPart1" class="petTypCheckbox" value="dog">狗
+						                	<input type="checkbox" name="acpPetTypPart1" class="petTypCheckbox" value="dog" <c:out value="${param.acpPetTypPart1!=null ?'checked':''}"/>>狗
 						                </label>
 						            </li>
 						        </ul>
 						    </div>
 						</div>
-<!-- acpPetTyp-1 -->
-						<div class="dog-size-select">
-						    <div class="heading"> 我的狗狗體型: </div>
-						    <div>
+					</div>
+
+					<!-- acpPetTyp-2 -->
+					<div class="search-sideBar-filter acpPetTyp2-div">
+						<div class="row acpPetTyp2-row">
+							<div class="heading">我的狗狗體型:</div>
+							<div>
 						        <ul class="list">
 						            <li class="list-item">
 						                <label class="label-radio">
-						                	<input type="radio" name="acpPetTypPart2" class="petTypCheckbox" value="cat">小型犬(1~5kg)
+						                	<input type="radio" name="acpPetTypPart2" class="petTypCheckbox" value="small" <c:out value="${param.acpPetTypPart2=='small' ?'checked':''}"/>>小型犬(1~5kg)
 						                </label>
 						                <label class="label-radio">
-						                	<input type="radio" name="acpPetTypPart2" class="petTypCheckbox" value="dog">中型犬(5~10kg)
+						                	<input type="radio" name="acpPetTypPart2" class="petTypCheckbox" value="medium" <c:out value="${param.acpPetTypPart2=='medium' ?'checked':''}"/>>中型犬(5~10kg)
 						                </label>
 						                <label class="label-radio">
-						                	<input type="radio" name="acpPetTypPart2" class="petTypCheckbox" value="cat">大型犬(10~20kg)
+						                	<input type="radio" name="acpPetTypPart2" class="petTypCheckbox" value="large" <c:out value="${param.acpPetTypPart2=='large' ?'checked':''}"/>>大型犬(10~20kg)
 						                </label>
 						                <label class="label-radio">
-						                	<input type="radio" name="acpPetTypPart2" class="petTypCheckbox" value="dog">特大型犬(20kg以上)
+						                	<input type="radio" name="acpPetTypPart2" class="petTypCheckbox" value="xlarge" <c:out value="${param.acpPetTypPart2=='xlarge' ?'checked':''}"/>>特大型犬(20kg以上)
 						                </label>
 						            </li>
 						        </ul>
 						    </div>
 						</div>
+					</div>
 
-						<div class="row">
-        
-				            <div class="col-sm-12" role="group" aria-labelledby="service_buttons">
-				                <div class="heading service-select"> 尋找的服務: </div>
-				                <div class="row service-select-group">
-									<div class="col-xs-12 col-sm-2 service-select-div">
-									    <div class="service-select-btn" data-value="Boarding">
-									        <a class="focusMe">
-									            <div class="hidden-xs">
-									               <i class="service-icon boarding-icon"></i>
-									            </div>
-									            <div>
-									                <div>寄養</div>
-									            </div>
-									        </a>
-									    </div>
-									</div>
-                            
-									<div class="col-xs-12 col-sm-2 service-select-div">
-									    <div class="service-select-btn" data-value="DayCare">
-									        <a class="focusMe">
-									            <div class="hidden-xs">
-									               <i class="service-icon daycare-icon"></i>
-									            </div>
-									            <div>
-									                <div>日托</div>
-									            </div>
-									        </a>
-									    </div>
-									</div>
-
-									<div class="col-xs-12 col-sm-2 service-select-div">
-									    <div class="service-select-btn" data-value="DropIn">
-									        <a class="focusMe">
-									            <div class="hidden-xs">
-									               <i class="service-icon dropin-icon"></i>
-									            </div>
-									            <div>
-									                <div>到府</div>
-									            </div>
-									        </a>
-									    </div>
-									</div>
-
-									<div class="col-xs-12 col-sm-2 service-select-div">
-									    <div class="service-select-btn" data-value="DogWalking">
-									        <a class="focusMe">
-									            <div class="hidden-xs">
-									               <i class="service-icon dogwalking-icon"></i>
-									            </div>
-									            <div>
-									                <div>遛狗</div>
-									            </div>
-									        </a>
-									    </div>
-									</div>
-
-									<div class="col-xs-12 col-sm-2 service-select-div">
-									    <div class="service-select-btn" data-value="PetTaxi">
-									        <a class="focusMe">
-									            <div class="hidden-xs">
-									               <i class="service-icon pettaxi-icon"></i>
-									            </div>
-									            <div>
-									                <div>寵物計程車</div>
-									            </div>
-									        </a>
-									    </div>
-									</div>
-                    
-               					</div>
-           					</div>
-       						<input type="hidden" name="sitSrvCode" id="service_buttons" value="">
-   						</div>
-						
-						<div class="row">
-							<div class="col-sm-5 search-loaction">
-								<div class="heading searchQ"> 我的位置: </div>
-							</div>
-							<div class="col-sm-7 search-time">
-								<div class="heading searchQ"> 選擇日期: </div>
+					<!-- acpPetNum -->
+					<div class="search-sideBar-filter acpPetNum-div">
+						<div class="row acpPetNum-row">
+							<div class="heading">我的寵物數量:</div>
+							<div class="button-item">
+						    	<label>
+						        	<input type="radio" name="acpPetNum" value="1" <c:out value="${param.acpPetNum=='1' ?'checked':''}"/>>1
+						       	</label>
+						       	<label>
+						        	<input type="radio" name="acpPetNum" value="2" <c:out value="${param.acpPetNum=='2' ?'checked':''}"/>>2
+						      	</label>
+						     	<label>
+						          	<input type="radio" name="acpPetNum" value="3" <c:out value="${param.acpPetNum=='3' ?'checked':''}"/>>3+
+						     	</label>
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-sm-5 search-loaction">
-								<input class="search-loaction-input" type="text" name="" value="">
-							</div>
-							<div class="col-sm-7 search-time">
-								<div class="search-time-div">
-									<div class="col-sm-6 search-time-from"> 
-										<input class="search-time-input" type="date" name="" value="">
-									</div>
-									<div class="betweenDiv"><i class="betweenIcon"></i></div>
-									<div class="col-sm-6 search-time-end">
-										<input class="search-time-input" type="date" name="" value="">
-									</div>
-									
-								</div>
-							</div>
+					</div>
+
+					<!-- acpSrvFee -->
+					<div class="search-sideBar-filter acpSrvFee-div">
+						<div class="row acpSrvFee-row">
+							<div class="heading"><span>可接受每&nbsp;</span><span class="unit">晚</span><span>&nbsp;的最大價格</span></div>
+							<div class="range-slider">
+						    	<div class="wrapper_Ranger">
+						        	<input id="rs-range-line" class="rs-range" type="range" name="srvFee" value="${param.srvFee==null ?1000:param.srvFee}" min="0" max="1000">
+						        </div>
+						   	</div>
 						</div>
-						<div class="row" style="clear:both;">
-							<div class="col-sm-10 search-condition">
-								<button class="search-condition-btn">送出搜尋</button>
-							</div>
+					</div>
+
+					<div class="row" style="clear:both;">
+						<div class="col-sm-10 search-condition">
+							<input type="hidden" name="action" value="browse">
+							<button class="search-condition-btn">搜尋保姆</button>
 						</div>
-		  			</form>
-		  		</div>
-    		
-    		</div>
-  		</div>
-	
-	
-		<section class="about" id="about">
-		 	<div class="container">
-		   		<div class="row">
-		     		<div class="col-xs-12 col-sm-12">
-		 	  			<h2>簡單幾步輕鬆上手</h2>
-		       		</div>
-		      	</div>
-    			<div class="row">
-      				<div class="col-xs-12 col-sm-4 srvInfoDiv">
-      					<div class="srvInfo">
-      						<i class="service-icon boarding-icon srvInfo-icon"></i>
-      						<div class="srvInfoDescript">
-	      						<h4>寵物寄養</h4>
-	        					<span>你的寵物到保姆家中過夜</span>
-	        				</div>
-      					</div>
-      					<div class="srvInfo">
-      						<i class="service-icon daycare-icon srvInfo-icon"></i>
-      						<div class="srvInfoDescript">
-      							<h4>寵物日托</h4>
-        						<span>你的寵物到保姆家中溜達(不過夜)</span>
-        					</div>
-      					</div>
-      					<div class="srvInfo">
-      						<i class="service-icon dropin-icon srvInfo-icon"></i>
-      						<div class="srvInfoDescript">
-	      						<h4>到府保姆</h4>
-	        					<span>保姆來你家幫寵物餵食與清潔</span>
-	        				</div>
-      					</div>
-      					<div class="srvInfo">
-      						<i class="service-icon dogwalking-icon srvInfo-icon"></i>
-      						<div class="srvInfoDescript">
-	      						<h4>遛狗</h4>
-	        					<span>保姆帶你的寵物外出透氣</span>
-      						</div>
-      					</div>
-      					<div class="srvInfo">
-      						<i class="service-icon pettaxi-icon srvInfo-icon"></i>
-      						<div class="srvInfoDescript">
-      							<h4>寵物計程車</h4>
-        						<span>載送你的寵物到指定地點</span>
-        					</div>
-      					</div>
-      				</div>
-      				<div class="col-xs-12 col-sm-8 progressDiv">
-      					<div class="col-xs-12">
-					      <div class="progress_step_wrap">
-					        <div class="progress_step first_step">
-					          <div class="step_line"><span class="step_number">1</span>
-					          </div>
-					        </div>
-					        <div class="progress_step">
-					          <div class="step_line"><span class="step_number">2</span>
-					          </div>
-					        </div>
-					        <div class="progress_step last_step">
-					          <div class="step_line"><span class="step_number">3</span>
-					          </div>
-					        </div>
-					      </div>
-					    </div>
-					    <div class="col-xs-12 col-sm-12" style="display: flex;">
-					    	<div class="col-sm-4 progress_step_info">
-					    		<img class="progress_step_img" src="${pageContext.request.contextPath}/front-end/img/search.svg">
-					    		<div class="progress_step_descript">
-						    		<h4>挑選保姆</h4>
-							    	<span>利用條件、評價、日期與地圖挑選心儀的保姆</span>
-					    		</div>
-					    	</div>
-					    	<div class="col-sm-4 progress_step_info">
-					    		<img class="progress_step_img" src="${pageContext.request.contextPath}/front-end/img/talking.svg">
-					    		<div class="progress_step_descript">
-						    		<h4>線上私聊</h4>
-							    	<span>預約前可以跟保姆線上私聊, 確認保姆合不合適</span>
-					    		</div>
-					    	</div>
-					    	<div class="col-sm-4 progress_step_info">
-					    		<img class="progress_step_img" src="${pageContext.request.contextPath}/front-end/img/schedule.svg">
-					    		<div class="progress_step_descript">
-						    		<h4>立即預約</h4>
-							    	<span>在平台上快速填單預約, 讓您盡早安排個人行程</span>
-					    		</div>
-					    	</div>
-					    </div>
-					    
-					    <div class="col-xs-12">
-					      <div class="progress_step_wrap">
-					        <div class="progress_step first_step">
-					          <div class="step_line"><span class="step_number">4</span>
-					          </div>
-					        </div>
-					        <div class="progress_step">
-					          <div class="step_line"><span class="step_number">5</span>
-					          </div>
-					        </div>
-					        <div class="progress_step last_step">
-					          <div class="step_line"><span class="step_number">6</span>
-					          </div>
-					        </div>
-					      </div>
-					    </div>
-					    <div class="col-xs-12 col-sm-12" style="display: flex;">
-					    	<div class="col-sm-4 progress_step_info">
-					    		<img class="progress_step_img" src="${pageContext.request.contextPath}/front-end/img/onlinePay.svg">
-					    		<div class="progress_step_descript">
-						    		<h4>支付容易</h4>
-							    	<span>以信用卡/線上匯款方式付款, 安全方便快速</span>
-					    		</div>
-					    	</div>
-					    	<div class="col-sm-4 progress_step_info">
-					    		<img class="progress_step_img" src="${pageContext.request.contextPath}/front-end/img/lovePet.svg">
-					    		<div class="progress_step_descript">
-						    		<h4>呵護寵物</h4>
-							    	<span>當你不在寵物身邊時, 保姆會提供一定的照顧與關注</span>
-					    		</div>
-					    	</div>
-					    	<div class="col-sm-4 progress_step_info">
-					    		<img class="progress_step_img" src="${pageContext.request.contextPath}/front-end/img/comment.svg">
-					    		<div class="progress_step_descript">
-						    		<h4>後續評價</h4>
-							    	<span>服務結束後邀請您評價, 建立公開透明的社群信用</span>
-					    		</div>
-					    	</div>
-					    </div>
-				    </div>
+					</div>
+
+					<!-- otherFilters -->
+					<div class="otherFilters-div">
+						<div>
+							<div class="otherFilters-more">更多篩選條件:<i class="material-icons">keyboard_arrow_down</i></div>
+							<button class="otherFilters-reset">清空所有條件</button>
+						</div>
+						<div class="otherFilters-more-choices">
+							<div class="heading otherFilters-heading">加價洗澡</div>
+							<div class="otherFilters-choices"><label><input type="radio" name='addBathing' value='1' <c:out value="${param.addBathing=='1' ?'checked':''}"/>><span>有提供</span></label></div>
+							<div class="otherFilters-choices"><label><input type="radio" name='addBathing' value='0' <c:out value="${param.addBathing=='0' ?'checked':''}"/>><span>沒有提供</span></label></div>
+							<div class="heading otherFilters-heading">加價接送</div>
+							<div class="otherFilters-choices"><label><input type="radio" name='addPickup' value='1' <c:out value="${param.addPickup=='1' ?'checked':''}"/>><span>有提供</span></label></div>
+							<div class="otherFilters-choices"><label><input type="radio" name='addPickup' value='0' <c:out value="${param.addPickup=='0' ?'checked':''}"/>><span>沒有提供</span></label></div>
+							<div class="heading otherFilters-heading">看顧寵物的程度</div>
+							<div class="otherFilters-choices"><label><input type="radio" name='careLevel' value='0' <c:out value="${param.careLevel=='0' ?'checked':''}"/>><span>永遠不會無人看管</span></label></div>
+							<div class="otherFilters-choices"><label><input type="radio" name='careLevel' value='1' <c:out value="${param.careLevel=='1' ?'checked':''}"/>><span>無看管不超過1小時</span></label></div>
+							<div class="otherFilters-choices"><label><input type="radio" name='careLevel' value='2' <c:out value="${param.careLevel=='2' ?'checked':''}"/>><span>無看管1-2小時</span></label></div>
+							<div class="otherFilters-choices"><label><input type="radio" name='careLevel' value='3' <c:out value="${param.careLevel=='3' ?'checked':''}"/>><span>無看管超過2小時</span></label></div>
+							<div class="heading otherFilters-heading">寵物待在的地方</div>
+							<div class="otherFilters-choices"><label><input type="radio" name='stayLoc' value='0' <c:out value="${param.stayLoc=='0' ?'checked':''}"/>><span>自由漫遊</span></label></div>
+							<div class="otherFilters-choices"><label><input type="radio" name='stayLoc' value='1' <c:out value="${param.stayLoc=='1' ?'checked':''}"/>><span>私人院子</span></label></div>
+							<div class="otherFilters-choices"><label><input type="radio" name='stayLoc' value='2' <c:out value="${param.stayLoc=='2' ?'checked':''}"/>><span>狗窩或籠子</span></label></div>
+							<div class="otherFilters-choices"><label><input type="radio" name='stayLoc' value='3' <c:out value="${param.stayLoc=='3' ?'checked':''}"/>><span>單獨房間</span></label></div>
+							<div class="heading otherFilters-heading">寵物睡覺的地方</div>
+							<div class="otherFilters-choices"><label><input type="radio" name='overnightLoc' value='0' <c:out value="${param.overnightLoc=='0' ?'checked':''}"/>><span>隨意</span></label></div>
+							<div class="otherFilters-choices"><label><input type="radio" name='overnightLoc' value='1' <c:out value="${param.overnightLoc=='1' ?'checked':''}"/>><span>在保姆床上</span></label></div>
+							<div class="otherFilters-choices"><label><input type="radio" name='overnightLoc' value='2' <c:out value="${param.overnightLoc=='2' ?'checked':''}"/>><span>在狗床上</span></label></div>
+							<div class="otherFilters-choices"><label><input type="radio" name='overnightLoc' value='3' <c:out value="${param.overnightLoc=='3' ?'checked':''}"/>><span>狗窩或籠子</span></label></div>
+							<div class="heading otherFilters-heading">無菸環境</div>
+							<div class="otherFilters-choices"><label><input type="radio" name='smkFree' value='1' <c:out value="${param.smkFree=='0' ?'checked':''}"/>><span>有提供</span></label></div>
+							<div class="otherFilters-choices"><label><input type="radio" name='smkFree' value='0' <c:out value="${param.smkFree=='1' ?'checked':''}"/>><span>沒有提供</span></label></div>
+							<div class="heading otherFilters-heading">保姆家裡有小孩</div>
+							<div class="otherFilters-choices"><label><input type="radio" name='hasChild' value='1' <c:out value="${param.hasChild=='0' ?'checked':''}"/>><span>家裡有小孩</span></label></div>
+							<div class="otherFilters-choices"><label><input type="radio" name='hasChild' value='0' <c:out value="${param.hasChild=='1' ?'checked':''}"/>><span>家裡沒有小孩</span></label></div>
+							<div class="heading otherFilters-heading">保姆提供的寵物運輸設備</div>
+							<div class="otherFilters-choices"><label><input type="radio" name='eqpt' value='0' <c:out value="${param.eqpt=='0' ?'checked':''}"/>><span>狗座帶</span></label></div>
+							<div class="otherFilters-choices"><label><input type="radio" name='eqpt' value='1' <c:out value="${param.eqpt=='1' ?'checked':''}"/>><span>寵物籠子</span></label></div>
+							<div class="otherFilters-choices"><label><input type="radio" name='eqpt' value='2' <c:out value="${param.eqpt=='2' ?'checked':''}"/>><span>託運箱</span></label></div>
+						</div>
+					</div>
 				</div>
-			</div>	
- 		</section> <!-- end of about section-->
+			</div>
+
+<!-- search-results -->
+			<div class="col-lg-5 col-md-12 search-results">
+				<div class="search-results-wrapper">
+				
+				<!-- 先創建Svc -->
+				<jsp:useBean id="memSvc" class="com.member.model.MemService"></jsp:useBean>
+        		<jsp:useBean id="petSitterSvc" class="com.petSitter.model.PetSitterService"></jsp:useBean>
+        		<jsp:useBean id="sfSrv" class="com.sitFollow.model.SitFollowService"></jsp:useBean>
+					
+					<c:forEach var="sitSrvVO" items="${sitSrvVOlist}" begin="<%=pageIndex%>" end="<%=pageIndex+rowsPerPage-1%>">
+					<div class="panel" id="${sitSrvVO.sitSrvNo}">
+        
+			            <a href="${pageContext.request.contextPath}/petSitter/petSitter.do?action=getOneSitter_DisplayForMem&sitNo=${sitSrvVO.sitNo}&sitSrvNo=${sitSrvVO.sitSrvNo}">
+			            <div class="row align-middle" >
+			                <div class="col-md-3 column hl-selfie" 
+			                	style="background-image: url('${pageContext.request.contextPath}/PicReader.do?action=getMemPic&memNo=${sitSrvVO.memNo}');"></div>
+			                <div class="col-md-7 column align-top">
+			                    <div class="hl-name">${sitSrvVO.memName}
+<%-- 			                    	<img src="${path}/img/verify_mobile.svg" class="hl-phoneveri" alt="phone"> --%>
+									
+									<input type="hidden" name="memNo" value="${memNo}">
+									<input type="hidden" name="sitNo" value="${sitSrvVO.sitNo}">
+									<div class="myClick">
+										<span class="${sfSrv.getAllByMemNo(memNo).contains(sitSrvVO.memNo)? 'fa fa-heart':'fa fa-heart-o'}" style="color:red;"></span>
+										<div class="ring"></div>
+										<div class="ring2"></div>
+									</div>
+			                    </div>
+			                    <div class="hl-title">${sitSrvVO.sitSrvName}</div>
+			                    <div class="hl-stars">
+			                        <div class="rateit" data-rateit-value=<c:if test="${sitSrvVO.totalComm != 0}">${sitSrvVO.totalComm / sitSrvVO.totalCus}</c:if> data-rateit-ispreset="true" data-rateit-readonly="true"></div>
+			                    </div>
+			                    <div class="hl-svc">
+			                    	${sitSrvVO.memAddress.substring(0,6)}</div>
+			                    <div class="hl-about">
+			                    	<div class="hl-about-div repeat-clients">${sitSrvVO.repeatCus} 個重複預訂</div>
+			                    	<div class="hl-about-div reviews">${sitSrvVO.totalComm} 個評價</div>
+			                    </div>
+			                </div>
+			                <div class="col-md-2 column" style="position:relative;height:inherit;padding-right: 0;">
+			                    <div class="hl-best-svc text-center">
+			                        <div class="hl-best-price">$${sitSrvVO.srvFee}</div>
+			                        <div class="hl-unit"> /&nbsp;
+			                        <c:out value="${sitSrvVO.sitSrvCode=='Boarding'? '晚': ''} "/>
+			                        <c:out value="${sitSrvVO.sitSrvCode=='DayCare'? '天': ''} "/>
+			                        <c:out value="${sitSrvVO.sitSrvCode=='DropIn'? '次': ''} "/>
+			                       	<c:out value="${sitSrvVO.sitSrvCode=='DogWalking'? '次': ''} "/>
+			                        <c:out value="${sitSrvVO.sitSrvCode=='PetTaxi'? '公里': ''} "/>
+			                        </div>
+			                    </div>
+			                    <div class="align-center">
+			                    	<c:if test="${sitSrvVO.acpPetTyp!=0}">
+				                        <img src="${path}/img/mdog.svg" alt="pet-type" class="hl-svctarget">
+			                    	</c:if>
+			                    	<c:if test="${sitSrvVO.acpPetTyp<=4}">
+			                        	<img src="${path}/img/catLong.svg" alt="pet-type" class="hl-svctarget">
+			                        </c:if>
+			                    </div>
+			                </div>
+			            </div>
+			            </a>
+            
+        			</div>
+					</c:forEach>
+					
+				</div>
+				<div class="row align-center">
+	        		<%@ include file="pages/page2_ByCompositeQuery.file" %>
+	        		<input id="whichPage" type="hidden" name="whichPage" value="<%=whichPage%>">
+				</div>
+			</div>
+
+<!-- search-map -->
+			<div class="col-lg-4 hide-md search-map">
+				<div class="search-map-wrapper">
+					<div id="map"></div>
+				</div>
+			</div>
+		</div>
+		</form>
 	</div>
 
-<!------------------ footer ------------------>
-    <jsp:include page="/front-end/footer.jsp"/>
+	<!------------------ footer ------------------>
+	<jsp:include page="/front-end/footer.jsp" />
 
 
-<!-- 匯入js -->
-	<c:set var="jsPath" value="/EA103G3/js/euphy" />
+	<!-- 匯入js -->
+	<c:set var="jsPath" value="${pageContext.request.contextPath}/js/euphy" />
 	<script src="${jsPath}/jquery-3.2.1.min.js"></script>
+	<script src="${jsPath}/jquery.datetimepicker.full.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/rangeslider.js/2.3.0/rangeslider.min.js"></script>
+	<script src="${jsPath}/sitFeeRange.js"></script>
 	<script src="${jsPath}/popper.js"></script>
 	<script src="${jsPath}/bootstrap.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.rateit/1.1.3/jquery.rateit.min.js"></script>
 	<script>
-	$(document).ready(function(){
+		$.datetimepicker.setLocale('zh');
 		
-		var ssBtn = $(".service-select-btn");
-		ssBtn.each(function(){
-			$(this).click(function(){
-				ssBtn.removeClass("line");
-				$(this).toggleClass("line");
-				// 放入選擇的sitSrvCode
-				var sitSrvV = $(this).attr("data-value");
-				$("#service_buttons").val(sitSrvV);
+		function search(p) {
+			// 發送ajax重新查詢
+			var data = $( "form" ).serialize();
+			var dataFinal = data.substr(0, data.length-1) + p;
+			
+			$.ajax({
+                type: "POST",
+                url: "${pageContext.request.contextPath}/sitSrv/sitSrv.do",
+                data: dataFinal,             	
+                dataType: "json",
+                success: function (result) {
+                	var wrapper = $(".search-results-wrapper");
+                	wrapper.empty();
+                	
+                	$.each(result, function (i, j) {
+                		if (i<p*3 && i>=(p-1)*3){
+// 	                		console.log("取出第"+i+"筆json物件："+j.memName);
+							var unit='次';
+							if (j.sitSrvCode == 'Boarding') {
+								unit = '晚';
+							} else if (j.sitSrvCode == 'DayCare') {
+								unit = '天';
+							} else if (j.sitSrvCode == 'PetTaxi') {
+								unit = '公里';
+							}
+							var dogPic = '';
+							if (j.acpPetTyp!=0) {
+								dogPic=`<img src="${path}/img/mdog.svg" alt="pet-type" class="hl-svctarget">`;
+							}
+							var catPic = '';
+							if (j.acpPetTyp<=4) {
+								catPic=`<img src="${path}/img/catLong.svg" alt="pet-type" class="hl-svctarget">`;
+							}
+							
+	                		var newCard = 
+	                		`<div class="panel" id=` + j.sitSrvNo +`>
+	                			
+	                			<a href="${pageContext.request.contextPath}/petSitter/petSitter.do?action=getOneSitter_DisplayForMem&sitNo=`+j.sitNo+`&sitSrvNo=`+ j.sitSrvNo+`">
+	                			<div class="row align-middle" >
+	 			                	<div class="col-md-3 column hl-selfie" 
+	 			                	style="background-image: url('${pageContext.request.contextPath}/PicReader.do?action=getMemPic&memNo=`+j.memNo+`');"></div>
+	 			                	<div class="col-md-7 column align-top">
+				                    	<div class="hl-name">`+j.memName+`
+				                    		<input type="hidden" name="memNo" value="${memNo}">
+											<input type="hidden" name="sitNo" value=`+j.sitNo+`>
+											<span class="fa fa-heart-o" style="color:red;"></span>
+											<div class="ring"></div>
+											<div class="ring2"></div>
+				                    	</div>
+		                				<div class="hl-title">`+j.sitSrvName+`</div>
+					                    <div class="hl-stars">
+					                        <div class="rateit" data-rateit-value=`+ j.totalComm / j.totalCus+` data-rateit-ispreset="true" data-rateit-readonly="true"></div>
+					                    </div>
+					                    <div class="hl-svc">`+
+					                    	j.memAddress.substring(0,6)+`</div>
+					                    <div class="hl-about">
+					                    	<div class="hl-about-div repeat-clients">`+ j.repeatCus +` 個重複預訂</div>
+					                    	<div class="hl-about-div reviews">`+ j.totalComm +` 個評價</div>
+					                    </div>
+	                				</div>
+	                				<div class="col-md-2 column" style="position:relative;height:inherit;padding-right: 0;">
+					                    <div class="hl-best-svc text-center">
+					                        <div class="hl-best-price">$`+j.srvFee+`</div>
+					                        <div class="hl-unit"> /&nbsp;`+unit+`</div>
+					                    </div>
+					                    <div class="align-center">`+
+					                    	dogPic + catPic +`
+					                    </div>
+					            	</div>
+	                			</div>
+	                			</a>
+	                		</div>`;
+	                		
+	                		wrapper.append(newCard);
+	                		$(".rateit").rateit();
+	                	}
+                	});
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                	console.log("ajax失敗"+xhr.responseText);
+                }
+            });
+		}
+		
+		$(document).ready(function() {
+			
+			var service_seleced_btn 	= $(".service-seleced-btn");
+			var sitSrvCode 				= service_seleced_btn.prev();
+			var service_icon_rn			= service_seleced_btn.find(".service-icon");
+			var service_seleced_name 	= service_seleced_btn.find(".service-seleced-name");
+			var sitSrvCode_select 		= $(".sitSrvCode-select");
+			var is_selected 			= $(".is-selected");
+			var search_condition_btn 	= $(".search-condition-btn");
+			
+			search_condition_btn.click(function(e){
+				e.preventDefault();
+				search(1);
 			});
+			// --------------------頁數--------------------
+			var  pagination_first = $(".pagination-first").children("div");
+			var  pagination_prev = $(".pagination-prev").children("div");
+			var pagination_next = $(".pagination-next").children("div");
+			var pagination_final = $(".pagination-final").children("div");
+			
+			pagination_first.click(function(){
+				search(1);
+				whichPage.val(1);
+			});
+			pagination_prev.click(function(){
+				let whichPage = $("#whichPage").val();
+				search(parseInt(whichPage)-1);
+				$("#whichPage").val(parseInt(whichPage)-1);
+			});
+			pagination_next.click(function(){
+				let whichPage = $("#whichPage").val();
+				search(parseInt(whichPage)+1);
+				$("#whichPage").val(parseInt(whichPage)+1);
+			});
+			pagination_final.click(function(){
+				search(<%=pageNumber%>);
+				whichPage.val(<%=pageNumber%>);
+			});
+			
+			// --------------------顯示服務選項--------------------
+			
+			service_seleced_name.html(is_selected.find(".service-name").html());
+			service_seleced_btn.click(function(e){
+				e.preventDefault();
+				
+				if (sitSrvCode_select.css("display") == "block") {
+					sitSrvCode_select.css("display", "none");
+				} else {
+					sitSrvCode_select.css("display", "block");
+				}
+				
+			});
+
+			// --------------------更改服務選項--------------------
+				
+			$(".selectMe").click(function(){
+				
+				var selectMe_rn = $(this);
+				var service_icon = selectMe_rn.find(".service-icon");
+				var service_name = selectMe_rn.find(".service-name");
+				// 先清除之前被選中服務的隱藏class
+				$(".selectMe").each(function(){
+					$(".selectMe").removeClass("is-selected");
+				})
+// 				alert(service_seleced_name.html());
+				
+				// 更改btn的內容，表示目前選中服務
+				service_icon_rn.attr("class",service_icon.attr("class"));
+				service_seleced_name.html(service_name.html());
+				
+				// 將選中的服務value置入input
+				sitSrvCode.val(selectMe_rn.attr("data-value"));
+				
+				// 隱藏被選中的服務後關閉選單
+				selectMe_rn.addClass("is-selected");
+				sitSrvCode_select.css("display", "none");
+				
+			});
+				
+			// --------------------狗狗size--------------------
+			
+			var acpPetTypPart1 = $("[name='acpPetTypPart1']");
+			var acpPetTyp2_div = $(".acpPetTyp2-div");
+			var acpPetTypPart2 = $("[name='acpPetTypPart2']");
+			
+			if (acpPetTypPart1.prop("checked")) {
+				acpPetTyp2_div.show();
+			} else {
+				acpPetTyp2_div.hide();
+			}
+			acpPetTypPart1.click(function(){
+				if (acpPetTypPart1.prop("checked")) {
+					acpPetTyp2_div.show();
+				} else {
+					acpPetTyp2_div.hide();
+					acpPetTypPart2.each(function(){
+						$(this).prop("checked", false);
+					});
+				}
+			});
+			
+			// --------------------寵物數量--------------------
+				
+			var button_item_label = $(".button-item").find("label");
+			
+			button_item_label.click(function(){
+				
+				var button_item_label_rn = $(this);
+				button_item_label.removeClass("checked");
+				button_item_label_rn.addClass("checked");
+				
+			});
+			
+			var acpPetNum_input = $("[name='acpPetNum']");
+			
+			acpPetNum_input.each(function(){
+				var label_rn = $(this).parent();
+				
+				if ($(this).prop("checked")) {
+					label_rn.addClass("checked");
+				} else {
+					label_rn.removeClass("checked");
+				}
+				
+			});
+			
+			
+			// --------------------更多篩選條件--------------------
+			var otherFilters_more = $(".otherFilters-more");
+			var choices = $(".otherFilters-more-choices");
+
+			otherFilters_more.click(function(){
+				
+				if (choices.css("display") == "none") {
+					$(this).find("i").css("transform", "scaleY(-1)");
+					choices.css("display", "block")
+				} else {
+					$(this).find("i").css("transform", "scaleY(1)");
+					choices.css("display", "none")
+				}
+			});
+			
+			var otherFilters_reset = $(".otherFilters-reset");
+			otherFilters_reset.click(function(e){
+				e.preventDefault();
+				var choices_inputs = choices.find("input");
+				choices_inputs.each(function(){
+					$(this).prop("checked", false);
+				});
+			});
+			
+			// ----------------------日期----------------------
+			var today = new Date();
+			var ninetyDays = new Date();
+			ninetyDays.setDate(today.getDate()+90);
+			$('#start_dateTime').datetimepicker({
+				theme: 'light-bootstrap',
+				format:'Y-m-d',
+				onShow:function(){
+					this.setOptions({
+					maxDate:$('#end_dateTime').val()?$('#end_dateTime').val():false
+					})
+				},
+				timepicker:false,
+				beforeShowDay: function(date) {
+					if ( date.getYear() <  today.getYear() || 
+					   ( date.getYear() == today.getYear() && date.getMonth() <  today.getMonth()) || 
+					   ( date.getYear() == today.getYear() && date.getMonth() == today.getMonth() && date.getDate() < today.getDate())
+					      ||
+					     date.getYear() >  ninetyDays.getYear() || 
+					   ( date.getYear() == ninetyDays.getYear() && date.getMonth() >  ninetyDays.getMonth()) || 
+					   ( date.getYear() == ninetyDays.getYear() && date.getMonth() == ninetyDays.getMonth() && date.getDate() > ninetyDays.getDate())
+					 ) {
+					 	 return [false, ""]
+					 }
+					return [true, ""];
+				}
+			});
+				 
+			$('#end_dateTime').datetimepicker({
+				theme: '',
+				format:'Y-m-d',
+				onShow:function(){
+					this.setOptions({
+					minDate:$('#start_dateTime').val()?$('#start_dateTime').val():false
+					})
+				},
+				timepicker:false,
+				beforeShowDay: function(date) {
+					if ( date.getYear() <  today.getYear() || 
+					   ( date.getYear() == today.getYear() && date.getMonth() <  today.getMonth()) || 
+					   ( date.getYear() == today.getYear() && date.getMonth() == today.getMonth() && date.getDate() < today.getDate())
+					      ||
+					     date.getYear() >  ninetyDays.getYear() || 
+					   ( date.getYear() == ninetyDays.getYear() && date.getMonth() >  ninetyDays.getMonth()) || 
+					   ( date.getYear() == ninetyDays.getYear() && date.getMonth() == ninetyDays.getMonth() && date.getDate() > ninetyDays.getDate())
+					 ) {
+					 	 return [false, ""]
+					 }
+					return [true, ""];
+				}
+			});	
+			
+			
+			// ----------------------追蹤----------------------
+			var myClick = $(".myClick");
+			
+			myClick.click(function(e){
+				var myClick_rn = $(this);
+				var myClick_span = myClick_rn.find("span");
+				var myClick_sitNo = myClick_rn.prev();
+				var myClick_memNo = myClick_sitNo.prev();
+				
+				e.preventDefault();
+				var myClick_action = null;
+				if (myClick_span.hasClass("fa-heart")) {
+					myClick_action = "del";
+				} else {
+					myClick_action = "add";
+				}
+				
+				$.ajax({
+	            	type: "POST",
+	            	url: "${pageContext.request.contextPath}/sitFollow/sitFollow.do",
+	            	data: {
+	                	action: myClick_action,
+	                	memNo: myClick_memNo.val(),
+	                	sitNo: myClick_sitNo.val(),
+	              	},
+	              	dataType: "html",
+	              	success: function (result) {
+	                	if (result==1){
+	                		myClick_rn.addClass("active");
+	                		myClick_rn.addClass("active-2");
+	                		
+	                		setTimeout(function () {
+	                			myClick_span.addClass("fa-heart");
+	                			myClick_span.removeClass("fa-heart-o");
+	                		}, 150);
+	                		  
+	                		setTimeout(function () {
+	                			  myClick_rn.addClass("active-3");
+	                		}, 150);
+	                		  
+	                		  
+	                   	} else if (result==0) {
+	                   		myClick_rn.removeClass("active");
+	                   	  	
+	                   		setTimeout(function () {
+	                   			myClick_rn.removeClass("active-2");
+	                   	  	}, 30);
+	                   	  	
+	                   		myClick_rn.removeClass("active-3");
+	                   	  	
+	                   	  	setTimeout(function () {
+	                   	  		myClick_span.removeClass("fa-heart");
+	                   	 		myClick_span.addClass("fa-heart-o");
+	                   	  	}, 15);
+	                   	} else if (result == "error"){
+	                        alert("唉呦~出錯了");
+	                    } else {
+	                   		console.log("追蹤失敗"+result);
+	                  	}
+	              	},
+	              	error: function (xhr, ajaxOptions, thrownError) {
+	               		console.log("ajax失敗");
+	               	}
+	         	});
+			});
+			
+
 		});
 
-		
-	});
+		var data = [
+			{
+				lat : 24.968891,
+				lng : 121.192117,
+				title : '卡比獸',
+				url : 'https://tw.portal-pokemon.com/play/resources/pokedex/img/pm/a42f1e83fdb6809384f2461670a1d81e227df05c.png'
+			},
+			{
+				lat : 24.955037,
+				lng : 121.225611,
+				title : '黃琦琦',
+				url : '${pageContext.request.contextPath}/PicReader.do?action=getMemPic&memNo=M001'
+			},
+			{
+				lat : 24.957782,
+				lng : 121.241051,
+				title : '葉精靈',
+				url : 'https://c-ssl.duitang.com/uploads/blog/201308/18/20130818113859_ST2HQ.thumb.700_0.jpeg'
+			},
+			{
+				lat : 24.926172,
+				lng : 121.244545,
+				title : '夢幻',
+				url : 'https://i1.kknews.cc/SIG=2bch38p/ctp-vzntr/1537086841012n8512srpsq.jpg'
+			},
+			{
+				lat : 24.999575,
+				lng : 121.327287,
+				title : '妙花草',
+				url : 'https://4.bp.blogspot.com/-9eptdHmW_Pg/WB3OilPm9TI/AAAAAAAANmA/iKd6fAC91uk7WplYMn8aYSgvSxr9rWMTgCK4B/s400/Ivysaur.png'
+			} ];
 	</script>
-	
+	<script src="${jsPath}/google-map.js"></script>
+
 </body>
 </html>

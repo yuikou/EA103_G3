@@ -16,8 +16,7 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
 import com.sitPhoto.model.*;
-
-@WebServlet("/SitPhotoServlet")
+@WebServlet("/sitPhoto/sitPhoto.do")
 @MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 5 * 1024 * 1024, maxRequestSize = 5 * 5 * 1024 * 1024)
 public class SitPhotoServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -62,8 +61,8 @@ public class SitPhotoServlet extends HttpServlet {
 
 			try {
 				
-				String sitNo = req.getParameter("sitNo");
-				req.setAttribute("sitNo", sitNo);
+				String sessionSitNo = (String) session.getAttribute("sessionSitNo");
+				System.out.println(sessionSitNo);
 				
 				byte[] sitPhoto = null;
 				// 獲取request的所有的請求引數(將請求引數轉換為Part)
@@ -79,9 +78,9 @@ public class SitPhotoServlet extends HttpServlet {
 						in.close();	
 						SitPhotoService sitPSrv = new SitPhotoService();
 						SitPhotoVO sitPVO = new SitPhotoVO();
-						sitPVO.setSitNo(sitNo);
+						sitPVO.setSitNo(sessionSitNo);
 						sitPVO.setSitPhoto(sitPhoto);
-						sitPVO = sitPSrv.add(sitNo, sitPhoto);
+						sitPVO = sitPSrv.add(sessionSitNo, sitPhoto);
 			
 					}
 				}
@@ -115,7 +114,6 @@ public class SitPhotoServlet extends HttpServlet {
 			try {
 				
 				String[] sitPNoArray = req.getParameterValues("ckbox");
-				String sitNo = req.getParameter("sitNo");
 				
 				if (sitPNoArray == null) {
 					errorMsgs.add("請選至少一張照片");
@@ -131,7 +129,6 @@ public class SitPhotoServlet extends HttpServlet {
 				    sitPhotoSrv.delete(sitPNo);
 				}
 				
-				req.setAttribute("sitNo", sitNo);
 				String url = "/front-end/sitPhoto/sitPhotoUpload.jsp";
 				RequestDispatcher successView = req.getRequestDispatcher(url);
 				successView.forward(req, res);

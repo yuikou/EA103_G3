@@ -1,0 +1,24 @@
+        body, html {
+            height: 100%;
+            font-family: Ubuntu-Regular, sans-serif;
+            background-color: #FCF4D9;
+        }
+        .login100-form-title {
+            background-color: #FFB85F;
+        }
+        a:hover {
+            text-decoration: none;
+            color: #9BD7D5;
+        }
+        .txt2 {
+            color: #FFB85F;
+        }
+        .txt3 {
+            color: #FFB85F;
+        }
+        .login100-form-btn {
+            background-color: #FFB85F;
+        }
+        .login100-form-btn:hover {
+            background-color: #8ED2C9;
+        }

@@ -14,6 +14,7 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import com.member.model.MemVO;
+import com.salonOrderDetail.model.SalonOrderDetailVO;
 
 public class SalonOrderDAO implements SalonOrderDAO_interface {
 	private static DataSource ds = null;
@@ -340,6 +341,12 @@ public class SalonOrderDAO implements SalonOrderDAO_interface {
 			}
 		}						
 		return list;
+	}
+
+	@Override
+	public void insertWithOrderDetail(SalonOrderVO salonOrderVO, List<SalonOrderDetailVO> list) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

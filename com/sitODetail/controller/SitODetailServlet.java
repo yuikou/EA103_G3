@@ -17,7 +17,7 @@ import com.sitODetail.model.SitODetailVO;
 import com.sitOrder.model.SitOrderService;
 import com.sitOrder.model.SitOrderVO;
 
-@WebServlet("/SitODetailServlet")
+@WebServlet("/sitODetail/sitODetail.do")
 public class SitODetailServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        

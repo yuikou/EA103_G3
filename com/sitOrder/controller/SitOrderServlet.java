@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -16,10 +17,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.json.JSONObject;
+
+import com.petSitter.model.*;
 import com.sitODetail.model.*;
 import com.sitOrder.model.*;
 
-@WebServlet("/SitOrderServlet")
+@WebServlet("/sitOrder/sitOrder.do")
 public class SitOrderServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -44,9 +48,9 @@ public class SitOrderServlet extends HttpServlet {
 
 			try {
 
-				String sitNo = (String) session.getAttribute("sitNo");
+				String sessionSitNo = (String) session.getAttribute("sessionSitNo");
 				SitOrderService sitOrderSrv = new SitOrderService();
-				Set<SitOrderVO> sitOrderSet = sitOrderSrv.getByFK_sitNo(sitNo);
+				Set<SitOrderVO> sitOrderSet = sitOrderSrv.getByFK_sitNo(sessionSitNo);
 				
 //				if (sitOrderSet.isEmpty()) {
 //					errorMsgs.add("尚無訂單");
@@ -124,9 +128,7 @@ public class SitOrderServlet extends HttpServlet {
 			req.setAttribute("errorMsgs", errorMsgs);
 			
 			try {
-				
-				out.write("success");
-				
+				System.out.println("able to come here");
 				String sitNo = req.getParameter("sitNo").trim();
 				req.setAttribute("sitNo", sitNo);
 				String memNo = (String) session.getAttribute("memNo");
@@ -139,7 +141,6 @@ public class SitOrderServlet extends HttpServlet {
 				} catch (IllegalArgumentException e) {
 					errorMsgs.add("請輸入日期!");
 				}
-				
 				String sitOTime = req.getParameter("sitOTime");
 				Integer totalPrice = new Integer(req.getParameter("totalPrice"));
 				Integer refund = 0;		
@@ -202,11 +203,14 @@ public class SitOrderServlet extends HttpServlet {
 	    		
 	    		SitOrderDAO sitODAO = new SitOrderDAO();
 	    		sitODAO.insertWithODetail(sitOrderVO, list);
+	    		out.write("reserve");
 	    		
-				String url = "/front-end/sitterFront.jsp";
-				RequestDispatcher successView = req.getRequestDispatcher(url);
-				successView.forward(req, res);
+	    		
+//				String url = "/front-end/sitterFront.jsp";
+//				RequestDispatcher successView = req.getRequestDispatcher(url);
+//				successView.forward(req, res);
 
+	    		
 			} catch (Exception e) {
 				errorMsgs.add("無法取得資料:" + e.getMessage());
 				RequestDispatcher failureView = req.getRequestDispatcher("/front-end/sitOrder/reservePetSitter.jsp");
@@ -241,9 +245,12 @@ public class SitOrderServlet extends HttpServlet {
 			
 			try {
 				System.out.println("we are able to reach servlet");
-//				String sitOrderNo = (String) req.getParameter("sitOrderNo");
-				String sitOrderNo = "SO006";
+				String sitOrderNo = (String) req.getParameter("sitOrderNo");
+				System.out.println(sitOrderNo);
 				SitOrderService sitOrderSrv = new SitOrderService();
+				SitOrderVO sitOrderVO = sitOrderSrv.getByPK(sitOrderNo);
+				String sitNo = sitOrderVO.getSitNo();
+				System.out.println(sitNo);
 				
 				Integer orderStatus = 3;
 				
@@ -251,17 +258,74 @@ public class SitOrderServlet extends HttpServlet {
 				String sitComm = req.getParameter("sitComm");
 				
 				sitOrderSrv.update_sitCommStar(orderStatus, commStar, sitComm, sitOrderNo);
-				out.write("success");	
 				System.out.println(commStar);
 				System.out.println(sitComm);
+				
+				PetSitterService petSitSrv = new PetSitterService();
+				PetSitterVO petSitterVO = petSitSrv.getByPK(sitNo);
+				Double totalComm = petSitterVO.getTotalComm() + commStar;
+				petSitSrv.update_totalComm(sitNo, totalComm);
+				System.out.println(totalComm);
+	    		
+	    		Double totalCus = new Double(petSitSrv.getByPK(sitNo).getTotalCus());
+	    		totalCus += 1;
+	    		System.out.println("totalCus=" + totalCus);
+	    		
+	    		SitOrderService sitOSrv = new SitOrderService();
+	    		Set<SitOrderVO> sitOList = (Set<SitOrderVO>) sitOSrv.getByFK_memNo(sitOrderVO.getMemNo());
+	    		
+	    		Integer repeatCus = petSitSrv.getByPK(sitNo).getRepeatCus();
+	    		System.out.println("repeatCusBefore="+repeatCus);
+	    		if (sitOList.size()==2) {
+	    			repeatCus += 1;
+	    		}
+	    		System.out.println("repeatCusAfter="+repeatCus);
+	    		petSitSrv.update_repeat_totalCus(sitNo, totalCus, repeatCus);
+	    		System.out.println("able to update");
+				
+				out.write("success");
 								
 			} catch (Exception e) {
 				out.write("error: " + e.getMessage());			
 			}
+		}
+		
+		if("comment".equals(action)) {
+			System.out.println("able to come here");
 			
+			String sitOrderNo = req.getParameter("sitOrderNo");
+			SitOrderService sitOSrv = new SitOrderService();
+			SitOrderVO sitOVO = sitOSrv.getByPK(sitOrderNo);
+			String sitNo = sitOVO.getSitNo();
+			JSONObject sitOrder = new JSONObject();
+			sitOrder.put("sitOrderNo", sitOrderNo);
+			sitOrder.put("sitNo", sitNo);
+			out.print(sitOrder);
 			
+			System.out.println("success to write out");
 		}
 	}
+		
+//		if("display_comment".equals(action)) {
+//			
+//			List<String> errorMsgs = new LinkedList<String>();
+//			req.setAttribute("errorMsgs", errorMsgs);
+//			
+//			try {
+//				
+//				String sitOrderNo = req.getParameter("sitOrderNo");
+//				req.setAttribute("sitOrderNo", sitOrderNo);
+//        		String url = "/front-end/sitOrder/sitterComment.jsp";
+//        		RequestDispatcher successView = req.getRequestDispatcher(url);
+//        		successView.forward(req, res);
+//				
+//			} catch (Exception e) {
+//				errorMsgs.add("無法取得資料:" + e.getMessage());
+//				RequestDispatcher failureView = req.getRequestDispatcher("/front-end/sitOrder/sitOrderPageForMem.jsp");
+//				failureView.forward(req, res);
+//			}
+//		}
+		
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {

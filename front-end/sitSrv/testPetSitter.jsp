@@ -27,15 +27,13 @@
 		
 		<jsp:useBean id="petSitterVO" scope="session" class="com.petSitter.model.PetSitterVO"/>
 		<jsp:useBean id="sitSrvVO" scope="session" class="com.sitSrv.model.SitSrvVO"/>
+		<jsp:useBean id="petSitterSvc" class="com.petSitter.model.PetSitterService"></jsp:useBean>
 		<% 
-			session.setAttribute("memNo","M001");
-			petSitterVO.setSitNo("S001");
-			petSitterVO.setMemNo("M001");
-			petSitterVO.setSrvSTime("0900");
-			petSitterVO.setSrvETime("1800");
-			
-			sitSrvVO.setSitSrvNo("SS012");
-			sitSrvVO.setSitSrvCode("DropIn");
+			session.setAttribute("memNo","M014");
+			petSitterVO = petSitterSvc.getByFK("M014");
+			session.setAttribute("petSitterVO", petSitterVO);
+// 			sitSrvVO.setSitSrvNo("SS024");
+// 			sitSrvVO.setSitSrvCode("PetTaxi");
 		%>
 		
 		<!-- 測試用 -->
@@ -44,7 +42,7 @@
 			<a href="/EA103G3/front-end/sitOffDay/showOneSrvDay.jsp">點擊XX保姆的個人頁面(sitOffDay)</a><br>
 			<a href="/EA103G3/front-end/sitSrv/showOneSitAllSrv.jsp">點擊XX保姆的保姆頁面(sitSrv)</a><br>
 			<a href="/EA103G3/front-end/sitFollow/listSitFollow.jsp">查看所有追蹤保姆</a>by DAO<br>
-			<a href="/EA103G3/front-end/sitFollow/sitFollow.do?action=showAll">查看所有追蹤保姆</a>by Session
+			<a href="/EA103G3/sitFollow/sitFollow.do?action=showAll">查看所有追蹤保姆</a>by Session
 		</div>
 		<!-- 測試用 -->
 	</div>

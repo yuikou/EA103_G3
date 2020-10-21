@@ -11,10 +11,9 @@
 <title>查詢托養服務</title>
 
 <!-- 匯入外部CSS -->
-<c:set var="path" value="/EA103G3/front-end" />
-<c:set var="cssPath" value="/EA103G3/css/euphy" />
+<c:set var="cssPath" value="${pageContext.request.contextPath}/css/euphy" />
 <link rel="stylesheet" type="text/css" href="${cssPath}/bootstrap.min.css"> 
-<link rel="stylesheet" type="text/css" href="${path}/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" type="text/css" href="${cssPath}/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" type="text/css" href="${cssPath}/jquery.datetimepicker.css" />
 <link rel="stylesheet" type="text/css" href="${cssPath}/Petfect.css">
 <link rel="stylesheet" type="text/css" href="${cssPath}/sitSrvSearch.css">
@@ -24,7 +23,7 @@
 <body>
 
 <!-------------------- nav -------------------->
-	<jsp:include page="/front-end/nav.jsp"/>
+	<jsp:include page="/front-end/header.jsp"/>
     
 <!------------------ 內文body ------------------>
 	<div class="container-fluid">
@@ -34,7 +33,7 @@
     			<h1>幫您尋找最符合的寵物托養保姆</h1>
 <!-- acpPetTyp-1 -->
 		  		<div class="search-container">
-		  			<form action="sitSrv.do" method="post">
+		  			<form action="${pageContext.request.contextPath}/sitSrv/sitSrv.do" method="post">
 		  			
 		  				<div class="pet-type-select">
 						    <div class="heading"> 我的寵物類型: </div>
@@ -51,7 +50,7 @@
 						        </ul>
 						    </div>
 						</div>
-<!-- acpPetTyp-1 -->
+<!-- acpPetTyp-2 -->
 						<div class="dog-size-select">
 						    <div class="heading"> 我的狗狗體型: </div>
 						    <div>
@@ -80,7 +79,7 @@
 				                <div class="heading service-select"> 尋找的服務: </div>
 				                <div class="row service-select-group">
 									<div class="col-xs-12 col-sm-2 service-select-div">
-									    <div class="service-select-btn" data-value="Boarding">
+									    <div class="service-select-btn"  data-value="Boarding">
 									        <a class="focusMe">
 									            <div class="hidden-xs">
 									               <i class="service-icon boarding-icon"></i>
@@ -93,7 +92,7 @@
 									</div>
                             
 									<div class="col-xs-12 col-sm-2 service-select-div">
-									    <div class="service-select-btn" data-value="DayCare">
+									    <div class="service-select-btn " data-value="DayCare">
 									        <a class="focusMe">
 									            <div class="hidden-xs">
 									               <i class="service-icon daycare-icon"></i>
@@ -106,7 +105,7 @@
 									</div>
 
 									<div class="col-xs-12 col-sm-2 service-select-div">
-									    <div class="service-select-btn" data-value="DropIn">
+									    <div class="service-select-btn " data-value="DropIn">
 									        <a class="focusMe">
 									            <div class="hidden-xs">
 									               <i class="service-icon dropin-icon"></i>
@@ -119,7 +118,7 @@
 									</div>
 
 									<div class="col-xs-12 col-sm-2 service-select-div">
-									    <div class="service-select-btn" data-value="DogWalking">
+									    <div class="service-select-btn " data-value="DogWalking">
 									        <a class="focusMe">
 									            <div class="hidden-xs">
 									               <i class="service-icon dogwalking-icon"></i>
@@ -132,7 +131,7 @@
 									</div>
 
 									<div class="col-xs-12 col-sm-2 service-select-div">
-									    <div class="service-select-btn" data-value="PetTaxi">
+									    <div class="service-select-btn " data-value="PetTaxi">
 									        <a class="focusMe">
 									            <div class="hidden-xs">
 									               <i class="service-icon pettaxi-icon"></i>
@@ -146,7 +145,7 @@
                     
                					</div>
            					</div>
-       						<input type="hidden" name="sitSrvCode" id="service_buttons" value="">
+       						<input type="hidden" name="sitSrvCode" id="service_buttons" value="${param.sitSrvCode}">
    						</div>
 						
 						<div class="row">
@@ -160,7 +159,8 @@
 						<div class="row">
 <!-- nearAddr -->
 							<div class="col-sm-5 search-loaction">
-								<input class="search-loaction-input" type="text" name="nearAddr" value="">
+								<span id="panel"><input type="text" id="keyword" class="search-loaction-input" name="nearAddr"></span>
+<!-- 								<input class="search-loaction-input" type="text" id="keyword" name="nearAddr" value=""> -->
 							</div>
 <!-- dateFrom & dateTo -->						
 							<div class="col-sm-7 search-time">
@@ -325,15 +325,40 @@
 
 
 <!-- 匯入js -->
-	<c:set var="jsPath" value="/EA103G3/js/euphy" />
+	<c:set var="jsPath" value="${pageContext.request.contextPath}/js/euphy" />
 	<script src="${jsPath}/jquery-3.2.1.min.js"></script>
 	<script src="${jsPath}/jquery.datetimepicker.full.js"></script>
 	<script src="${jsPath}/popper.js"></script>
 	<script src="${jsPath}/bootstrap.min.js"></script>
+	<script src="${jsPath}/google-map.js"></script>
 	<script>
 	$.datetimepicker.setLocale('zh');
 	$(document).ready(function(){
 		
+		
+		// --------------------狗狗size--------------------	
+		var acpPetTypPart1 = $("[name='acpPetTypPart1']");
+		var acpPetTypPart2 = $("[name='acpPetTypPart2']");
+		var acpPetTyp2_div = $(".dog-size-select");
+			
+		if (acpPetTypPart1.prop("checked")) {
+			acpPetTyp2_div.show();
+		} else {
+			acpPetTyp2_div.hide();
+		}
+		acpPetTypPart1.click(function(){
+			if (acpPetTypPart1.prop("checked")) {
+				acpPetTyp2_div.show();
+			} else {
+				acpPetTyp2_div.hide();
+				acpPetTypPart2.each(function(){
+					$(this).prop("checked", false);
+				});
+			}
+		});
+		
+		
+		// --------------------選擇服務--------------------
 		var ssBtn = $(".service-select-btn");
 		ssBtn.each(function(){
 			$(this).click(function(){
@@ -345,6 +370,7 @@
 			});
 		});
 		
+		// --------------------可選日期--------------------
 		var today = new Date();
 		var ninetyDays = new Date();
 		ninetyDays.setDate(today.getDate()+90);

@@ -13,8 +13,8 @@ public class PetSitterVO implements Serializable{
 	private String bankCode;
 	private String bankAcc;
 	private Integer sitAccStatus;
-	private Integer totalComm;
-	private Integer totalCus;
+	private Double totalComm;
+	private Double totalCus;
 	private Integer repeatCus;
 	
 	public PetSitterVO() {
@@ -22,7 +22,7 @@ public class PetSitterVO implements Serializable{
 	}	
 
 	public PetSitterVO(String sitNo, String memNo, String sitInfo, String srvSTime, String srvETime, String bankCode,
-			String bankAcc, Integer sitAccStatus, Integer totalComm, Integer totalCus, Integer repeatCus) {
+			String bankAcc, Integer sitAccStatus, Double totalComm, Double totalCus, Integer repeatCus) {
 		super();
 		this.sitNo = sitNo;
 		this.memNo = memNo;
@@ -36,8 +36,6 @@ public class PetSitterVO implements Serializable{
 		this.totalCus = totalCus;
 		this.repeatCus = repeatCus;
 	}
-
-
 
 	public String getSitNo() {
 		return sitNo;
@@ -105,22 +103,22 @@ public class PetSitterVO implements Serializable{
 	}
 
 
-	public Integer getTotalComm() {
+	public Double getTotalComm() {
 		return totalComm;
 	}
 
 
-	public void setTotalComm(Integer totalComm) {
+	public void setTotalComm(Double totalComm) {
 		this.totalComm = totalComm;
 	}
 
 
-	public Integer getTotalCus() {
+	public Double getTotalCus() {
 		return totalCus;
 	}
 
 
-	public void setTotalCus(Integer totalCus) {
+	public void setTotalCus(Double totalCus) {
 		this.totalCus = totalCus;
 	}
 

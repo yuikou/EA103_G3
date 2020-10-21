@@ -26,7 +26,14 @@ public class SalonOrderDetailService {
 	}
 	
 	public List<SalonOrderDetailVO> getAll(){
-		return dao.getall();
+		return dao.getall();		
 	}
+	
+	public List<SalonOrderDetailVO> getAllBySalOrderNo(String salOrderNo){
+		return dao.getAllBySalOrderNo(salOrderNo);
+	}
+	
+	
+	
 
 }

@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.util.*;
 
 import javax.servlet.*;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 
 import org.json.JSONArray;
@@ -13,6 +14,7 @@ import org.json.JSONObject;
 import com.sitOffDay.model.*;
 import com.sitSrv.model.SitSrvVO;
 
+@WebServlet("/sitOffDay/sitOffDay.do")
 public class SitOffDayServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private int gpID = 100;
@@ -25,7 +27,7 @@ public class SitOffDayServlet extends HttpServlet {
 		String action = req.getParameter("action");
 		HttpSession session = req.getSession();
 
-/* --------------------------------------來自 showOneSitAllSrv.jsp - 取得一位保姆其中一種服務的時間-------------------------------------- */
+/* --------------------------------------來自 showOneSitAll【Srv】.jsp - 取得一位保姆其中一種服務的時間-------------------------------------- */
 		if ("transfer".equals(action)) {
 			List<String> errorMsgs = new LinkedList<String>();
 			req.setAttribute("errorMsgs", errorMsgs);
@@ -41,7 +43,7 @@ public class SitOffDayServlet extends HttpServlet {
 				
 				/*************************** 3.新增完成,準備轉交(Send the Success view) ***********/
 				req.setAttribute("sitSrvNoRN", sitSrvNo);
-				String url = "showAllSrvDay.jsp";
+				String url = "/front-end/sitOffDay/showAllSrvDay.jsp";
 				RequestDispatcher sucessView = req.getRequestDispatcher(url);
 				sucessView.forward(req, res);
 			
@@ -49,7 +51,7 @@ public class SitOffDayServlet extends HttpServlet {
 			/***************************其他可能的錯誤處理*************************************/
 			} catch (Exception e) {
 				errorMsgs.add("跳轉失敗： " + e.getMessage());
-				RequestDispatcher failureView = req.getRequestDispatcher("/sitSrv/showOneSitAllSrv.jsp");
+				RequestDispatcher failureView = req.getRequestDispatcher("/front-end/sitSrv/showOneSitAllSrv.jsp");
 				failureView.forward(req, res);
 			}
 		}
@@ -179,7 +181,7 @@ public class SitOffDayServlet extends HttpServlet {
 			}
 		}
 		
-/* ------------------------------來自 showAllSrvDay.jsp / 【order】 的請求  - 新增(直接新增、修改新增)休假-------------------------------- */
+/* ------------------------------來自 showAllSrvDay.jsp休假-------------------------------- */
 		if ("add".equals(action)) {
 			List<String> errorMsgs = new LinkedList<String>();
 			req.setAttribute("errorMsgs = ", errorMsgs);
@@ -282,7 +284,7 @@ public class SitOffDayServlet extends HttpServlet {
 				// 回傳錯誤資訊(之後要改成sweetalert)
 				if (! errorMsgs.isEmpty()) {
 					System.out.println("準備新增資料與資料庫資料重複，故不執行增加動作，發送錯誤通知");
-					RequestDispatcher failureView = req.getRequestDispatcher("showAllSrvDay.jsp");
+					RequestDispatcher failureView = req.getRequestDispatcher("/front-end/sitOffDay/showAllSrvDay.jsp");
 					failureView.forward(req, res);
 					return;
 				}
@@ -311,7 +313,7 @@ public class SitOffDayServlet extends HttpServlet {
 				if (offDayTyp==0) {
 					// 回到原本的服務月曆
 					req.setAttribute("sitSrvNoRN", sitSrvArr[0]);
-					String url = "showAllSrvDay.jsp";
+					String url = "/front-end/sitOffDay/showAllSrvDay.jsp";
 					RequestDispatcher sucessView = req.getRequestDispatcher(url);
 					sucessView.forward(req, res);
 				}
@@ -320,7 +322,7 @@ public class SitOffDayServlet extends HttpServlet {
 			/***************************其他可能的錯誤處理*************************************/
 			} catch (Exception e) {
 				errorMsgs.add("新增失敗： " + e.getMessage());
-				RequestDispatcher failureView = req.getRequestDispatcher("showAllSrvDay.jsp");
+				RequestDispatcher failureView = req.getRequestDispatcher("/front-end/sitOffDay/showAllSrvDay.jsp");
 				failureView.forward(req, res);
 			}
 		}
@@ -469,7 +471,7 @@ public class SitOffDayServlet extends HttpServlet {
 			/***************************其他可能的錯誤處理*************************************/
 			} catch (Exception e) {
 				errorMsgs.add(e.getMessage());
-				RequestDispatcher failureView = req.getRequestDispatcher("showAllSrvDayn.jsp");
+				RequestDispatcher failureView = req.getRequestDispatcher("/front-end/sitOffDay/showAllSrvDayn.jsp");
 				failureView.forward(req, res);
 			}
 		}
@@ -497,14 +499,14 @@ public class SitOffDayServlet extends HttpServlet {
 				// 回到原本的服務月曆
 				req.setAttribute("sitSrvNoRN", sitSrvNo);
 				
-				String url = "showAllSrvDay.jsp";
+				String url = "/front-end/sitOffDay/showAllSrvDay.jsp";
 				RequestDispatcher sucessView = req.getRequestDispatcher(url);
 				sucessView.forward(req, res);
 			
 			/***************************其他可能的錯誤處理*************************************/
 			} catch (Exception e) {
 				errorMsgs.add("刪除失敗： " + e.getMessage());
-				RequestDispatcher failureView = req.getRequestDispatcher("showAllSrvDay.jsp");
+				RequestDispatcher failureView = req.getRequestDispatcher("/front-end/sitOffDay/showAllSrvDay.jsp");
 				failureView.forward(req, res);
 			}
 		}

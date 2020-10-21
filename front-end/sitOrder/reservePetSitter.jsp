@@ -20,14 +20,10 @@
     <!-- 瀏覽器版本相容性 -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title>預約保母</title>
-    <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/css-ching/datetimepicker/jquery.datetimepicker.css" />
-    <script src="http://code.jquery.com/jquery-1.12.4.min.js"></script>
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-    <script src="<%=request.getContextPath()%>/css/css-ching/datetimepicker/jquery.js"></script>
-    <script src="<%=request.getContextPath()%>/css/css-ching/datetimepicker/jquery.datetimepicker.full.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/tw-city-selector@2.1.1/dist/tw-city-selector.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/css-ching/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/css-ching/index.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/css-ching/Petfect.css">
     <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/css-ching/reservePetSitter.css">
     <link rel="Shortcut Icon" type="image/x-icon" href="https://dzmg8959fhe1k.cloudfront.net/all/favicon.ico">
 </head>
@@ -46,22 +42,8 @@
                 </c:forEach>
             </ul>
         </c:if>
-        <form method="post" action="<%=request.getContextPath()%>/sitOrder/sitOrder.do">
             <table class="table">
-                <tr class="row1">
-                    <th scope="row"><img src="<%=request.getContextPath()%>/images/calendar.png" width="40"> 請選擇需托養日期:</th>
-                    <td>
-                        <div class="row col-m-8">
-                            <div class="col-lg-6">
-                                開始日期<input type="text" id="from" class="form-control" name="sitSDate" value="${sitOrderVO.sitSDate}">
-                            </div>
-                            <div class="col-lg-6">
-                                結束日期<input type="text" id="to" class="form-control" name="sitEDate" value="${sitOrderVO.sitEDate}">
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-                <%
+         <%
            PetService petSrv = new PetService();
            List<PetVO> petList = petSrv.getAllPet(memNo);
            pageContext.setAttribute("petList", petList);
@@ -78,18 +60,21 @@
                     </td>
                 </tr>
                 <%
-           SitSrvService sitSrvSrv = new SitSrvService();
-           List<SitSrvVO> list = sitSrvSrv.get_OneSit_AllSrv(sitNo);
-           pageContext.setAttribute("list", list);
-        %>
+                  SitSrvService sitSrvSrv = new SitSrvService();
+                  List<SitSrvVO> list = sitSrvSrv.get_OneSit_AllSrv(sitNo);
+                  pageContext.setAttribute("list", list);
+                %>
                 <tr class="row1">
                     <th scope="row"><img src="<%=request.getContextPath()%>/images/pet.png" width="40"> 選擇服務:</th>
                     <td>
                         <div class="form-group">
-                            <select class="form-control" size="1" name="sitSrvName" id="mainSrv" onchange="toggleSvc();">
+                            <select class="form-control" size="1" name="sitSrvNo" id="mainSrv" onchange="toggleSvc();">
                                 <option value="">選擇服務</option>
                                 <c:forEach var="sitSrvVO" items="${list}">
-                                    <option value="${sitSrvVO.sitSrvCode}">${sitSrvVO.sitSrvName}</option>
+<!-- 這裡我改掉了					 -->
+									<c:if test="${sitSrvVO.sitSrvCode != 'Bathing' && sitSrvVO.sitSrvCode != 'Pickup'}">
+                                    <option value="${sitSrvVO.sitSrvNo}" data-type="${sitSrvVO.sitSrvCode}" data-bathing="${sitSrvVO.addBathing}" data-pickup="${sitSrvVO.addPickup}" >${sitSrvVO.sitSrvName}</option>
+                                    </c:if>
                                 </c:forEach>
                             </select>
                         </div>
@@ -185,26 +170,61 @@
                         </c:forEach>
                     </td>
                 </tr>
-                <tr class="row1" style="display: none;" id="extraSrv" name="mainSrvHide">
+                
+                <tr class="row1" id="extraSrv" name="mainSrvHide" style="display: none;">
                     <th scope="row"><img src="<%=request.getContextPath()%>/images/veterinary.png" width="40"> 附加服務:</th>
-                    <td>
-                        <select style="display: none;" id="extraBathing" name="mainSrvHide" class="form-control">
-                            <option value="">不洗澡</option>
-                            <option value="Bathing">洗澡</option>
-                        </select>
-                        <select onchange="extraSrv();" style="display: none;" id="extraPickup" name="mainSrvHide" class="form-control">
-                            <option>不需要接送</option>
-                            <option value="Pickup">只要單程接送</option>
-                            <option value="Pickup">需要來回接送</option>
-                        </select>
-                    </td>
+    	            
+    	            <c:forEach var="sitSrvVO" items="${list}">
+    	            <c:if test="${sitSrvVO.sitSrvName.indexOf('加價洗澡') != -1}">
+	                    <td id="extraBathing_${sitSrvVO.sitSrvName.substring(4)}" style="display: none;" name="mainSrvHide">
+	                        <select class="form-control">
+	                            <option value="">不洗澡</option>
+	                            <option value="${sitSrvVO.sitSrvNo}">洗澡</option>
+	                        </select>
+	                    </td>
+                    </c:if>
+                    <c:if test="${sitSrvVO.sitSrvName.indexOf('加價接送') != -1}">
+	                    <td id="extraPickup_${sitSrvVO.sitSrvName.substring(4)}" style="display: none;" name="mainSrvHide" >
+	                        <select onchange="extraSrv();" class="form-control">
+	                            <option>不需要接送</option>
+	                            <option value="${sitSrvVO.sitSrvNo}">只要單程接送</option>
+	                            <option value="${sitSrvVO.sitSrvNo}">需要來回接送</option>
+	                        </select>
+	                    </td>
+                    </c:if>
+                	</c:forEach>
                 </tr>
+                <tr class="row2" id="orderDate" style="display:none;">
+                    <th scope="row"><img src="<%=request.getContextPath()%>/images/calendar.png" width="40"> 請選擇需托養日期:</th>
+                    <td>
+                      <div class='col-md-5'>開始日期
+                        <div class="form-group">
+                          <div class="input-group date" id="sitSDate" data-target-input="nearest">
+                            <input type="text" class="form-control datetimepicker-input" data-target="#sitSDate" name="sitSDate" value="${sitOrderVO.sitSDate}"/>
+                          <div class="input-group-append" data-target="#sitSDate" data-toggle="datetimepicker">
+                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                          </div>
+                        </div>
+                       </div>
+                     </div>
+                    <div class='col-md-5'>結束日期
+                      <div class="form-group">
+                        <div class="input-group date" id="sitEDate" data-target-input="nearest">
+                          <input type="text" class="form-control datetimepicker-input" data-target="#sitEDate" name="sitEDate" value="${sitOrderVO.sitEDate}"/>
+                        <div class="input-group-append" data-target="#sitEDate" data-toggle="datetimepicker">
+                          <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                        </div>
+                      </div>
+                     </div>
+                   </div>
+                 </td>
+               </tr>
                 <%
                   MemService memSrv = new MemService();
                   MemVO memVO = memSrv.getOneMem(memNo);
                   pageContext.setAttribute("memVO", memVO);
                 %>
-                <tr class="row2">
+                <tr class="row1">
                     <th scope="row">
                         <img src="<%=request.getContextPath()%>/images/car.png" width="40"> 接送地址:
                         <p style="display: none; color: #E63946;" id="addressInfo" name="mainSrvHide"><i>* 請填寫此欄 *</i></p>
@@ -212,10 +232,12 @@
                     <td>
                         <div class="row">
                             <div class="col-5">
-                                起點：<br><input type="checkbox" id="pickupFrom" name="pickupFrom" value="${memVO.memAddress}"> ${memVO.memAddress} <br><i>同會員資料地址，如需更改請至<a href="#">個人資料</a>更改</i>
+                                                                  起點：<br><input type="checkbox" id="pickupFrom" name="pickupFrom" value="${memVO.memAddress}"> 
+                                <label for="pickupFrom">${memVO.memAddress}</label>
+                                <br><i>同會員資料地址，如需更改請至<a href="#">個人資料</a>更改</i>
                             </div>
                             <div class="col-7">
-                                終點：<div class="col-4"><select class="form-control" name="city" id="city" onchange="changeCity()">
+                                                                                        終點：<div class="col-4"><select class="form-control" name="city" id="city" onchange="changeCity()">
                                         <option>
                                             <%= (sitOrderVO == null) ? "城市": city%>
                                         </option>
@@ -234,7 +256,7 @@
                         </div>
                     </td>
                 </tr>
-                <tr class="row1">
+                <tr class="row2">
                     <th scope="row"><img src="<%=request.getContextPath()%>/images/coin.png" width="40"> 總金額:</th>
                     <td>$1,500
                         <%
@@ -258,65 +280,136 @@
               <input type="submit" value="預約" name="success" id="success" class="btn btn-dark">
               <input type="hidden" name="action" value="reserve">
             </div>
-        </form>
     </div>
     <!-- 內文end -->
     <!-- footer -->
     <jsp:include page="/front-end/footer.jsp" />
-    <script src="<%=request.getContextPath()%>/js/js-ching/popper.js"></script>
-    <script src="<%=request.getContextPath()%>/js/js-ching/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.0/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.0/locale/zh-tw.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/js/tempusdominus-bootstrap-4.min.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/js/js-ching/tw-districts.js"></script>
     <script>
-        $.datetimepicker.setLocale('zh'); // kr ko ja en
-        $(function() {
-            $('#from').datetimepicker({
-                format: 'Y-m-d',
-                minDate: new Date(),
-                onShow: function() {
-                    this.setOptions({
-                        maxDate: $('#to').val() ? $('#to').val() : false
-                    })
-                },
-                timepicker: false
-            });
+    
+//     $(function() {
+//         $('#sitSDate').datetimepicker({
+//             format: "L",
+//             format: "yyyy-MM-DD",
+//             minDate: new Date(),
+//         });
+//         $('#sitEDate').datetimepicker({
+//             format: "L",
+//             format: "yyyy-MM-DD",
+//             useCurrent: false
+//         });
+//         $("#sitSDate").on("change.datetimepicker", function(e) {
+//             $('#sitEDate').datetimepicker('minDate', e.date);
+//         });
+//         $("#sitEDate").on("change.datetimepicker", function(e) {
+//             $('#sitSDate').datetimepicker('maxDate', e.date);
+//         });
+//     });
 
-            $('#to').datetimepicker({
-                format: 'Y-m-d',
-                onShow: function() {
-                    this.setOptions({
-                        minDate: $('#from').val() ? $('#from').val() : false
-                    })
-                },
-                timepicker: false
-            });
-        });
+        	
 
         function toggleSvc() {
 
-            var n = $("#mainSrv").find("option:selected").val();
+        	$("#orderDate").fadeIn("slow");
+        	
+            var n = $("#mainSrv").find("option:selected").attr("data-type");
+            var sitSrvNo =  $("#mainSrv").find("option:selected").val();
+            var data_bathing = $("#mainSrv").find("option:selected").attr("data-bathing");
+            var data_pickup = $("#mainSrv").find("option:selected").attr("data-pickup");
+            
+            var today = new Date();
+        	var sitSrvNo =  $("#mainSrv").find("option:selected").val();
+        	// 首次建立月曆時(oneSrv)發送ajax取得資料
+        	$.ajax({
+		        type: "GET",
+// 		       	url: "/EA103G3/front-end/sitOffDay/sitOffDay.do?action=getOneSitSrvOffDay",
+		url: "<%=request.getContextPath()%>/sitOffDay/sitOffDay.do?action=getOneSitSrvOffDay",
+		   		data: {sitSrvNo: sitSrvNo,},
+		        dataType: "json",
+		        cache: false,
+		        success: function (result) {
+		        	var disabledDates = []; 
+		        	
+		            $.each(result, function (i, j) {
+		            	
+		            	var offday = j.offDay;
+		            	var offtime = j.offTime;
+		            	
+		            	if (offtime == null) {
+		            		disabledDates.push(offday);
+		            	} else if (offday == today){
+		            		offtime = offtime.substr(0,2)+ ":" +offtime.substr(-2);
+		            		$("[data-value='"+offtime+"']").addClass("hideOffTime");
+		            	}
+		        	}); 
+		            console.log(disabledDates)
+		            
+		            $('#sitSDate').datetimepicker({
+		                format: "L",
+		                format: "yyyy-MM-DD",
+		                minDate: new Date(),
+		                disabledDates: disabledDates
+		            });
+		            $('#sitEDate').datetimepicker({
+		                format: "L",
+		                format: "yyyy-MM-DD",
+		                useCurrent: false,
+		                disabledDates: disabledDates
+		            });
+		            $("#sitSDate").on("change.datetimepicker", function(e) {
+		                $('#sitEDate').datetimepicker('minDate', e.date);
+		            });
+		            $("#sitEDate").on("change.datetimepicker", function(e) {
+		                $('#sitSDate').datetimepicker('maxDate', e.date);
+		            });
+		            
+		      	},
+		      	error: function (xhr, ajaxOptions, thrownError) {
+                	console.log("ajax失敗");
+                	console.log(xhr.responseText);
+                }
+    		
+    		});
+            
             $("[name='mainSrvHide']").hide();
 
+            if (data_bathing == 1) {
+            	$("#extraSrv").show("slow");
+            	$("#extraBathing_"+sitSrvNo).show();
+            }
+            if (data_pickup == 1) {
+            	$("#extraSrv").show("slow");
+            	$("#extraPickup_"+sitSrvNo).show();
+            }
+            
             switch (n) {
                 case 'Boarding':
-                    $("#extraSrv").show("slow");
-                    $("#extraBathing").show();
-                    $("#extraPickup").show();
+//                     $("#extraSrv").show("slow");
+//                     $("#extraBathing").show();
+//                     $("#extraPickup").show();
                     $("#nightSrvPrice").fadeIn("slow");
                     break;
                 case 'DayCare':
-                    $("#extraSrv").show("slow");
-                    $("#extraBathing").show();
-                    $("#extraPickup").show();
+//                     $("#extraSrv").show("slow");
+//                     $("#extraBathing").show();
+//                     $("#extraPickup").show();
                     $("#daySrvPrice").fadeIn("slow");
                     break;
                 case 'DropIn':
-                    $("#extraSrv").show("slow");
-                    $("#extraBathing").show();
+//                     $("#extraSrv").show("slow");
+//                     $("#extraBathing").show();
                     $("#homeSrvPrice").fadeIn("slow");
                     break;
                 case 'DogWalking':
-                    $("#extraSrv").show("slow");
-                    $("#extraPickup").show();
+//                     $("#extraSrv").show("slow");
+//                     $("#extraPickup").show();
                     $("#walkSrvPrice").fadeIn("slow");
                     break;
                 case 'PetTaxi':
@@ -343,6 +436,52 @@
                     break;
             }
         }
+        
+        
+        $(document).ready(function() {
+
+            $("#success").click(function() {
+
+                $.ajax({
+                    url: "<%=request.getContextPath()%>/sitOrder/sitOrder.do",
+                    type: "POST",
+                    data: {
+                        action: "reserve",
+                        sitSDate: $("[name='sitSDate']").val(),
+                        sitEDate: $("[name='sitEDate']").val(),
+                        sitOTime: $("[name='sitOTime']").val(),
+                        totalPrice: $("[name='totalPrice']").val(),
+                        city: $("[name='city']").val(),
+                        district: $("[name='district']").val(),
+                        address: $("[name='address']").val(),
+                        pickupFrom: $("[name='pickupFrom']").val(),
+                        sitNo: $("[name='sitNo']").val(),
+                        sitSrvNo: $("[name='sitSrvNo']").val(),
+                        petNo: $("[name='petNo']").val(),
+                        sitOpPrice: $("[name='sitOpPrice']").val(),
+                        sitSrvTimes: $("[name='sitSrvTimes']").val(),
+                        sitSrvUnit: $("[name='sitSrvUnit']").val(),
+                    },
+                    success: function(data) {
+                        if (data == "reserve") {
+                        	console.log('data傳回成功');
+                        	swal({
+                        		  title: "恭喜你!",
+                        		  text: "成功為你毛小孩預約了一位保母,請等待保母確認",
+                        		  icon: "success",
+                        		  buttons: true,
+                        		  dangerMode: false,
+                        		})
+                        		.then((willDelete) => {
+                        		  if (willDelete) {
+                        			  document.location.href="<%=request.getContextPath()%>/front-end/sitterFront.jsp";
+                        		  }
+                        		});
+                        }
+                    }
+                })
+            })
+        });
         
     </script>
 </body>

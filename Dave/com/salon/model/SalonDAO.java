@@ -25,11 +25,11 @@ public class SalonDAO implements SalonDAO_interface {
 		}
 	}
 
-	private static final String INSERT_STMT = "INSERT INTO SALON(SALNO,SALNAME,SALOWNER,SALPH,SALMAIL,SALCITY,SALDIST,SALADR,SALAC,SALPW,SALSTIME,SALETIME,SALREMIT,BANKCODE,SALSTATUS,SALINFO,SALPETTYPE,SALCERTIF) VALUES('B' || lpad(SALNO_SEQ.NEXTVAL,3,'0'),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	private static final String INSERT_STMT = "INSERT INTO SALON(SALNO,SALNAME,SALOWNER,SALPH,SALMAIL,SALCITY,SALDIST,SALADR,SALAC,SALPW,SALSTIME,SALETIME,SALREMIT,BANKCODE,SALSTATUS,SALINFO,SALPETTYPE,SALCERTIF,SALPIC) VALUES('B' || lpad(SALNO_SEQ.NEXTVAL,3,'0'),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 	private static final String DELETE = "DELETE FROM SALON WHERE SALNO = ?";
-	private static final String UPDATE = "UPDATE SALON SET salname=?, salowner=?, salph=? , salmail=?, salCity=?,salDist=?,saladr=?, salstime=?, saletime=?, salremit=?, bankcode=?,  salinfo=?,salpettype=?,salCertif=? WHERE salno=?";
-	private static final String GET_ALL_STMT = "SELECT SALNO,SALNAME,SALOWNER,SALPH,SALMAIL,SALCITY,SALDIST,SALADR,SALAC,SALPW,SALSTIME,SALETIME,SALREMIT,BANKCODE,SALSTATUS,SALINFO,SALPETTYPE FROM SALON ORDER BY SALNO";
-	private static final String GET_ONE_STMT = "SELECT SALNO,SALNAME,SALOWNER,SALPH,SALMAIL,SALCITY,SALDIST,SALADR,SALAC,SALPW,SALSTIME,SALETIME,SALREMIT,BANKCODE,SALSTATUS,SALINFO,SALPETTYPE,SALCERTIF FROM SALON  WHERE SALNO = ?";
+	private static final String UPDATE = "UPDATE SALON SET salname=?, salowner=?, salph=? , salmail=?, salCity=?,salDist=?,saladr=?, salstime=?, saletime=?, salremit=?, bankcode=?,  salinfo=?,salpettype=?,salCertif=?,salPic=? WHERE salno=?";
+	private static final String GET_ALL_STMT = "SELECT * FROM SALON ORDER BY SALNO";
+	private static final String GET_ONE_STMT = "SELECT * FROM SALON  WHERE SALNO = ?";
 	private static final String LOGIN = "SELECT * FROM salon WHERE SALAC=? AND SALPW=?";
 	private static final String UPDATE_STATUS_STMT = "UPDATE SALON SET SALSTATUS = ? WHERE SALNO = ?";
 	private static final String CHECKAC = "SELECT SALAC FROM SALON WHERE SALAC=?";
@@ -61,6 +61,7 @@ public class SalonDAO implements SalonDAO_interface {
 			pstmt.setString(15, salonVO.getSalInfo());
 			pstmt.setInt(16, salonVO.getSalPetType());
 			pstmt.setBytes(17, salonVO.getSalCertif());
+			pstmt.setBytes(18, salonVO.getSalPic());
 
 			pstmt.execute();
 
@@ -110,7 +111,8 @@ public class SalonDAO implements SalonDAO_interface {
 			pstmt.setString(12, salonVO.getSalInfo());
 			pstmt.setInt(13, salonVO.getSalPetType());
 			pstmt.setBytes(14, salonVO.getSalCertif());
-			pstmt.setString(15, salonVO.getSalNo());
+			pstmt.setBytes(15, salonVO.getSalPic());
+			pstmt.setString(16, salonVO.getSalNo());
 
 			pstmt.executeUpdate();
 
@@ -272,6 +274,7 @@ public class SalonDAO implements SalonDAO_interface {
 				salonVO.setSalInfo(rs.getString("salInfo"));
 				salonVO.setSalPetType(rs.getInt("salPetType"));
 				salonVO.setSalCertif(rs.getBytes("salCertif"));
+				salonVO.setSalPic(rs.getBytes("salPic"));
 			}
 		} catch (SQLException se) {
 			throw new RuntimeException("A database error occured. " + se.getMessage());
@@ -338,6 +341,7 @@ public class SalonDAO implements SalonDAO_interface {
 				salonVO.setSalInfo(rs.getString("salInfo"));
 				salonVO.setSalPetType(rs.getInt("salPetType"));
 				salonVO.setSalCertif(rs.getBytes("salCertif"));
+				salonVO.setSalPic(rs.getBytes("salPic"));
 			}
 		} catch (SQLException e) {
 			throw new RuntimeException("A database error occured, " + e.getMessage());

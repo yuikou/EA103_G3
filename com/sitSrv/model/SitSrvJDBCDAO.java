@@ -6,10 +6,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.sitLic.model.SitLicJDBCDAO;
 import com.sitLic.model.SitLicVO;
+
+import jdbc.util.CompositeQuery.jdbcUtil_CompositeQuery_sitSrv;
 
 public class SitSrvJDBCDAO implements SitSrvDAO_interface {
 	private static String driver = "oracle.jdbc.driver.OracleDriver";
@@ -23,11 +27,12 @@ public class SitSrvJDBCDAO implements SitSrvDAO_interface {
 			+ "SET sitSrvName=?, sitSrvCode=?, sitNo=?, srvFee=?, srvInfo=?, srvArea=?, acpPetNum=?, acpPetTyp=?, "
 			+ "careLevel=?, stayLoc=?, overnightLoc=?, SmkFree=?, hasChild=?, walkTime=?, eqpt=?, addBathing=?, addPickup=?, "
 			+ "outOfSrv=?, isDel=? WHERE sitSrvNo=? ";
+	private static final String UPDATE_PSTMT_PLUS_PSTMT = "UPDATE sitSrv SET SRVFEE=? WHERE sitSrvNo=?";
 	private static final String UPDATE_STATUS_PSTMT = "UPDATE sitSrv SET OUTOFSRV=?,isDel=? WHERE sitSrvNo=? ";
-	private static final String GET_SIT_SRV = "SELECT * FROM sitSrv WHERE sitSrvNo=? ";
-	private static final String GET_SIT_ALL_SRV = "SELECT * FROM sitSrv WHERE sitNo=? ";
+	private static final String GET_SIT_SRV = "SELECT * FROM sitSrv WHERE sitSrvNo=? AND isDel=0";
+	private static final String GET_SIT_ALL_SRV = "SELECT * FROM sitSrv WHERE sitNo=? AND isDel=0";
 	private static StringBuffer CHOOSE_SIT_FROM_SRV = new StringBuffer(
-			"SELECT * From sitSrv WHERE sitSrvCode=? AND acpPetTyp = ANY (");
+			"SELECT * From sitSrv WHERE isDel=0 AND sitSrvCode=? AND acpPetTyp = ANY (");
 
 	@Override
 	public Boolean add(SitSrvVO sitSrv , Integer addBathingFee, Integer addPickupFee) {
@@ -57,11 +62,11 @@ public class SitSrvJDBCDAO implements SitSrvDAO_interface {
 			pstmt.setObject(11, sitSrv.getOvernightLoc());
 			pstmt.setObject(12, sitSrv.getSmkFree());
 			pstmt.setObject(13, sitSrv.getHasChild());
-			pstmt.setObject(14, sitSrv.getSrvTime());
+			pstmt.setString(14, sitSrv.getSrvTime());
 			pstmt.setObject(15, sitSrv.getEqpt());
 			pstmt.setObject(16, sitSrv.getAddBathing());
 			pstmt.setObject(17, sitSrv.getAddPickup());
-			pstmt.setInt(18, 2);
+			pstmt.setInt(18, 0);
 			pstmt.setInt(19, 0);
 			pstmt.executeUpdate();
 			
@@ -139,10 +144,11 @@ public class SitSrvJDBCDAO implements SitSrvDAO_interface {
 	}
 
 	@Override
-	public Boolean update(SitSrvVO sitSrv) {
+	public Boolean update(SitSrvVO sitSrv, SitSrvVO sitSrv2, SitSrvVO sitSrv3) {
 		Boolean updateOK = false;
 		Connection con = null;
 		PreparedStatement pstmt = null;
+		PreparedStatement pstmt2 = null;
 
 		try {
 			Class.forName(driver);
@@ -163,17 +169,27 @@ public class SitSrvJDBCDAO implements SitSrvDAO_interface {
 			pstmt.setObject(11, sitSrv.getOvernightLoc());
 			pstmt.setObject(12, sitSrv.getSmkFree());
 			pstmt.setObject(13, sitSrv.getHasChild());
-			pstmt.setObject(14, sitSrv.getSrvTime());
+			pstmt.setString(14, sitSrv.getSrvTime());
 			pstmt.setObject(15, sitSrv.getEqpt());
 			pstmt.setObject(16, sitSrv.getAddBathing());
 			pstmt.setObject(17, sitSrv.getAddPickup());
-			pstmt.setObject(18, sitSrv.getOutOfSrv());
-			pstmt.setObject(19, sitSrv.getIsDel());
+			pstmt.setInt(18, 0);
+			pstmt.setInt(19, 0);
 			pstmt.setString(20, sitSrv.getSitSrvNo());
 
-			if (pstmt.executeUpdate() == 1) {
-				updateOK = true;
-			}
+			pstmt.executeUpdate();
+			
+			pstmt2 = con.prepareStatement(UPDATE_PSTMT_PLUS_PSTMT);
+			pstmt2.setInt(1, sitSrv2.getSrvFee());
+			pstmt2.setString(2, sitSrv2.getSitSrvNo());
+			pstmt2.executeUpdate();
+			
+			pstmt2.clearParameters();
+			pstmt2.setInt(1, sitSrv3.getSrvFee());
+			pstmt2.setString(2, sitSrv3.getSitSrvNo());
+			pstmt2.executeUpdate();
+			
+			updateOK = true;
 			con.commit();
 
 		} catch (ClassNotFoundException e) {
@@ -397,31 +413,45 @@ public class SitSrvJDBCDAO implements SitSrvDAO_interface {
 	}
 
 	@Override
-	public List<SitSrvVO> choose_SitSrv(String sitSrvCode, Object[] acpPetTyp, String appendSQL) {
-		List<SitSrvVO> list = new ArrayList<SitSrvVO>();
-		SitSrvVO sitSrv = null;
+	public List<SitSrvVO2> choose_SitSrv(String sitSrvCode, Object[] acpPetTyp, Map<String, String[]> map) {
+		List<SitSrvVO2> list = new ArrayList<SitSrvVO2>();
+		SitSrvVO2 sitSrv = null;
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
+		StringBuffer choose_sit_from_srv = new StringBuffer(
+				"SELECT * From sitSrv WHERE isDel=0 AND sitsrvcode NOT IN ('Bathing' ,'Pickup') AND sitSrvCode=? ");
 
 		try {
 			Class.forName(driver);
 			con = DriverManager.getConnection(url, user, passwd);
-			for (int i = 0; i < acpPetTyp.length; i++) {
-				CHOOSE_SIT_FROM_SRV.append("?,");
+			// 如果有選typ
+			if (acpPetTyp.length>0) {
+				choose_sit_from_srv.append("AND acpPetTyp = ANY (");
+				for (int i = 0; i < acpPetTyp.length; i++) {
+					choose_sit_from_srv.append("?,");
+				}
+				choose_sit_from_srv.deleteCharAt(choose_sit_from_srv.length()-1);
+				choose_sit_from_srv.append(") ");
 			}
-			CHOOSE_SIT_FROM_SRV.deleteCharAt(CHOOSE_SIT_FROM_SRV.length()-1);
-			CHOOSE_SIT_FROM_SRV.append(")");
-//			System.out.println(CHOOSE_SIT_FROM_SRV);
-			pstmt = con.prepareStatement(CHOOSE_SIT_FROM_SRV + appendSQL);
+						
+						
+			String sql = choose_sit_from_srv + jdbcUtil_CompositeQuery_sitSrv.get_WhereCondition(map);
+						
+			System.out.println("SitSrvDAO_440.finalSQL = " + sql);
+			pstmt = con.prepareStatement(sql);
+						
 			pstmt.setString(1, sitSrvCode);
-			for (int i = 0; i < acpPetTyp.length; i++) {
-				pstmt.setObject(i+2, acpPetTyp[i]);
+			// 如果有選typ
+			if (acpPetTyp.length>0) {
+				for (int i = 0; i < acpPetTyp.length; i++) {
+					pstmt.setObject(i+2, acpPetTyp[i]);
+				}
 			}
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {
-				sitSrv = new SitSrvVO();
+				sitSrv = new SitSrvVO2();
 				sitSrv.setSitSrvNo(rs.getString("sitSrvNo"));
 				sitSrv.setSitSrvName(rs.getString("sitSrvName"));
 				sitSrv.setSitSrvCode(rs.getString("sitSrvCode"));
@@ -589,13 +619,14 @@ public class SitSrvJDBCDAO implements SitSrvDAO_interface {
 //		System.out.println("--------------------以上是1個保姆的全部服務----------------------");
 
 		// 查詢符合條件的保姆
-		List<SitSrvVO> list2 = new ArrayList<SitSrvVO>();
+		List<SitSrvVO2> list2 = new ArrayList<SitSrvVO2>();
 		Integer[] types = { 0, 1, 2, 3, 4 };
+		Map<String, String[]> map = new HashMap<String, String[]>();
 
-		list2 = jdbcdao.choose_SitSrv("DogWalking", types, "");
+		list2 = jdbcdao.choose_SitSrv("Boarding", types, map);
 
 		System.out.println("--------------------以下是符合條件的保姆服務----------------------");
-		for (SitSrvVO sitsrv : list2) {
+		for (SitSrvVO2 sitsrv : list2) {
 			System.out.println("SitSrvNo = " + sitsrv.getSitSrvNo());
 			System.out.println("SitSrvName = " + sitsrv.getSitSrvName());
 			System.out.println("SitSrvCode = " + sitsrv.getSitSrvCode());

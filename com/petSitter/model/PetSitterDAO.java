@@ -27,9 +27,12 @@ public class PetSitterDAO implements PetSitterDAO_interface {
 	
 	private static final String INSERT_PSTMT = "INSERT INTO petSitter(sitNo, memNo, sitInfo, "
 			+ "srvSTime, srvETime, bankCode, bankAcc, sitAccStatus, totalComm, totalCus, repeatCus) VALUES ("
-			+ "'S' || lpad(sitRep_SEQ.NEXTVAL, 3, '0'),?,?,?,?,?,?,0,0,0,0)";
+			+ "'S' || lpad(sitRep_SEQ.NEXTVAL, 3, '0'),?,?,?,?,?,?,?,?,?,?)";
 	private static final String UPDATE_PSTMT = "UPDATE petSitter SET memNo=?, sitInfo=?, "
 			+ "srvSTime=? , srvETime=?, bankCode=?, bankAcc=?, sitAccStatus=?, totalComm=?, totalCus=?, repeatCus=? WHERE sitNo=?";
+	private static final String UPDATE_TOTALCOMM = "UPDATE petSitter SET totalComm=? WHERE sitNo=?";
+	private static final String UPDATE_REPEAT_TOTALCUS = "UPDATE petSitter SET totalCus=?, repeatCus=? WHERE sitNo=?";
+	
 	private static final String GETbyPK_PSTMT = "SELECT sitNo, memNo, sitInfo, bankCode, srvSTime, srvETime,"
 			+ "bankAcc, sitAccStatus, totalComm, totalCus, repeatCus FROM petSitter WHERE sitNo=?";
 	private static final String GETbyFK_PSTMT = "SELECT sitNo, memNo, sitInfo, bankCode, srvSTime, srvETime,"
@@ -52,7 +55,12 @@ public class PetSitterDAO implements PetSitterDAO_interface {
 			pstmt.setString(4, petSitterVO.getSrvETime());
 			pstmt.setString(5, petSitterVO.getBankCode());
 			pstmt.setString(6, petSitterVO.getBankAcc());
+			pstmt.setInt(7, petSitterVO.getSitAccStatus());
+			pstmt.setDouble(8, petSitterVO.getTotalComm());
+			pstmt.setDouble(9, petSitterVO.getTotalCus());
+			pstmt.setInt(10, petSitterVO.getRepeatCus());
 
+			
 			pstmt.executeUpdate();
 
 		} catch (SQLException se) {
@@ -92,8 +100,8 @@ public class PetSitterDAO implements PetSitterDAO_interface {
 			pstmt.setString(5, petSitterVO.getBankCode());
 			pstmt.setString(6, petSitterVO.getBankAcc());
 			pstmt.setInt(7, petSitterVO.getSitAccStatus());
-			pstmt.setInt(8, petSitterVO.getTotalComm());
-			pstmt.setInt(9, petSitterVO.getTotalCus());
+			pstmt.setDouble(8, petSitterVO.getTotalComm());
+			pstmt.setDouble(9, petSitterVO.getTotalCus());
 			pstmt.setInt(10, petSitterVO.getRepeatCus());
 			pstmt.setString(11, petSitterVO.getSitNo());
 
@@ -117,6 +125,80 @@ public class PetSitterDAO implements PetSitterDAO_interface {
 				}
 			}
 		}
+	}
+	
+	@Override
+	public void update_totalComm(PetSitterVO petSitterVO) {
+		
+		Connection con = null;
+		PreparedStatement pstmt = null;
+
+		try {
+
+			con = ds.getConnection();
+			pstmt = con.prepareStatement(UPDATE_TOTALCOMM);
+
+			pstmt.setDouble(1, petSitterVO.getTotalComm());
+			pstmt.setString(2, petSitterVO.getSitNo());
+
+			pstmt.executeUpdate();
+
+		} catch (SQLException se) {
+			throw new RuntimeException("A database error occured. " + se.getMessage());
+		} finally {
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
+	}
+
+	@Override
+	public void update_repeat_totalCus(PetSitterVO petSitterVO) {
+
+		Connection con = null;
+		PreparedStatement pstmt = null;
+
+		try {
+
+			con = ds.getConnection();
+			pstmt = con.prepareStatement(UPDATE_REPEAT_TOTALCUS);
+
+			pstmt.setDouble(1, petSitterVO.getTotalCus());
+			pstmt.setInt(2, petSitterVO.getRepeatCus());
+			pstmt.setString(3, petSitterVO.getSitNo());
+
+			pstmt.executeUpdate();
+
+		} catch (SQLException se) {
+			throw new RuntimeException("A database error occured. " + se.getMessage());
+		} finally {
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
+		
 	}
 
 	@Override
@@ -145,8 +227,8 @@ public class PetSitterDAO implements PetSitterDAO_interface {
 				petSitterVO.setBankCode(rs.getString("bankCode"));
 				petSitterVO.setBankAcc(rs.getString("bankAcc"));
 				petSitterVO.setSitAccStatus(rs.getInt("sitAccStatus"));
-				petSitterVO.setTotalComm(rs.getInt("totalComm"));
-				petSitterVO.setTotalCus(rs.getInt("totalCus"));
+				petSitterVO.setTotalComm(rs.getDouble("totalComm"));
+				petSitterVO.setTotalCus(rs.getDouble("totalCus"));
 				petSitterVO.setRepeatCus(rs.getInt("repeatCus"));
 			}
 
@@ -205,8 +287,8 @@ public class PetSitterDAO implements PetSitterDAO_interface {
 				petSitterVO.setBankCode(rs.getString("bankCode"));
 				petSitterVO.setBankAcc(rs.getString("bankAcc"));
 				petSitterVO.setSitAccStatus(rs.getInt("sitAccStatus"));
-				petSitterVO.setTotalComm(rs.getInt("totalComm"));
-				petSitterVO.setTotalCus(rs.getInt("totalCus"));
+				petSitterVO.setTotalComm(rs.getDouble("totalComm"));
+				petSitterVO.setTotalCus(rs.getDouble("totalCus"));
 				petSitterVO.setRepeatCus(rs.getInt("repeatCus"));
 			}
 
@@ -265,8 +347,8 @@ public class PetSitterDAO implements PetSitterDAO_interface {
 				petSitterVO.setBankCode(rs.getString("bankCode"));
 				petSitterVO.setBankAcc(rs.getString("bankAcc"));
 				petSitterVO.setSitAccStatus(rs.getInt("sitAccStatus"));
-				petSitterVO.setTotalComm(rs.getInt("totalComm"));
-				petSitterVO.setTotalCus(rs.getInt("totalCus"));
+				petSitterVO.setTotalComm(rs.getDouble("totalComm"));
+				petSitterVO.setTotalCus(rs.getDouble("totalCus"));
 				petSitterVO.setRepeatCus(rs.getInt("repeatCus"));
 				list.add(petSitterVO);
 			}
@@ -298,6 +380,7 @@ public class PetSitterDAO implements PetSitterDAO_interface {
 		}
 		return list;
 	}
+
 
 	
 }

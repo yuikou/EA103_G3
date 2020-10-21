@@ -29,7 +29,9 @@ public class SalonOrderDetailDAO implements SalonOrderDetailDAO_interface {
 			"DELETE FROM SALONORDERDETAIL WHERE SALORDERNO =?";
 	private static final String GET_ALL_STMT=
 			"SELECT SALORDERNO,SALSEVNO,GROOMERNO,SALSEVPR FROM SALONORDERDETAIL ORDER BY SALORDERNO";
-	
+	private static final String GET_All_BY_ORDERNO =
+			"SELECT * FROM SALONORDERDETAIL WHERE SALORDERNO = ? ORDER BY SALORDERNO";
+
 	
 	@Override
 	public void insert(SalonOrderDetailVO salonOrderDetailVO) {
@@ -156,8 +158,81 @@ public class SalonOrderDetailDAO implements SalonOrderDetailDAO_interface {
 					e.printStackTrace(System.err);
 				}
 			}
-		}
-		
+		}		
 		return list;
 	}
+	
+	@Override
+	public List<SalonOrderDetailVO> getAllBySalOrderNo(String salOrderNo) {
+		List<SalonOrderDetailVO> list =new ArrayList<SalonOrderDetailVO>();
+		SalonOrderDetailVO salonOrderDetailVO = null;
+		
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		try {
+			con = ds.getConnection();
+			pstmt = con.prepareStatement(GET_All_BY_ORDERNO);
+			
+			pstmt.setString(1, salOrderNo);
+			
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				salonOrderDetailVO = new SalonOrderDetailVO();
+				salonOrderDetailVO.setSalOrderNo(rs.getString("salOrderNo"));
+				salonOrderDetailVO.setGroomerNo(rs.getString("groomerNo"));
+				salonOrderDetailVO.setSalSevNo(rs.getString("salSevNo"));
+				salonOrderDetailVO.setSalSevPr(rs.getInt("salSevPr"));
+				salonOrderDetailVO.setOffNo(rs.getString("offNo"));
+				
+				list.add(salonOrderDetailVO);					
+			}
+			
+		}catch (SQLException se) {
+			throw new RuntimeException("A database error occured. "
+					+ se.getMessage());
+			// Clean up JDBC resources
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}		
+		return list;
+	}
+
+	@Override
+	public void insertSalonOrderDetail(SalonOrderDetailVO salonOrderDetailVO, Connection con) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
+
+	@Override
+	public List<SalonOrderDetailVO> getAllByMemNo(String memNo) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
 }

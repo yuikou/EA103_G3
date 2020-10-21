@@ -4,9 +4,11 @@ import java.io.*;
 import java.util.*;
 
 import javax.servlet.*;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import com.sitFollow.model.*;
 
+@WebServlet("/sitFollow/sitFollow.do")
 public class SitFollowServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -35,14 +37,14 @@ public class SitFollowServlet extends HttpServlet {
 				/*************************** 3.新增完成,準備轉交(Send the Success view) ***********/
 				session.setAttribute("list", list);
 
-				String url = "listSitFollowBySession.jsp";
+				String url = "/front-end/sitFollow/listSitFollowBySession.jsp";
 				RequestDispatcher sucessView = req.getRequestDispatcher(url);
 				sucessView.forward(req, res);
 				
 			/***************************其他可能的錯誤處理*************************************/
 			} catch (Exception e) {
 				errorMsgs.add(e.getMessage());
-				RequestDispatcher failureView = req.getRequestDispatcher("listSitFollow.jsp");
+				RequestDispatcher failureView = req.getRequestDispatcher("/front-end/sitFollow/listSitFollow.jsp");
 				failureView.forward(req, res);
 			}
 		}

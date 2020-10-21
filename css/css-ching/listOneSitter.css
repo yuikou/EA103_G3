@@ -1,0 +1,77 @@
+body {
+	margin-top: 100px;
+}
+
+.main-footer {
+	margin-top: 10px;
+}
+.rateit .rateit-preset {
+ color: #FFCC36;
+    background: url(https://cdnjs.cloudflare.com/ajax/libs/jquery.rateit/1.1.3/star.gif) left -32px !important;
+}
+th {
+	width: 150px;
+}
+
+.btn-dark.custom-btn {
+	background-color: #A8DADC;
+	border: 3.5px dashed #457B9D;
+}
+
+#userPhoto {
+	border-radius: 50%;
+	width: 80px;
+	height: 80px;
+}
+
+.left-info {
+	background-color: rgba(241, 196, 15, 0.30);
+	text-align: center;
+	border-radius: 30px;
+	position: relative;
+	box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.left-info>h3 {
+	color: #457B9D;
+	font-weight: bold;
+	margin-top: 10px;
+}
+
+.right-info {
+	text-align: center;
+}
+
+.srvPhoto {
+	margin-top: 20px;
+	margin-bottom: 65px;
+}
+
+.btnRow {
+	position: absolute;
+	bottom: 0;
+	left: 18px;
+}
+.back-btn {
+	position: relative;
+}
+.back-btn img {
+	position: absolute;
+	top: 5px;
+	right: 18px;
+}
+.btn:hover {
+	box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px
+		rgba(0, 0, 0, 0.22);
+}
+
+.title {
+	font-weight: bold;
+	color: #1D3557;
+	font-size: 30px;
+	margin: 10px 0;
+}
+
+hr {
+	border-top: 2px dashed #A8DADC;
+}

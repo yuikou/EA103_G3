@@ -13,11 +13,10 @@
 <TITLE>保姆的所有證照</TITLE>
 
 <!-- 匯入外部CSS -->
-<c:set var="path" value="/EA103G3/front-end" />
-<c:set var="cssPath" value="/EA103G3/css/euphy" />
+<c:set var="cssPath" value="${pageContext.request.contextPath}/css/euphy" />
 <link rel="stylesheet" type="text/css" href="${cssPath}/bootstrap.min.css">   
 <link rel="stylesheet" type="text/css" href="${cssPath}/Main.css">
-<link rel="stylesheet" type="text/css" href="${path}/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" type="text/css" href="${cssPath}/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" type="text/css" href="${cssPath}/animate.css">
 <link rel="stylesheet" type="text/css" href="${cssPath}/animsition.min.css">
 <link rel="stylesheet" type="text/css" href="${cssPath}/util.css">
@@ -31,7 +30,7 @@
 <BODY>
 
 <!-------------------- nav -------------------->
-	<jsp:include page="/front-end/nav.jsp"/>
+	<jsp:include page="/front-end/header.jsp"/>
     
 <!------------------ 內文body ------------------>
     <div class="container">
@@ -85,7 +84,7 @@
 						    <p><span>證照狀態</span> ${status}</p>
 						    
 						    <div class='button'>
-						    	<FORM method="post" action="sitLic.do">
+						    	<FORM method="post" action="${pageContext.request.contextPath}/sitLic/sitLic.do">
 									<input class="updBtn" type="submit" value="修改">
 									<input type="hidden" name="licNo" value="${sitLic.licNo}">
 									<input type="hidden" name="action" value="getOne_For_Update">
@@ -104,7 +103,7 @@
 		</div>
 	</div>
 	
-	<script src="/EA103G3/js/euphy/jquery-3.2.1.min.js"></script>
+	<script src="${pageContext.request.contextPath}/js/euphy/jquery-3.2.1.min.js"></script>
 	<script>
 		$(".licLi").each(function(){
 			$(this).hover(function(){

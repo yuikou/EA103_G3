@@ -12,10 +12,9 @@
 <title>xx保姆托養服務</title>
 
 <!-- 匯入外部CSS -->
-<c:set var="path" value="/EA103G3/front-end" />
-<c:set var="cssPath" value="/EA103G3/css/euphy" />
+<c:set var="cssPath" value="${pageContext.request.contextPath}/css/euphy" />
 <link rel="stylesheet" type="text/css" href="${cssPath}/bootstrap.min.css">
-<link rel="stylesheet" type="text/css" href="${path}/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" type="text/css" href="${cssPath}/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/6.10.3/sweetalert2.css" />
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link rel="stylesheet" type="text/css" href="${cssPath}/Petfect.css">
@@ -24,15 +23,11 @@
 </head>
 <body>
 
-<!-------------------- nav -------------------->
-	<jsp:include page="/front-end/nav.jsp"/>
-    
-<!------------------ 內文body ------------------>
-
-	<div class="container">
+	<div class="container-allSrv">
 	
-		<!-- 錯誤列表 -->
-	   	<div class="errorList"> 
+		<div class="addActDiv">
+			<!-- 錯誤列表 -->
+			<div class="errorList-allSrv"> 
 			<c:if test="${not empty errorMsgs}" >
 				<font style="color:red;">發生以下錯誤：</font>
 				<ul>
@@ -41,6 +36,8 @@
 				</c:forEach>
 				</ul>
 			</c:if>
+		</div>
+			<a class="addAct" href="${pageContext.request.contextPath}/sitSrv/sitSrv.do?action=transfer"><i class="material-icons">queue</i><span>新增服務</span></a>
 		</div>
 	
 		<div class="col-10 col-sm-12 wrap">
@@ -52,12 +49,11 @@
 				<div class="col-2 col-sm-3 thead-th thAction">服務設定</div>
 			</div>
 		
-			<% PetSitterVO petSitterVO = (PetSitterVO) session.getAttribute("petSitterVO"); %>
     		<jsp:useBean id="sitSrvSvc" class="com.sitSrv.model.SitSrvService"/>
-		
+			<jsp:useBean id="petSitterVO" scope="session" class="com.petSitter.model.PetSitterVO"/>
+			
 			<div class="col-sm-12 tbody">
 				<c:forEach var="ssVO" items="${sitSrvSvc.get_OneSit_AllSrv(petSitterVO.sitNo)}">
-				<c:if test="${ssVO.isDel != '1'}">
 				<c:if test="${ssVO.sitSrvCode != 'Bathing' && ssVO.sitSrvCode != 'Pickup'}">
 				<div class="col-sm-12 tbody-tr">
 					<div class="col-5 col-sm-5 tbody-td ssNameDiv">
@@ -71,7 +67,7 @@
 							<small>
 								<c:if test="${ssVO.sitSrvCode=='Boarding'}">晚</c:if>
 			        			<c:if test="${ssVO.sitSrvCode=='DayCare'}">天</c:if>
-			        			<c:if test="${ssVO.sitSrvCode=='PetTaxi'}">趟</c:if>
+			        			<c:if test="${ssVO.sitSrvCode=='PetTaxi'}">公里</c:if>
 			        			<c:if test="${ssVO.sitSrvCode!='Boarding' && ssVO.sitSrvCode!='DayCare' && ssVO.sitSrvCode!='PetTaxi'}">次</c:if>
 							</small>
 						</div>
@@ -81,18 +77,29 @@
 						<c:if test="${ssVO.isDel==0 && ssVO.outOfSrv==0}"><span class="normalSrv">服務中</span></c:if>
 						<c:if test="${ssVO.isDel==0 && ssVO.outOfSrv==1}"><span class="pauseSrv">已暫停</span></c:if>
 						<c:if test="${ssVO.isDel==0 && ssVO.outOfSrv==2}"><span class="verifying">證照待審核</span></c:if>
+						<c:if test="${ssVO.isDel==0 && ssVO.outOfSrv==3}"><span class="verifying">請修改證照</span></c:if>
 					</div>
 					<div class="col-2 col-sm-3 tbody-td ssAct">
+				<!-----服務編號----->
 						<input type="hidden" name="sitSrvNo" value="${ssVO.sitSrvNo}">
+				<!-----跳轉修改----->
 						<a class="modifyAct <c:out value="${ssVO.outOfSrv=='0'? '' : 'disabled'}" />" 
-						   data-title="修改服務" href="${pageContext.request.contextPath}/front-end/sitSrv/sitSrv.do?action=getOne_For_Update&sitSrvNo=${ssVO.sitSrvNo}"><i class="table__icon material-icons">tune</i></a>
+						   data-title="修改服務" href="${pageContext.request.contextPath}/sitSrv/sitSrv.do?action=getOne_For_Update&sitSrvNo=${ssVO.sitSrvNo}"><i class="table__icon material-icons">tune</i></a>
+				
+				<!-----跳轉休假----->		
 						<a class="offDayAct <c:out value="${ssVO.outOfSrv=='0'? '' : 'disabled'}" />"
-						   data-title="安排休假" href="${pageContext.request.contextPath}/front-end/sitOffDay/sitOffDay.do?action=transfer&sitSrvNo=${ssVO.sitSrvNo}"><i class="table__icon material-icons">event_busy</i></a>
-						<a class="pauseAct" data-title="<c:out value="${ssVO.outOfSrv=='0'?'暫停務服':'重啟服務'}"/>" href=""><i class="table__icon material-icons"><c:out value="${ssVO.outOfSrv=='0'?'visibility_off':'visibility'}"/></i></a>
-						<a class="delAct" data-title="刪除服務" href=""><i class="table__icon material-icons">delete</i></a>
+						   data-title="安排休假" href="${pageContext.request.contextPath}/sitOffDay/sitOffDay.do?action=transfer&sitSrvNo=${ssVO.sitSrvNo}"><i class="table__icon material-icons">event_busy</i></a>
+				
+				<!-----執行暫停----->		
+						<a class="pauseAct <c:out value="${ssVO.outOfSrv!='2'? '' : 'disabled'}" />"
+						   data-title="<c:out value="${ssVO.outOfSrv=='0'?'暫停務服':'重啟服務'}"/>" href=""><i class="table__icon material-icons"><c:out value="${ssVO.outOfSrv=='0'?'visibility_off':'visibility'}"/></i></a>
+				
+				<!-----執行刪除----->		
+						<a class="delAct <c:out value="${ssVO.outOfSrv!='2'? '' : 'disabled'}" />"
+						   data-title="刪除服務" href=""><i class="table__icon material-icons">delete</i></a>
+						
 					</div>
 				</div>
-				</c:if>
 				</c:if>
 				</c:forEach>
 			</div>
@@ -101,12 +108,9 @@
 	
 	</div>
 
-<!------------------ footer ------------------>
-    <jsp:include page="/front-end/footer.jsp"/>
-
 
 <!-- 匯入js -->
-	<c:set var="jsPath" value="/EA103G3/js/euphy" />
+	<c:set var="jsPath" value="${pageContext.request.contextPath}/js/euphy" />
 	<script src="${jsPath}/jquery-3.2.1.min.js"></script>
 	<script src="${jsPath}/popper.js"></script>
 	<script src="${jsPath}/bootstrap.min.js"></script>
@@ -140,7 +144,7 @@
 		 		        	if (isConfirm) {
 		 		        		$.ajax({
 		 		                    type: "POST",
-		 		                    url: "sitSrv.do",
+		 		                    url: "${pageContext.request.contextPath}/sitSrv/sitSrv.do",
 		 		                    data: {
 		 		                    	action:"pauseSrv",
 		  		                    	sitSrvNo: input.val(),
@@ -180,7 +184,7 @@
 		 		        	if (isConfirm) {
 		 		        		$.ajax({
 		 		                    type: "POST",
-		 		                    url: "sitSrv.do",
+		 		                    url: "${pageContext.request.contextPath}/sitSrv/sitSrv.do",
 		 		                    data: {
 		 		                    	action:"rebootSrv",
 		  		                    	sitSrvNo: input.val(),
@@ -231,7 +235,7 @@
 	 		        	if (isConfirm) {
 	 		        		$.ajax({
 	 		                    type: "POST",
-	 		                    url: "sitSrv.do",
+	 		                    url: "${pageContext.request.contextPath}/sitSrv/sitSrv.do",
 	 		                    data: {
 	 		                    	action:"delSrv",
 	  		                    	sitSrvNo: input.val(),
