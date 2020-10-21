@@ -108,39 +108,39 @@ public class PicReader extends HttpServlet {
 		
 		/* 來自listAllAdopt.jsp的請求 - 顯示一張待領養寵物圖片 */
 		
-//		if ("listAlladoPet".equals(action)) {
-//			
-//			List <String> errorMsgs = new LinkedList<String>();
-//			req.setAttribute("errorMsgs", errorMsgs);
-//			List<AdoPetAlbumVO> list =null;
-//			try {
-//				res.setContentType("image/gif");
-//				ServletOutputStream out = res.getOutputStream();
-//				
-//				
-//				AdoPetAlbumService dao = new AdoPetAlbumService();
-//
-//				list = dao.getPicList(req.getParameter("adoPetNo"));
-//
-//				for (AdoPetAlbumVO adoPetPic : list) {
-//
-//					byte[] adoPetPicArr = adoPetPic.getAdoPetPic();
-//
-//					out.write(adoPetPicArr);
-//					out.flush();
-//					
-//					out.close();
-//				}
-//				/*************************** 其他可能的錯誤處理 *************************************/
-//			} catch (IOException ie) {
-//				ie.printStackTrace();
-//				
-//				req.setAttribute("list", list); 
-//				String url = "/adoPet/adopt/back-end/listAllAdopt.jsp";
-//				RequestDispatcher successView = req.getRequestDispatcher(url); // 成功轉交 listOneEmp.jsp
-//				successView.forward(req, res);
-//			}
-//		}
+		if ("listAlladoPet".equals(action)) {
+			
+			List <String> errorMsgs = new LinkedList<String>();
+			req.setAttribute("errorMsgs", errorMsgs);
+			List<AdoPetAlbumVO> list =null;
+			try {
+				res.setContentType("image/gif");
+				ServletOutputStream out = res.getOutputStream();
+				
+				
+				AdoPetAlbumService dao = new AdoPetAlbumService();
+
+				list = dao.getPicList(req.getParameter("adoPetNo"));
+
+				for (AdoPetAlbumVO adoPetPic : list) {
+
+					byte[] adoPetPicArr = adoPetPic.getAdoPetPic();
+
+					out.write(adoPetPicArr);
+					out.flush();
+					
+					out.close();
+				}
+				/*************************** 其他可能的錯誤處理 *************************************/
+			} catch (IOException ie) {
+				ie.printStackTrace();
+				
+				req.setAttribute("list", list); 
+				String url = "/adoPet/adopt/back-end/listAllAdopt.jsp";
+				RequestDispatcher successView = req.getRequestDispatcher(url); // 成功轉交 listOneEmp.jsp
+				successView.forward(req, res);
+			}
+		}
 		
 		/*---- 書凱 ----*/
 		if ("getMemPhoto".equals(action)) {
@@ -366,38 +366,38 @@ public class PicReader extends HttpServlet {
 		}
 		
 
-//		if ("adPic".equals(action)) {
-//			List<String> errorMsgs = new LinkedList<String>();
-//			req.setAttribute("errorMsgs", errorMsgs);
-//					
-//			try {
-//				/*************************** 1.接收請求參數 ****************************************/
-//				String adno = req.getParameter("adNo");
-//						
-//				/***************************2.開始查詢資料*****************************************/
-//				AdvertisementService adSvc = new AdvertisementService();
-//				AdvertisementVO advertisementVO = adSvc.getOneAdvertisement(adno);
-//		
-//				res.setContentType("image/jpg");
-//				ServletOutputStream out = res.getOutputStream();
-//						
-//				// byte[]轉InputStream
-//				ByteArrayInputStream bin = new ByteArrayInputStream(advertisementVO.getAdPic());
-//						
-//				byte[] buffer = new byte[4*1024];
-//				int len;
-//				while ((len = bin.read(buffer)) != -1) {
-//					out.write(buffer, 0 , len);
-//				}
-//				bin.close();
-//											
-//			/***************************其他可能的錯誤處理*************************************/
-//			} catch (Exception e) {
-//				errorMsgs.add("無法取得資料:" + e.getMessage());
-//				RequestDispatcher failureView = req.getRequestDispatcher("/sitFollow/listSitFollow.jsp");
-//				failureView.forward(req, res);
-//			}					
-//		}
+		if ("adPic".equals(action)) {
+			List<String> errorMsgs = new LinkedList<String>();
+			req.setAttribute("errorMsgs", errorMsgs);
+					
+			try {
+				/*************************** 1.接收請求參數 ****************************************/
+				String adno = req.getParameter("adNo");
+						
+				/***************************2.開始查詢資料*****************************************/
+				AdvertisementService adSvc = new AdvertisementService();
+				AdvertisementVO advertisementVO = adSvc.getOneAdvertisement(adno);
+		
+				res.setContentType("image/jpg");
+				ServletOutputStream out = res.getOutputStream();
+						
+				// byte[]轉InputStream
+				ByteArrayInputStream bin = new ByteArrayInputStream(advertisementVO.getAdPic());
+						
+				byte[] buffer = new byte[4*1024];
+				int len;
+				while ((len = bin.read(buffer)) != -1) {
+					out.write(buffer, 0 , len);
+				}
+				bin.close();
+											
+			/***************************其他可能的錯誤處理*************************************/
+			} catch (Exception e) {
+				errorMsgs.add("無法取得資料:" + e.getMessage());
+				RequestDispatcher failureView = req.getRequestDispatcher("/sitFollow/listSitFollow.jsp");
+				failureView.forward(req, res);
+			}					
+		}
 
 		/* ----------政旭---------- */
 		if ("salPic".equals(action)) {
@@ -558,7 +558,7 @@ public class PicReader extends HttpServlet {
 				
 				String salno = req.getParameter("salPic").toString();
 				SalonService salSvc = new SalonService();
-				byte[] salPic = salSvc.getOneSalon(salno).getSalPic();
+				byte[] salPic = salSvc.getonesalon(salno).getSalPic();
 				out.write(salPic);
 			
 			} catch (Exception e) {
