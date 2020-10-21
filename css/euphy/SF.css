@@ -96,6 +96,9 @@ img.srvImg {
   height: 25px;
   opacity: 0.5;
 }
+.srvImg-sample {
+	margin: 0 10px;
+} 
 .cutePage {
   height: 120px;
   text-align: center;
