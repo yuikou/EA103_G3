@@ -23,6 +23,15 @@ public class SitOffDayService {
 		return sodDAO.add(sod);
 	}
 	
+	public void addFormOrder (String sitSrvNo, Date offDay, String offTime, Integer offDayTyp) {
+		SitOffDayVO sod = new SitOffDayVO();
+		sod.setSitSrvNo(sitSrvNo);
+		sod.setOffDay(offDay);
+		sod.setOffTime(offTime);
+		sod.setOffDayTyp(offDayTyp);
+		sodDAO.add(sod);
+	}
+	
 	public Boolean del (String groupId) {
 		return sodDAO.del(groupId);
 	}
