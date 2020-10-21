@@ -244,8 +244,11 @@ public class GrmServlet extends HttpServlet {
 			/***************************1.接收請求參數***************************************/
 			//取得已選擇的美容師編號
 			String groomerNo = req.getParameter("groomerNo").trim();
+			GrmService grmSvc = new GrmService();
+			GrmVO myGrm = grmSvc.getOneGrm(groomerNo);
 			//設定到session
-			session.setAttribute("groomerNo", groomerNo);	
+			session.setAttribute("myGrm", myGrm);	
+	System.out.println(groomerNo);
 			/***************************2.設定完成,準備轉交到選擇日期***********/	
 			String url = "/front-end/grmOff/selectDay.jsp";
 			RequestDispatcher selectDay = req.getRequestDispatcher(url);

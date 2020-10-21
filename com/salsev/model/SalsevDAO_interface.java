@@ -10,4 +10,5 @@ public interface SalsevDAO_interface {
      public SalsevVO findByPrimaryKey(String salsevno);
      //一間美容店show出所有服務項目
      public List<SalsevVO> getAll(String salno);
+     public List<SalsevVO> getByPetcat(String salno, Integer petcat);
 }

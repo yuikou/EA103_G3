@@ -30,7 +30,7 @@ public class SalVServlet extends HttpServlet {
 
 		req.setCharacterEncoding("UTF-8");
 		HttpSession session = req.getSession();
-		String salno = session.getAttribute("salno").toString();
+		
 		String action = req.getParameter("action");
 		
 //System.out.println(action);
@@ -41,6 +41,8 @@ public class SalVServlet extends HttpServlet {
 			
 			try {
 				/***********************1.接收請求參數 - 輸入格式的錯誤處理*************************/
+				String salno = session.getAttribute("salno").toString();
+				
 				String salsevname = req.getParameter("salsevname");
 				
 				String salsevinfo = req.getParameter("salsevinfo");
@@ -200,11 +202,13 @@ public class SalVServlet extends HttpServlet {
 			req.setAttribute("errorMsgs", errorMsgs);
 			
 			try {
-				//1.接收請求參數
+				//接收請求參數
 				String salsevno = (req.getParameter("salsevNo")).toString().trim();
-				//儲存設定到session
-				session.setAttribute("salsevno", salsevno);
-//System.out.println(salsevno);
+				//拿到選擇的服務項目
+				SalVService ssvc = new SalVService();
+				SalsevVO mySalSev = ssvc.getOneSalv(salsevno);
+				//儲存選擇的VO到session
+				session.setAttribute("mySalSev", mySalSev);
 				//設定完成, 轉交頁面到選擇美容師
 				String url = "/front-end/grm/choose_groomer.jsp";
 				RequestDispatcher selectGrm = req.getRequestDispatcher(url);
@@ -214,6 +218,26 @@ public class SalVServlet extends HttpServlet {
 				errorMsgs.add("轉交資料失敗:"+ e.getMessage());
 				RequestDispatcher failureView = req
 						.getRequestDispatcher("/front-end/salsev/select_SalSev.jsp");
+				failureView.forward(req, res);
+			}
+		}
+//處理瀏覽頁面中的直接預約
+		if("bookNow".equals(action)) {
+			List<String> errorMsgs = new LinkedList<String>();
+			req.setAttribute("errorMsgs", errorMsgs);
+			
+			try {
+				String salno = req.getParameter("salno");
+				session.setAttribute("salno", salno);
+				
+				String url = "/front-end/salsev/select_SalSev.jsp";
+				RequestDispatcher selectsev = req.getRequestDispatcher(url);
+				selectsev.forward(req, res);
+				
+			}catch (Exception e) {
+				errorMsgs.add("轉交資料失敗:"+ e.getMessage());
+				RequestDispatcher failureView = req
+						.getRequestDispatcher("/front-end/salon/searchSalon.jsp");
 				failureView.forward(req, res);
 			}
 		}

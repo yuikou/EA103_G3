@@ -72,8 +72,9 @@ input, button {
 	display: inline-flex;
 }
 .dog-size-select {
-	display: inline-flex;
+	display: none;
 }
+
 
 .heading {
 	margin: auto;
@@ -223,7 +224,7 @@ input, button {
     content:"";
 }
 .line {
-	background-color: rgba(250,163,7,0.3);
+	background-color: rgba(250,163,7,0.1);
 }
 
 .service-select-btn.line>a:after {

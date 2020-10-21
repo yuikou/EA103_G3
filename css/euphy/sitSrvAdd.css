@@ -157,6 +157,9 @@ body {
   opacity: 0;
   z-index: -1;
 }
+.sistSrvHide {
+	display: none;
+}
 /* Accordion styles */
 .tabs {
   border-radius: 8px;

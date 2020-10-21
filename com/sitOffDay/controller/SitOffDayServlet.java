@@ -58,8 +58,6 @@ public class SitOffDayServlet extends HttpServlet {
 		
 /* --------------------------------------來自 showAllSrvDay.jsp - 取得一位保姆其中一種服務的時間-------------------------------------- */
 		if ("getAll".equals(action)) {
-//			List<String> errorMsgs = req.getParameter("errorMsgs");
-//			req.setAttribute("errorMsgs", errorMsgs);
 			PrintWriter out = res.getWriter();
 
 			try {
@@ -174,9 +172,6 @@ public class SitOffDayServlet extends HttpServlet {
 				
 			/***************************其他可能的錯誤處理*************************************/
 			} catch (Exception e) {
-//				errorMsgs.add(e.getMessage());
-//				RequestDispatcher failureView = req.getRequestDispatcher("listSitFollow.jsp");
-//				failureView.forward(req, res);
 				out.write("error: " + e.getMessage());
 			}
 		}

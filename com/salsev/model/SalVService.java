@@ -50,4 +50,8 @@ public class SalVService {
 	public List<SalsevVO> getAll(String salno){
 		return dao.getAll(salno);
 	}
+	
+	public List<SalsevVO> getByPetcat(String salno, Integer petcat){
+		return dao.getByPetcat(salno, petcat);
+	}
 }

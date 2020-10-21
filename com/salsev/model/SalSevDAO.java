@@ -32,6 +32,8 @@ public class SalSevDAO implements SalsevDAO_interface {
 	 //一間美容店show出所有服務項目
 	private static final String GET_ONE_STMT = "SELECT SALSEVNO, PETCAT, SALSEVNAME, SALSEVINFO, SALSEVTIME, SALSEVPR, STATUS FROM SALONSERVICE WHERE salno=? AND STATUS=0";
 	private static final String GET_ONE_SEV = "SELECT SALSEVNO, SALNO, PETCAT, SALSEVNAME, SALSEVINFO, SALSEVTIME, SALSEVPR, STATUS FROM SALONSERVICE WHERE SALSEVNO=?";
+	//找出特定的可接受寵物類型
+	private static final String GET_PETCAT = "SELECT SALSEVNO, PETCAT, SALSEVNAME, SALSEVINFO, SALSEVTIME, SALSEVPR FROM SALONSERVICE WHERE salno=? AND petcat=? AND status=0";
 	
 	@Override
 	public void insert(SalsevVO salvVO) {
@@ -326,4 +328,65 @@ public class SalSevDAO implements SalsevDAO_interface {
 		}
 		return savVO;
 	}
-}
+	
+
+
+
+
+	public List<SalsevVO> getByPetcat(String salno, Integer petcat){
+			List<SalsevVO> list = new ArrayList<SalsevVO>();
+			SalsevVO savVO = null;	
+			Connection con = null;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+	
+			try {
+	
+				con = ds.getConnection();
+				pstmt = con.prepareStatement(GET_PETCAT);
+				pstmt.setString(1, salno);
+				pstmt.setInt(2, petcat);
+	
+				rs = pstmt.executeQuery();
+				
+				while (rs.next()) {
+					savVO = new SalsevVO();
+					savVO.setSalsevno(rs.getString("salsevno"));
+					savVO.setPetcat(rs.getInt("petcat"));
+					savVO.setSalsevname(rs.getString("salsevname"));
+					savVO.setSalSevInfo(rs.getString("salsevinfo"));
+					savVO.setSalsevtime(rs.getInt("salsevtime"));
+					savVO.setSalsevpr(rs.getInt("salsevpr"));
+					list.add(savVO);
+				}
+				// Handle any driver errors
+			} catch (SQLException se) {
+				throw new RuntimeException("A database error occured. " + se.getMessage());
+				// Clean up JDBC resources
+			} finally {
+				if (rs != null) {
+					try {
+						rs.close();
+					} catch (SQLException se) {
+						se.printStackTrace(System.err);
+					}
+				}
+				if (pstmt != null) {
+					try {
+						pstmt.close();
+					} catch (SQLException se) {
+						se.printStackTrace(System.err);
+					}
+				}
+				if (con != null) {
+					try {
+						con.close();
+					} catch (Exception e) {
+						e.printStackTrace(System.err);
+					}
+				}
+			}
+			return list;
+		}
+	
+}	
