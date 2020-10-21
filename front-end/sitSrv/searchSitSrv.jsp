@@ -331,7 +331,6 @@
 	<script src="${jsPath}/popper.js"></script>
 	<script src="${jsPath}/bootstrap.min.js"></script>
 	<script src="${jsPath}/google-map.js"></script>
-	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB4icTXRSh83NvMt7E3vY3ZrF4NGTb5AIs&libraries=places" async defer></script>
 	<script>
 	$.datetimepicker.setLocale('zh');
 	$(document).ready(function(){
