@@ -228,7 +228,6 @@ public class PicReader extends HttpServlet {
 			try {
 				/*************************** 1.接收請求參數 ****************************************/
 				String licNo = req.getParameter("licNo");
-				System.out.println(licNo);
 						
 				/***************************2.開始查詢資料*****************************************/
 				SitLicService slSvc = new SitLicService();
