@@ -6,8 +6,8 @@ import com.adoPet.model.AdoPetVO;
 
 public interface AdoPetFollowDAO_interface {
 
-	public void insert(AdoPetFollowVO adoPetFollowVO);
-	public void delete(String memNo,String adoPetNo);
-	public List<AdoPetVO> getAll(String memNo);
+	public Boolean insert(AdoPetFollowVO adoPetFollowVO);
+	public Boolean delete(String memNo,String adoPetNo);
+	public List<AdoPetFollowVO> getAll(String memNo);
 	
 }

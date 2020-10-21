@@ -22,25 +22,37 @@ public class AdoPetFollowJDBCDAO implements AdoPetFollowDAO_interface {
 			+ "JOIN ADOPETFOLLOW AW ON A.ADOPETNO = AW.ADOPETNO WHERE AW.MEMNO IN(SELECT MEMNO FROM MEMBER_TABLE WHERE MEMNO=?) AND ADOSTATUS='0' ORDER BY ROWNUM DESC";
 
 	@Override
-	public void insert(AdoPetFollowVO adoPetFollowVO) {
+	public Boolean insert(AdoPetFollowVO adoPetFollowVO) {
+		Boolean insertFinished = false;
 		Connection con = null;
 		PreparedStatement pstmt = null;
 
 		try {
 			Class.forName(DRIVER);
 			con = DriverManager.getConnection(URL, USER, PASSWORD);
+			con.setAutoCommit(false);
 			pstmt = con.prepareStatement(INSERT_AdoPetFollow);
 
 			pstmt.setString(1, adoPetFollowVO.getMemNo());
 			pstmt.setString(2, adoPetFollowVO.getAdoPetNo());
 
-			pstmt.executeUpdate();
+			// 新增一筆追蹤成功時，回傳true給Controller
+			if (pstmt.executeUpdate() == 1) {
+				insertFinished = true;
+				con.commit();
+			}
 
 		} catch (ClassNotFoundException ce) {
 			throw new RuntimeException("Couldn't load database driver" + ce.getMessage());
 
 		} catch (SQLException se) {
-			throw new RuntimeException("A database error occured" + se.getMessage());
+			try {
+				con.rollback();
+				throw new RuntimeException("A database error occured. " + se.getMessage());
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+
 		} finally {
 			if (pstmt != null) {
 				try {
@@ -59,26 +71,38 @@ public class AdoPetFollowJDBCDAO implements AdoPetFollowDAO_interface {
 			}
 
 		}
-
+		return insertFinished;
 	}
 
 	@Override
-	public void delete(String memNo,String adoPetNo) {
+	public Boolean delete(String memNo, String adoPetNo) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
+		Boolean deleteFinished = false;
 
 		try {
 			Class.forName(DRIVER);
 			con = DriverManager.getConnection(URL, USER, PASSWORD);
+			con.setAutoCommit(false);
 			pstmt = con.prepareStatement(DELETE_AdoPetFollow);
 			pstmt.setString(1, memNo);
 			pstmt.setString(2, adoPetNo);
-			pstmt.executeUpdate();
+
+			if (pstmt.executeUpdate() == 1) {
+				deleteFinished = true;
+				con.commit();
+			}
 
 		} catch (ClassNotFoundException ce) {
 			throw new RuntimeException("Couldn't load database driver." + ce.getMessage());
 		} catch (SQLException se) {
-			throw new RuntimeException("A database error occured." + se.getMessage());
+			try {
+				con.rollback();
+				throw new RuntimeException("A database error occured. " + se.getMessage());
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+
 		} finally {
 			if (pstmt != null) {
 				try {
@@ -95,15 +119,16 @@ public class AdoPetFollowJDBCDAO implements AdoPetFollowDAO_interface {
 				}
 			}
 		}
+		return deleteFinished;
 	}
 
 	@Override
-	public List<AdoPetVO> getAll(String memNo) {
+	public List<AdoPetFollowVO> getAll(String memNo) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		List<AdoPetVO> list = new ArrayList<AdoPetVO>();
-		AdoPetVO adoPetVO = null;
+		List<AdoPetFollowVO> list = new ArrayList<AdoPetFollowVO>();
+		AdoPetFollowVO adoPetFollowVO = null;
 
 		try {
 			Class.forName(DRIVER);
@@ -114,27 +139,14 @@ public class AdoPetFollowJDBCDAO implements AdoPetFollowDAO_interface {
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {
-				adoPetVO = new AdoPetVO();
+				adoPetFollowVO = new AdoPetFollowVO();
 
-				adoPetVO.setAdoPetNo(rs.getString("ADOPETNO"));
-				adoPetVO.setPetType(rs.getInt("PETTYPE"));
-				adoPetVO.setPetName(rs.getString("PETNAME"));
-				adoPetVO.setPetBreed(rs.getString("PPETBREED"));
-				adoPetVO.setPetSex(rs.getInt("PETSEX"));
-
-				adoPetVO.setPetBirth(rs.getDate("PETBIRTH"));
-
-				adoPetVO.setAge(rs.getString("age"));
-				adoPetVO.setPetWeight(rs.getDouble("PETWEIGHT"));
-				adoPetVO.setPetCat(rs.getInt("PETCAT"));
-				adoPetVO.setPetChar(rs.getString("PETCHAR"));
-				adoPetVO.setLocation(rs.getString("LOCATION"));
-				list.add(adoPetVO);
+				adoPetFollowVO.setMemNo(rs.getString("MEMNO"));
+				adoPetFollowVO.setAdoPetNo(rs.getString("ADOPETNO"));
+				list.add(adoPetFollowVO);
 			}
-
 		} catch (ClassNotFoundException ce) {
 			throw new RuntimeException("Couldn't load database driver." + ce.getMessage());
-
 		} catch (SQLException se) {
 			throw new RuntimeException("A database error occured." + se.getMessage());
 		} finally {
@@ -167,37 +179,36 @@ public class AdoPetFollowJDBCDAO implements AdoPetFollowDAO_interface {
 	public static void main(String[] args) {
 		AdoPetFollowJDBCDAO adoPetFollowDAO = new AdoPetFollowJDBCDAO();
 
-		// 新增一筆
-
+//		// 新增一筆
+//
 //		AdoPetFollowVO adoPetFollowVO = new AdoPetFollowVO();
 //		adoPetFollowVO.setMemNo("M004");
-//		adoPetFollowVO.setAdoPetNo("A001");
+//		adoPetFollowVO.setAdoPetNo("A005");
 //		adoPetFollowDAO.insert(adoPetFollowVO);
-
-		// 刪除
-	
-		adoPetFollowDAO.delete("M015","A005");
+//
+//		// 刪除
+//	
+//		adoPetFollowDAO.delete("M004","A003");
 
 		// 查詢全部追蹤待領養寵物
-//		List<AdoPetVO> list = adoPetFollowDAO.getAll("M015");
-//		for (AdoPetVO adoPetVO3 : list) {
-//			System.out.print(adoPetVO3.getAdoPetNo() + ",");
-//			System.out.print(adoPetVO3.getMemNo() + ",");
-//			System.out.print(adoPetVO3.getEmpNo() + ",");
-//			System.out.print(adoPetVO3.getAdoStatus() + ",");
-//			System.out.print(adoPetVO3.getPetType() + ",");
-//			System.out.print(adoPetVO3.getPetName() + ",");
-//			System.out.print(adoPetVO3.getPetBreed() + ",");
-//			System.out.print(adoPetVO3.getPetSex() + ",");
-//			System.out.print(adoPetVO3.getPetBirth() + ",");
-//			System.out.print(adoPetVO3.getAge() + ",");
-//			System.out.print(adoPetVO3.getPetWeight() + ",");
-//			System.out.print(adoPetVO3.getPetCat() + ",");
-//			System.out.print(adoPetVO3.getPetChar() + ",");
-//			System.out.print(adoPetVO3.getLocation() + ",");
-//			System.out.print(adoPetVO3.getAppForm() + ",");
-//			System.out.println();
-//		}
-
+//		List<AdoPetVO> list = adoPetFollowDAO.getAll("M004");
+		/*
+		 * for (AdoPetVO adoPetVO3 : list) { System.out.print(adoPetVO3.getAdoPetNo() +
+		 * ","); System.out.print(adoPetVO3.getMemNo() + ",");
+		 * System.out.print(adoPetVO3.getEmpNo() + ",");
+		 * System.out.print(adoPetVO3.getAdoStatus() + ",");
+		 * System.out.print(adoPetVO3.getPetType() + ",");
+		 * System.out.print(adoPetVO3.getPetName() + ",");
+		 * System.out.print(adoPetVO3.getPetBreed() + ",");
+		 * System.out.print(adoPetVO3.getPetSex() + ",");
+		 * System.out.print(adoPetVO3.getPetBirth() + ",");
+		 * System.out.print(adoPetVO3.getAge() + ",");
+		 * System.out.print(adoPetVO3.getPetWeight() + ",");
+		 * System.out.print(adoPetVO3.getPetCat() + ",");
+		 * System.out.print(adoPetVO3.getPetChar() + ",");
+		 * System.out.print(adoPetVO3.getLocation() + ",");
+		 * System.out.print(adoPetVO3.getAppForm() + ","); System.out.println();
+		 */
 	}
+
 }

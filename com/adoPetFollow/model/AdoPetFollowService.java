@@ -2,7 +2,6 @@ package com.adoPetFollow.model;
 
 import java.util.List;
 
-import com.adoPet.model.AdoPetVO;
 
 public class AdoPetFollowService {
 
@@ -12,23 +11,23 @@ public class AdoPetFollowService {
 		dao = new AdoPetFollowDAO();
 	}
 
-	public AdoPetFollowVO adoPetFollowInsert(String memNo, String adoPetNo) {
+	public Boolean adoPetFollowInsert(String memNo, String adoPetNo) {
 
 		AdoPetFollowVO adoPetFollowVO = new AdoPetFollowVO();
 		adoPetFollowVO.setMemNo(memNo);
 		adoPetFollowVO.setAdoPetNo(adoPetNo);
-		dao.insert(adoPetFollowVO);
+		Boolean insertFinished =dao.insert(adoPetFollowVO);
 
-		return adoPetFollowVO;
+		return insertFinished;
 
 	}
 
-	public void adoPetFollowDelete(String memNo, String adoPetNo) {
+	public Boolean adoPetFollowDelete(String memNo, String adoPetNo) {
 
-		dao.delete(memNo, adoPetNo);
+		return dao.delete(memNo, adoPetNo);
 	}
 
-	public List<AdoPetVO> getAll(String memNo) {
+	public List<AdoPetFollowVO> getAll(String memNo) {
 		return dao.getAll(memNo);
 	}
 }
