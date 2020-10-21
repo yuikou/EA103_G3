@@ -560,7 +560,7 @@ public class PicReader extends HttpServlet {
 				
 				String salno = req.getParameter("salPic").toString();
 				SalonService salSvc = new SalonService();
-				byte[] salPic = salSvc.getOneSalon(salno).getSalPic();
+				byte[] salPic = salSvc.getonesalon(salno).getSalPic();
 				out.write(salPic);
 			
 			} catch (Exception e) {
