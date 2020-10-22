@@ -203,7 +203,6 @@ public class SitLicDAO implements SitLicDAO_interface{
 				sitLic.setLicNo(rs.getString("LICNO"));
 				sitLic.setSitNo(rs.getString("SITNO"));
 				sitLic.setLicName(rs.getString("LICNAME"));
-//				sitLic.setLicPic(rs.getBytes("LICPIC"));
 				sitLic.setLicEXP(rs.getDate("LICEXP"));
 				sitLic.setLicStatus(rs.getInt("LICSTATUS"));
 				list.add(sitLic);

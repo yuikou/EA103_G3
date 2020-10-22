@@ -28,7 +28,7 @@ public class SitLicServlet extends HttpServlet {
 /* 來自會員頁面的請求  - 查詢證照 */		
 		if ("getAll".equals(action)) {
 			/***************************開始查詢資料 ****************************************/
-			String sitNo = (String) session.getAttribute("sitNo");
+			String sitNo = (String) session.getAttribute("sessionSitNo");
 			SitLicDAO dao = new SitLicDAO();
 			List<SitLicVO> list = dao.getSitAllLic(sitNo);
 			
@@ -214,9 +214,8 @@ public class SitLicServlet extends HttpServlet {
 		
 /* 來自 listUnverifiedLic.jsp 的請求 - 修改證照狀態 */
 		if ("verify".equals(action)) {
-//			List<String> errorMsgs = new LinkedList<String>();
-//			req.setAttribute("errorMsgs", errorMsgs);
 			PrintWriter out = res.getWriter();
+			MailService mailService = new MailService();
 	
 			try {
 				/*************************** 1.接收請求參數 ****************************************/
@@ -228,26 +227,39 @@ public class SitLicServlet extends HttpServlet {
 				
 				/* 3-sitSrvNo */
 				String sitSrvNo = req.getParameter("sitSrvNo");
-				System.out.println("SitLicServlet_230.sitSrvNo"+sitSrvNo);
+				
+				/* 4-memEmail */
+				String memEmail = req.getParameter("memEmail");
+				
+				/* 5-memName */
+				String memName = req.getParameter("memName");
+				
+				/* 6-failReason */
+				String failReason = req.getParameter("failReason");
 				
 				/*************************** 2.開始新增資料 ***************************************/
 				SitLicService slSvc = new SitLicService();
 				Boolean updateOK  = slSvc.updateStatus(licNo, licStatus, sitSrvNo);
 		
 				/*************************** 3.新增完成,準備轉交(Send the Success view) ***********/
-//				String url = "listUnverifiedLic.jsp";
-//				RequestDispatcher sucessView = req.getRequestDispatcher(url);
-//				sucessView.forward(req, res);
+				String subject_success = "PetFect-證照審核成功";
+				String subject_fail = "PetFect-證照審核失敗";
+				String messageText_success = "Hello! " + memName + ", 您的證照審核成功!";
+				String messageText_fail = "Hello! " + memName + ", 您的證照審核失敗~ \r\n 原因：" + failReason;
+				
 				if (updateOK) {
 					out.write(licNo);
+					
+					if (licStatus==1) {
+						mailService.sendMail(memEmail, subject_success, messageText_success);
+					} else if (licStatus==2) {
+						mailService.sendMail(memEmail, subject_fail, messageText_fail);
+					}
 				} else {
 					out.write("error");
 				}
 				
 			} catch (Exception e) {
-//				errorMsgs.add("審核失敗： " + e.getMessage());
-//				RequestDispatcher failureView = req.getRequestDispatcher("listUnverifiedLic.jsp");
-//				failureView.forward(req, res);
 				out.write("error: " + e.getMessage());
 			}
 		}

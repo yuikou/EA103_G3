@@ -10,7 +10,7 @@ public class SitLicService {
 		slDAO = new SitLicDAO();
 	}
 
-	public void add(String sitNo, String licName, byte[] licPic, Date licEXP, Integer licStatus) {
+	public void add (String sitNo, String licName, byte[] licPic, Date licEXP, Integer licStatus) {
 		SitLicVO sitLic = new SitLicVO();
 
 		sitLic.setSitNo(sitNo);
@@ -21,7 +21,7 @@ public class SitLicService {
 		slDAO.add(sitLic);
 	}
 	
-	public SitLicVO addFromSitSrv(String sitNo, String licName, byte[] licPic, Date licEXP, Integer licStatus) {
+	public SitLicVO addFromSitSrv (String sitNo, String licName, byte[] licPic, Date licEXP, Integer licStatus) {
 		SitLicVO sitLic = new SitLicVO();
 
 		sitLic.setSitNo(sitNo);
@@ -32,7 +32,7 @@ public class SitLicService {
 		return sitLic;
 	}
 
-	public void update(String licNo, String licName, byte[] licPic, Date licEXP, Integer licStatus, String sitSrvNo) {
+	public void update (String licNo, String licName, byte[] licPic, Date licEXP, Integer licStatus, String sitSrvNo) {
 		SitLicVO sitLic = new SitLicVO();
 
 		sitLic.setLicNo(licNo);
@@ -43,11 +43,11 @@ public class SitLicService {
 		slDAO.update(sitLic, sitSrvNo);
 	}
 	
-	public Boolean updateStatus(String licNo, Integer licStatus, String sitSrvNo) {
+	public Boolean updateStatus (String licNo, Integer licStatus, String sitSrvNo) {
 		return slDAO.updateStatus(licNo, licStatus, sitSrvNo);
 	}
 
-	public SitLicVO getOneLicByPK(String licNo) {
+	public SitLicVO getOneLicByPK (String licNo) {
 		return slDAO.getOneLicByPK(licNo);
 	}
 
