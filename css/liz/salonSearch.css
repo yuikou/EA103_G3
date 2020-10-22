@@ -1,0 +1,97 @@
+	a{
+		text-decoration: none;
+		line-height: inherit;
+    	color: #00284D;
+    	display:inline;
+	}
+	span{
+		display:inline;
+	}
+	.county{
+		padding: 5px;
+		font-size:16px;
+		margin-right: 2px;
+	}
+	.district, #petcat{
+		padding: 5px;
+		font-size:16px;
+	}
+	.mybtn{
+		text-align: right;
+	}
+	.showCard{
+		height: 180px;
+		margin: 5px 0px;
+		padding: .5rem;
+  		border: 1px solid rgba(10,10,10,0.25);
+    	border-radius: .3rem;
+    	background-color: #fcfbf7;
+	}
+	a:hover{
+		text-decoration: none;
+		color: #FF7260;
+	}
+	#sName{
+		font-size: 24px;
+		color: #8ED2C9;
+	}
+	.salPicP{
+		height: 150px;
+	}
+	.grmPic{
+		width: 100%; 
+		object-fit: cover;
+	}
+	.panel{
+		margin-bottom: 15px;
+		background-color: #F1FAEE;
+		padding: 10px;
+	}
+	#searchbtn{
+		background-color: #FF7260;
+	}
+	.myicon{
+		width: 50px;
+		margin: 10px 0px 0px 0px;
+	}
+	.grmPic{
+		height: -webkit-fill-available;
+	}
+	.rateit .rateit-preset {
+		color: #FFCC36;
+   	 	background: url(https://cdnjs.cloudflare.com/ajax/libs/jquery.rateit/1.1.3/star.gif) left -32px !important;
+	}
+	#opentime, .openTime{
+		color:#aaa;
+	}
+	.myText{
+		display: inline-block;
+        width: 100%;
+        height:30px;
+        box-sizing: border-box;
+        text-align: center;
+        background-color: #9BD7D5;
+        border-radius: 5px;
+        color: #505050;
+        line-height: 2;
+	}
+	.myText:hover {
+        color: #fff;
+        background-color: #FFB85F;
+        box-shadow: 2px 2px 7px 1px #aaa;
+        text-shadow: 1px 2px 2px #CE5937;
+        cursor: pointer;
+    }
+    .bookNow{
+   		height:30px;
+    	margin-top:10px;
+    	background-color: #ea888f;
+    	overflow: hidden;
+    	padding-top: 1px;
+    }
+    .bookNow:hover{
+    	background-color: #82c4f0;
+    }
+    #salno{
+    	display:none;
+    }
