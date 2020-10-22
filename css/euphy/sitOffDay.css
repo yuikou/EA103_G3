@@ -7,6 +7,9 @@
 	margin: 0 auto;
 	min-width: 80%;
 }
+.sod-container {
+	padding: 0;
+}
 .errorList {
   position: relative;
   top: 120px;
@@ -134,6 +137,26 @@ div.myP {
 }
 
 /* 小月曆用 */
+.title-change {
+	font-weight: bold;
+    color: #1D3557;
+    font-size: 22px;
+    margin: 10px 0;
+}
+.title-offDay:before {
+	font-family: FontAwesome;
+	font-weight: 900;
+	content: "\f133";
+	color: #a8dadc;
+	margin-right:5px;
+}
+.title-info:before {
+	font-family: FontAwesome;
+	font-weight: 900;
+	content: "\f05a";
+	color: #a8dadc;
+	margin-right:5px;
+}
 #datetimepicker13 table tr td.disabled,
 #datetimepicker13 table tr td.disabled:hover {
   background: #e9ecef !important;
@@ -146,10 +169,12 @@ div.myP {
 }
 .datepicker table {
 	table-layout: fixed;
+	box-shadow: 1px 1px 5px 2px rgba(0,0,0,0.3);
 }
 .datepicker-days table thead, .datepicker-days table tbody, .datepicker-days table tfoot {
     padding: 7px;
     display: list-item;
+    background-color: #fff;
 }
 .datepicker-days table thead, .datepicker-months table thead, .datepicker-years table thead, .datepicker-decades table thead, .datepicker-centuries table thead {
     background: #a8dadc;
@@ -188,7 +213,7 @@ div.myP {
 .datepicker .prev, .datepicker .next {
     color: rgba(255, 255, 255, 0.5);
     transition: 0.3s;
-    width: 37px;
+    width: 48px;
     height: 37px;
 }
 .datepicker .prev:hover, .datepicker .next:hover {
@@ -231,12 +256,16 @@ div.myP {
 .table thead th {
 	vertical-align: middle;
     border-bottom: 0;
+/*    	width: 48px; */
+   	width: 67px;
 }
 .table thead th.picker-switch{
 	font-size: x-large;
 }
 .bootstrap-datetimepicker-widget table td.day {
-    height: 30px;
+	height: 35px;
+/*     width: 48px; */
+    width: 67px;
 }
 .bootstrap-datetimepicker-widget table thead tr:first-child th:hover {
     background: transparent;
@@ -246,7 +275,9 @@ div.myP {
     color: #fff;
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
 }
-
+.section-line {
+	padding: 0 20px;
+}
 
 
 
@@ -264,7 +295,6 @@ div.myP {
   height: 100%;
   margin: 8px 0;
   font-size: 14px;
-  min-height: 160px;
 }
 .appointmentSlotsContainer {
 /*   display: flex; */
@@ -291,11 +321,11 @@ div.myP {
   font-size: 16px;
   margin: 0 4px 6px 4px;
   transition: 0.3s;
-  cursor: pointer;
+  cursor: default;
   float: left;
 }
 .appointmentSlot:not(.hideOffTime):not(.active):hover {
-  background-color: #eef3ff;
+/*   background-color: #eef3ff; */
 }
 .appointmentDayPickerButton {
 	float: left;
@@ -305,12 +335,114 @@ div.myP {
 .hideOffTime{
 	background-color: rgba(80,80,80,0.5);
 	color: rgba(80,80,80,0.8);
-	cursor: unset;
+	cursor: default;
 	border: none;
 }
 .appointmentHide{
 	display: none;
 }
+.srvInfo {
+	width: 90%;
+    padding: 10px;
+    margin: 0 auto;
+    background-color: #fff;
+    box-shadow: 1px 1px 5px 2px rgba(0,0,0,0.3);
+}
+.srvInfo-hide {
+	display: none;
+}
 
+/* -------愛心動畫效果-------- */
+@import url(//fonts.googleapis.com/css?family=Open + Sans:600,
+	400&subset=latin,
+  cyrillic);
+.heart-div {
+	padding: 0;
+}
+.myClick {
+    font-size: 35px;
+    color: rgba(0, 0, 0, 0.5);
+    width: 35px;
+    height: 35px;
+    position: relative;
+    left: -20px;
+    cursor: pointer;
+    z-index: 999;
+    transition: all 0.32s ease;
+}
+.myClick span {
+    margin-top: 3px;
+    z-index: 999;
+    position: absolute;
+    color: red;
+    transition: all 0.32s ease;
+}
+.myClick span:hover {
+  opacity: 0.8;
+}
+.myClick span:active {
+  transform: scale(0.93, 0.93) translateY(2px);
+}
+.myClick span,
+.active-2 span {
+  color: red !important;.
+  transition: all 0.32s ease;
+}
+.ring, .ring2 {
+    opacity: 0;
+    background: red;
+    width: 1px;
+    height: 1px;
+    position: relative;
+    top: 25px;
+    left: 43px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.32s ease;
+}
+.active-2 .ring {
+	width: 38px !important;
+    height: 38px !important;
+    top: -1px !important;
+    left: 16px !important;
+    position: relative;
+    border-radius: 50%;
+    opacity: 1 !important;
+}
 
+.active-2 .ring {
+  background: pink !important;
+  transition: all 0.32s ease;
+}
 
+.active-2 .ring2 {
+  background: #faedb7 !important;
+  transition: all 0.18s ease;
+}
+
+.active-3 .ring2 {
+	width: 38px !important;
+    height: 38px !important;
+    top: -39px !important;
+    left: 16px !important;
+    position: relative;
+    border-radius: 50%;
+    opacity: 1 !important;
+    transition: all 0.18s ease;
+}
+.sitlicImg {
+  width: 50px;
+  height: 50px;
+  margin: 0px 15px 0 5px;
+}
+.sitlicSapn {
+	font-size: 22px;	
+}
+.sitlic-div {
+    width: 97%;
+    padding: 5px 10px;
+    margin: 0;
+    margin-bottom: 20px;
+    background-color: #fff;
+    box-shadow: 1px 1px 5px 2px rgba(0,0,0,0.3);
+}

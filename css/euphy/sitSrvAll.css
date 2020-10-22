@@ -20,6 +20,10 @@ body {
     min-height: 1000px;
     padding-bottom: 80px;
 }
+.container-allSrv {
+    padding-bottom: 20px;
+    width:100%;
+}
 .errorList {
     display: block;
     position: relative;
@@ -28,16 +32,43 @@ body {
     height: 50px;
     width: 180px;
 }
+.errorList-allSrv {
+	max-width: 50%;
+    height: 40px;
+    margin-right: 20px;
+}
 
 
 /* -------------顯示保姆的所有服務的小框------------- */
+.addActDiv {
+	padding: 5px;
+    margin-right: 20px;
+    font-size: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+.addActDiv a {
+	text-decoration: none;
+	color: rgba(104, 112, 115, 0.7);
+}
+.addActDiv a i {
+    position: relative;
+    top: 5px;
+    left: -5px;
+    font-size: 28px;
+}
+.addActDiv a:hover i{
+	color: #3b97ff;
+}
+.addActDiv a:hover span{
+	color: #3b97ff;
+}
 .wrap {
 	background-color: #fff;
 	border: 1px solid;
 	border-color: #e5e6e9 #dfe0e4 #d0d1d5;
 	border-radius: 5px;
-	padding: 12px;
-	margin: 20px auto;
+	padding: 0;
 /* 	max-width: 60%; */
 /* 	min-height: 200px; */
 	border-collapse: collapse;
@@ -54,10 +85,12 @@ body {
 
 .thead-th {
 	padding: 10px;
+	font-size: 20px;
 }
 
 .tbody {
 	padding: 0;
+	font-size: 20px;
 }
 
 .tbody-tr {
@@ -133,7 +166,7 @@ a[data-title] {
 a[data-title]:hover::before {
   content: attr(data-title);
   position: absolute;
-  top: -34px;
+  top: -30px;
   display: inline-block;
   padding: 1px 4px;
   border-radius: 2px;
@@ -146,7 +179,7 @@ a[data-title]:hover::before {
 a[data-title]:hover::after {
   content: '';
   position: absolute;
-	top: -6px;
+	top: -3px;
  	transform: rotate(180deg);
   left: 8px;
   display: inline-block;
@@ -184,12 +217,12 @@ a[data-title]:hover::after {
 }
 .table__icon {
 	color: rgba(104, 112, 115, 0.7);
-	margin: 3px 5px;
+	margin: 8px 5px;
 }
 .table__icon:hover {
 	color: #3b97ff;
 	font-size: 28px;
-	margin: 2px 3px;
+	margin: 10px 3px;
 }
 .disabled {
 	pointer-events: none;
@@ -230,14 +263,27 @@ a[data-title]:hover::after {
 
 
 /* -----------------sitSrvUpdate專用------------------ */
+h3.sitSrcCodeInfo {
+    position: relative;
+    top: 57px;
+    left: 650px;
+    background-color: #faa307;
+    color: #FFF;
+    max-width: 300px;
+    text-align: center;
+    height: 4rem;
+    line-height: 4rem;
+    border-radius: 2px;
+}
 .updateBox {
-	width: min-content;
+	max-width: 900px;
     margin: 10px auto;
     padding: 30px;
 }
 .tab-content {
 	max-height: unset;
     padding: 0;
+    border-bottom: 1px solid #eee;
 }
 .tab-content-info {
 	margin-left: 15px
@@ -255,11 +301,7 @@ a[data-title]:hover::after {
     z-index: 5;
 	margin-left: 15px
 }
-.dogSize {
-    width: 100%;
-    clear: both;
-    display: inherit;
-}
+
 .input-group-btn button {
 	top: 0;
 }

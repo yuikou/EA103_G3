@@ -20,16 +20,23 @@ public class AdoReservationJDBCDAO implements AdoReservationDAO_interface {
 	private static final String UPDATE_ADORESERVATION = "UPDATE ADORESERVATION SET VISITDATE=? ,RESERVATIONSTATUS=? WHERE RESERVATIONNO=?";
 	private static final String GET_ADORESERVATION_BYSTATUS = "SELECT RESERVATIONNO,ADOPETNO,VISITDATE,RESERVATIONSTATUS FROM ADORESERVATION WHERE RESERVATIONSTATUS=? AND MEMNO=? ORDER BY VISITDATE";
 	private static final String GET_ALL_ADORESERVATION = "SELECT RESERVATIONNO,ADOPETNO,VISITDATE,RESERVATIONSTATUS FROM ADORESERVATION WHERE MEMNO=? ORDER BY VISITDATE";
+	private static final String ORDER_HISTORY = "UPDATE ADORESERVATION SET RESERVATIONSTATUS='3' WHERE VISITDATE < sysdate";
+	private static final String DELETE_ADORESERVATION = "UPDATE ADORESERVATION SET RESERVATIONSTATUS=? WHERE RESERVATIONNO=?";
+	private static final String GET_ADORESERVATION_BYPETNO = "SELECT RESERVATIONNO,MEMNO,VISITDATE,RESERVATIONSTATUS FROM ADORESERVATION WHERE ADOPETNO=? ORDER BY VISITDATE";
+
+	private static final String GET_ONE_ADORESERVATION = "SELECT * FROM ADORESERVATION WHERE RESERVATIONNO=?";
 
 	@Override
-	public void insert(AdoReservationVO adoReservationVO) {
+	public String insert(AdoReservationVO adoReservationVO) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
-
+		ResultSet rs = null;
+		String reservationNO = null;
 		try {
 			Class.forName(DRIVER);
 			con = DriverManager.getConnection(URL, USER, PASSWORD);
-			pstmt = con.prepareStatement(INSERT_ADORESERVATION);
+			String clos[] = { "RESERVATIONNO" };
+			pstmt = con.prepareStatement(INSERT_ADORESERVATION, clos);
 
 			pstmt.setString(1, adoReservationVO.getAdoPetNo());
 			pstmt.setString(2, adoReservationVO.getMemNo());
@@ -37,12 +44,30 @@ public class AdoReservationJDBCDAO implements AdoReservationDAO_interface {
 
 			pstmt.executeUpdate();
 
+			rs = pstmt.getGeneratedKeys();
+
+			if (rs.next()) {
+				reservationNO = rs.getString(1);
+				System.out.println("reservationNO" + reservationNO);
+			} else {
+				System.out.println("ゼ眔璹虫糤龄");
+			}
 		} catch (ClassNotFoundException ce) {
 			throw new RuntimeException("Couldn't load database driver" + ce.getMessage());
 
 		} catch (SQLException se) {
-			throw new RuntimeException("A database error occured" + se.getMessage());
+
+			throw new RuntimeException("A database error occured. " + se.getMessage());
+
 		} finally {
+			if (rs != null) {
+				try {
+
+					rs.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
 			if (pstmt != null) {
 				try {
 
@@ -61,7 +86,7 @@ public class AdoReservationJDBCDAO implements AdoReservationDAO_interface {
 			}
 
 		}
-
+		return reservationNO;
 	}
 
 	@Override
@@ -105,15 +130,59 @@ public class AdoReservationJDBCDAO implements AdoReservationDAO_interface {
 		}
 
 	}
+	
+	@Override
+	public void delete( Integer reservationStatus,String reservationNO) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+
+		try {
+			Class.forName(DRIVER);
+			con = DriverManager.getConnection(URL, USER, PASSWORD);
+			pstmt = con.prepareStatement(DELETE_ADORESERVATION);
+
+			pstmt.setInt(1, reservationStatus);
+			pstmt.setString(2, reservationNO);
+			pstmt.executeUpdate();
+			
+		} catch (ClassNotFoundException ce) {
+			throw new RuntimeException("Couldn't load database driver" + ce.getMessage());
+
+		} catch (SQLException se) {
+			throw new RuntimeException("A database error occured" + se.getMessage());
+		} finally {
+			if (pstmt != null) {
+				try {
+
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+
+					con.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+
+		}
+
+	}
+
+	
+	
 
 	@Override
-	public List<AdoReservationVO> findByStatus(Integer reservationStatus,String memNo) {
+	public List<AdoReservationVO> findByStatus(Integer reservationStatus, String memNo) {
 
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		List<AdoReservationVO> list =new ArrayList<AdoReservationVO>();
-		AdoReservationVO adoReservationVO =null;
+		List<AdoReservationVO> list = new ArrayList<AdoReservationVO>();
+		AdoReservationVO adoReservationVO = null;
 		try {
 			Class.forName(DRIVER);
 			con = DriverManager.getConnection(URL, USER, PASSWORD);
@@ -122,8 +191,8 @@ public class AdoReservationJDBCDAO implements AdoReservationDAO_interface {
 			pstmt.setInt(1, reservationStatus);
 			pstmt.setString(2, memNo);
 			rs = pstmt.executeQuery();
-		
-			while(rs.next()) {
+
+			while (rs.next()) {
 				adoReservationVO = new AdoReservationVO();
 				adoReservationVO.setReservationNO(rs.getString("RESERVATIONNO"));
 				adoReservationVO.setAdoPetNo(rs.getString("ADOPETNO"));
@@ -173,18 +242,17 @@ public class AdoReservationJDBCDAO implements AdoReservationDAO_interface {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		List<AdoReservationVO> list =new ArrayList<AdoReservationVO>();
-		AdoReservationVO adoReservationVO =null;
+		List<AdoReservationVO> list = new ArrayList<AdoReservationVO>();
+		AdoReservationVO adoReservationVO = null;
 		try {
 			Class.forName(DRIVER);
 			con = DriverManager.getConnection(URL, USER, PASSWORD);
 			pstmt = con.prepareStatement(GET_ALL_ADORESERVATION);
 
-		
 			pstmt.setString(1, memNo);
 			rs = pstmt.executeQuery();
-		
-			while(rs.next()) {
+
+			while (rs.next()) {
 				adoReservationVO = new AdoReservationVO();
 				adoReservationVO.setReservationNO(rs.getString("RESERVATIONNO"));
 				adoReservationVO.setAdoPetNo(rs.getString("ADOPETNO"));
@@ -228,27 +296,183 @@ public class AdoReservationJDBCDAO implements AdoReservationDAO_interface {
 
 		return list;
 	}
+	
+	@Override
+	public AdoReservationVO getOneRes(String reservationNO) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		AdoReservationVO adoReservationVO = null;
+		try {
+			Class.forName(DRIVER);
+			con = DriverManager.getConnection(URL, USER, PASSWORD);
+			pstmt = con.prepareStatement(GET_ONE_ADORESERVATION);
+
+			pstmt.setString(1, reservationNO);
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				adoReservationVO = new AdoReservationVO();
+				adoReservationVO.setReservationNO(rs.getString("RESERVATIONNO"));
+				adoReservationVO.setAdoPetNo(rs.getString("ADOPETNO"));
+				adoReservationVO.setMemNo(rs.getString("MEMNO"));
+				adoReservationVO.setVisitDate(rs.getDate("VISITDATE"));
+				adoReservationVO.setReservationStatus(rs.getInt("RESERVATIONSTATUS"));
+			}
+		} catch (ClassNotFoundException ce) {
+			throw new RuntimeException("Couldn't load database driver" + ce.getMessage());
+
+		} catch (SQLException se) {
+			throw new RuntimeException("A database error occured" + se.getMessage());
+		} finally {
+			if (rs != null) {
+				try {
+
+					rs.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (pstmt != null) {
+				try {
+
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+
+					con.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+
+		}
+
+		return adoReservationVO;
+	}
+
+	
+	@Override
+	public List<AdoReservationVO> getAllResByPetno(String adoPetNo) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		List<AdoReservationVO> list = new ArrayList<AdoReservationVO>();
+		AdoReservationVO adoReservationVO = null;
+		try {
+			Class.forName(DRIVER);
+			con = DriverManager.getConnection(URL, USER, PASSWORD);
+			pstmt = con.prepareStatement(GET_ADORESERVATION_BYPETNO);
+
+			pstmt.setString(1, adoPetNo);
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				adoReservationVO = new AdoReservationVO();
+				adoReservationVO.setReservationNO(rs.getString("RESERVATIONNO"));
+				adoReservationVO.setAdoPetNo(rs.getString("ADOPETNO"));
+				adoReservationVO.setAdoPetNo(rs.getString("MEMNO"));
+				adoReservationVO.setVisitDate(rs.getDate("VISITDATE"));
+				adoReservationVO.setReservationStatus(rs.getInt("RESERVATIONSTATUS"));
+				list.add(adoReservationVO);
+			}
+		} catch (ClassNotFoundException ce) {
+			throw new RuntimeException("Couldn't load database driver" + ce.getMessage());
+
+		} catch (SQLException se) {
+			throw new RuntimeException("A database error occured" + se.getMessage());
+		} finally {
+			if (rs != null) {
+				try {
+
+					rs.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (pstmt != null) {
+				try {
+
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+
+					con.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+
+		}
+
+		return list;
+	}
+	
+	@Override
+	public void resSchedule() {
+
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		try {
+			Class.forName(DRIVER);
+			con = DriverManager.getConnection(URL, USER, PASSWORD);
+			pstmt = con.prepareStatement(ORDER_HISTORY);
+			pstmt.executeUpdate();
+			System.out.println("ResDAOЧΘ璹虫э篈3(菌璹虫)");
+		} catch (ClassNotFoundException ce) {
+			throw new RuntimeException("Couldn't load database driver" + ce.getMessage());
+
+		} catch (SQLException se) {
+			throw new RuntimeException("A database error occured" + se.getMessage());
+		} finally {
+			if (pstmt != null) {
+				try {
+
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+
+					con.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+		}
+
+	}
 
 	public static void main(String[] args) {
 		AdoReservationJDBCDAO dao = new AdoReservationJDBCDAO();
 
 		// 穝糤
 //		AdoReservationVO adoReservationVO = new AdoReservationVO();
-//		adoReservationVO.setAdoPetNo("A013");
+//		adoReservationVO.setAdoPetNo("A001");
 //		adoReservationVO.setMemNo("M009");
 //		adoReservationVO.setVisitDate(java.sql.Date.valueOf("2020-10-02"));
 //		dao.insert(adoReservationVO);
 
-		// э
+		// эΘ篈:1
 //		AdoReservationVO adoReservationVO2 = new AdoReservationVO();
 //		adoReservationVO2.setVisitDate(java.sql.Date.valueOf("2020-11-12"));
-//		adoReservationVO2.setReservationStatus(0);
-//		adoReservationVO2.setReservationNO("R006");
+//		adoReservationVO2.setReservationStatus(1);
+//		adoReservationVO2.setReservationNO("R004");
 //		dao.update(adoReservationVO2);
-		
-		//ノ篈琩高
-		
-//		List<AdoReservationVO> list = dao.findByStatus(0,"M009");
+
+		// ノ篈琩高
+
+//		List<AdoReservationVO> list = dao.findByStatus(0,"M015");
 //		for(AdoReservationVO adoReservationVO3:list) {
 //		System.out.print(adoReservationVO3.getReservationNO()+", ");
 //		System.out.print(adoReservationVO3.getAdoPetNo()+", ");
@@ -256,8 +480,8 @@ public class AdoReservationJDBCDAO implements AdoReservationDAO_interface {
 //		System.out.print(adoReservationVO3.getReservationStatus()+", ");
 //		System.out.println();
 //		}
-		
-		//琩高场
+
+		// 琩高场
 //		List<AdoReservationVO> list2 = dao.getAll("M009");
 //		for(AdoReservationVO adoReservationVO3:list2) {
 //		System.out.print(adoReservationVO3.getReservationNO()+", ");
@@ -266,7 +490,7 @@ public class AdoReservationJDBCDAO implements AdoReservationDAO_interface {
 //		System.out.print(adoReservationVO3.getReservationStatus()+", ");
 //		System.out.println();
 //		}
-		
+
 	}
 
 }

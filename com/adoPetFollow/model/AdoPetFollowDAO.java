@@ -30,26 +30,36 @@ public class AdoPetFollowDAO implements AdoPetFollowDAO_interface {
 
 	private static final String INSERT_AdoPetFollow = "INSERT INTO ADOPETFOLLOW(MEMNO,ADOPETNO) VALUES (?,?)";
 	private static final String DELETE_AdoPetFollow = "DELETE FROM ADOPETFOLLOW WHERE MEMNO=? AND ADOPETNO=?";
-	private static final String GET_ALL_AdoPetFollow = "SELECT ROWNUM,A.ADOPETNO,PETTYPE,PETNAME,PPETBREED,PETSEX,PETBIRTH,TRUNC(months_between(sysdate, PETBIRTH)/12,1)AS age,PETWEIGHT,PETCAT,PETCHAR,LOCATION FROM ADOPET A "
-			+ "JOIN ADOPETFOLLOW AW ON A.ADOPETNO = AW.ADOPETNO WHERE AW.MEMNO IN(SELECT MEMNO FROM MEMBER_TABLE WHERE MEMNO=?) AND ADOSTATUS='0' ORDER BY ROWNUM DESC";
+	private static final String GET_ALL_AdoPetFollow = "SELECT * FROM ADOPETFOLLOW WHERE MEMNO=?";
+			
+//			"SELECT ROWNUM,A.ADOPETNO,PETTYPE,PETNAME,PPETBREED,PETSEX,PETBIRTH,TRUNC(months_between(sysdate, PETBIRTH)/12,1)AS age,PETWEIGHT,PETCAT,PETCHAR,LOCATION FROM ADOPET A "
+//			+ "JOIN ADOPETFOLLOW AW ON A.ADOPETNO = AW.ADOPETNO WHERE AW.MEMNO IN(SELECT MEMNO FROM MEMBER_TABLE WHERE MEMNO=?) AND ADOSTATUS='0' ORDER BY ROWNUM DESC";
 
 	@Override
-	public void insert(AdoPetFollowVO adoPetFollowVO) {
+	public Boolean insert(AdoPetFollowVO adoPetFollowVO) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
-
+		Boolean insertFinished = false;
 		try {
 
 			con = ds.getConnection();
+			con.setAutoCommit(false);
 			pstmt = con.prepareStatement(INSERT_AdoPetFollow);
 
 			pstmt.setString(1, adoPetFollowVO.getMemNo());
 			pstmt.setString(2, adoPetFollowVO.getAdoPetNo());
 
-			pstmt.executeUpdate();
-
+			if (pstmt.executeUpdate() == 1) {
+				insertFinished = true;
+				con.commit();
+			}
 		} catch (SQLException se) {
-			throw new RuntimeException("A database error occured" + se.getMessage());
+			try {
+				con.rollback();
+				throw new RuntimeException("A database error occured. " + se.getMessage());
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
 		} finally {
 			if (pstmt != null) {
 				try {
@@ -68,21 +78,25 @@ public class AdoPetFollowDAO implements AdoPetFollowDAO_interface {
 			}
 
 		}
-
+		return insertFinished;
 	}
 
 	@Override
-	public void delete(String memNo,String adoPetNo) {
+	public Boolean delete(String memNo,String adoPetNo) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
+		Boolean deleteFinished = false;
 
 		try {
 			con = ds.getConnection();
 			pstmt = con.prepareStatement(DELETE_AdoPetFollow);
 			pstmt.setString(1, memNo);
 			pstmt.setString(2, adoPetNo);
-			pstmt.executeUpdate();
 
+			if (pstmt.executeUpdate() == 1) {
+				deleteFinished = true;
+				con.commit();
+			}
 		} catch (SQLException se) {
 			throw new RuntimeException("A database error occured." + se.getMessage());
 		} finally {
@@ -101,15 +115,16 @@ public class AdoPetFollowDAO implements AdoPetFollowDAO_interface {
 				}
 			}
 		}
+		return deleteFinished;
 	}
 
 	@Override
-	public List<AdoPetVO> getAll(String memNo) {
+	public List<AdoPetFollowVO> getAll(String memNo) {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		List<AdoPetVO> list = new ArrayList<AdoPetVO>();
-		AdoPetVO adoPetVO = null;
+		List<AdoPetFollowVO> list = new ArrayList<AdoPetFollowVO>();
+		AdoPetFollowVO adoPetFollowVO = null;
 
 		try {
 			con = ds.getConnection();
@@ -119,22 +134,11 @@ public class AdoPetFollowDAO implements AdoPetFollowDAO_interface {
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {
-				adoPetVO = new AdoPetVO();
+				adoPetFollowVO = new AdoPetFollowVO();
 
-				adoPetVO.setAdoPetNo(rs.getString("ADOPETNO"));
-				adoPetVO.setPetType(rs.getInt("PETTYPE"));
-				adoPetVO.setPetName(rs.getString("PETNAME"));
-				adoPetVO.setPetBreed(rs.getString("PPETBREED"));
-				adoPetVO.setPetSex(rs.getInt("PETSEX"));
-
-				adoPetVO.setPetBirth(rs.getDate("PETBIRTH"));
-
-				adoPetVO.setAge(rs.getString("age"));
-				adoPetVO.setPetWeight(rs.getDouble("PETWEIGHT"));
-				adoPetVO.setPetCat(rs.getInt("PETCAT"));
-				adoPetVO.setPetChar(rs.getString("PETCHAR"));
-				adoPetVO.setLocation(rs.getString("LOCATION"));
-				list.add(adoPetVO);
+				adoPetFollowVO.setMemNo(rs.getString("MEMNO"));
+				adoPetFollowVO.setAdoPetNo(rs.getString("ADOPETNO"));
+				list.add(adoPetFollowVO);
 			}
 
 		} catch (SQLException se) {
