@@ -100,7 +100,10 @@ public class SitOrderService {
 	public List<SitOrderVO> getAll() {
 		return dao.getAll();
 	}
-
+	
+	public Double countAvgStar(String sitNo) {
+		return dao.countAvgStar(sitNo);
+	}
 	
 	
 
