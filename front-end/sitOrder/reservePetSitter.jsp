@@ -23,9 +23,51 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" />
     <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/css-ching/Petfect.css">
+<%--     <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/css-ching/Petfect.css"> --%>
+    <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/css-ching/index.css">
     <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/css-ching/reservePetSitter.css">
     <link rel="Shortcut Icon" type="image/x-icon" href="https://dzmg8959fhe1k.cloudfront.net/all/favicon.ico">
+    <style type="text/css">
+        #right-panel {
+            font-family: "Roboto", "sans-serif";
+            line-height: 30px;
+            padding-left: 10px;
+        }
+
+        #right-panel select,
+        #right-panel input {
+            font-size: 15px;
+        }
+
+        #right-panel select {
+            width: 100%;
+        }
+
+        #right-panel i {
+            font-size: 12px;
+        }
+
+        #map {
+            height: 300px;
+            width: 800px;
+        }
+
+        #right-panel {
+            float: right;
+            width: 48%;
+            padding-left: 2%;
+        }
+
+        #output {
+            font-size: 11px;
+        }
+        table th {
+          width: 200px;
+        }
+        table td {
+          width: 800px;
+        }
+    </style>
 </head>
 
 <body>
@@ -51,10 +93,19 @@
                 <tr class="row2">
                     <th scope="row"><img src="<%=request.getContextPath()%>/images/treats.png" width="40"> 選擇你的毛小孩:</th>
                     <td>
+<%--                         <c:if test="${empty petList}"> --%>
+<%--                             <form method="post" action="<%=request.getContextPath()%>/pet/pet.do" > --%>
+<!--                                   <input type="hidden" name="sitNo" value="sitNo"> -->
+<!--                                   <input type="hidden" name="action" value="add_pet"> -->
+<!--                                   <input type="submit" class="btn btn-dark" value="新增毛小孩"> -->
+<!--                             </form> -->
+<%--                         </c:if> --%>
                         <c:forEach var="petVO" items="${petList}" varStatus="counter">
                             <div>
                                 <input type="radio" name="petNo" value="${petVO.petNo}" id="checked${counter.count}" <%=(sitOrderVO!=null) ? "checked" : "" %>required>
-                                <label for="checked${counter.count}">${petVO.petName} ${petVO.petPhoto}</label>
+                                <label for="checked${counter.count}">
+                                ${petVO.petName} <img src="<%=request.getContextPath()%>/PicReader.do?action=getPetPhoto&petNo=${petVO.petNo}" width="200" style="border-radius: 10px;" />
+                                </label>
                             </div>
                         </c:forEach>
                     </td>
@@ -72,19 +123,29 @@
                                 <option value="">選擇服務</option>
                                 <c:forEach var="sitSrvVO" items="${list}">
 <!-- 這裡我改掉了					 -->
-									<c:if test="${sitSrvVO.sitSrvCode != 'Bathing' && sitSrvVO.sitSrvCode != 'Pickup'}">
-                                    <option value="${sitSrvVO.sitSrvNo}" data-type="${sitSrvVO.sitSrvCode}" data-bathing="${sitSrvVO.addBathing}" data-pickup="${sitSrvVO.addPickup}" >${sitSrvVO.sitSrvName}</option>
+									<c:if test="${sitSrvVO.sitSrvCode != 'Bathing' && sitSrvVO.sitSrvCode != 'Pickup'}">   
+                                    <option value="${sitSrvVO.sitSrvNo}" data-type="${sitSrvVO.sitSrvCode}" data-bathing="${sitSrvVO.addBathing}" data-pickup="${sitSrvVO.addPickup}" data-fee="${sitSrvVO.srvFee}">${sitSrvVO.sitSrvName}</option>
                                     </c:if>
                                 </c:forEach>
                             </select>
                         </div>
                         <c:forEach var="sitSrvVO" items="${list}">
                             <c:if test="${sitSrvVO.sitSrvCode == 'Boarding'}">
-                                <table name="mainSrvHide" id="nightSrvPrice" style="display:none;" class="table table-striped" style="width:500px;margin:0 auto;">
+                                <table name="mainSrvHide" id="nightSrvPrice" style="display:none;" class="table table-striped" style="width:500px; margin:0 auto;">
                                     <thead>
                                         <tr>
                                             <th style="width:28%" class="text-center">服務類型</th>
-                                            <th style="width:18%" class="text-center">${sitSrvVO.acpPetTyp}</th>
+                                            <th style="width:18%" class="text-center">
+                                            <c:if test="${sitSrvVO.acpPetTyp==0}">貓</c:if>
+                                            <c:if test="${sitSrvVO.acpPetTyp==1}">貓 、小型狗(1-5公斤)</c:if>
+                                            <c:if test="${sitSrvVO.acpPetTyp==2}">貓 、中型狗(10公斤以下)</c:if>
+                                            <c:if test="${sitSrvVO.acpPetTyp==3}">貓 、大型狗(20公斤以下)</c:if>
+                                            <c:if test="${sitSrvVO.acpPetTyp==4}">貓 、特大型狗(20公斤以上)</c:if>
+                                            <c:if test="${sitSrvVO.acpPetTyp==5}">小型狗(1-5公斤)</c:if>
+                                            <c:if test="${sitSrvVO.acpPetTyp==6}">中型狗(10公斤以下)</c:if>
+                                            <c:if test="${sitSrvVO.acpPetTyp==7}">大型狗(20公斤以下)</c:if>
+                                            <c:if test="${sitSrvVO.acpPetTyp==8}">特大型狗(20公斤以上)</c:if>
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody class="text-center radio-group">
@@ -98,11 +159,21 @@
                         </c:forEach>
                         <c:forEach var="sitSrvVO" items="${list}">
                             <c:if test="${sitSrvVO.sitSrvCode == 'DayCare'}">
-                                <table name="mainSrvHide" id="daySrvPrice" style="display:none;" class="table table-striped" style="width:500px;margin:0 auto;">
+                                <table name="mainSrvHide" id="daySrvPrice" style="display:none;" class="table table-striped" style="width:500px; margin:0 auto;">
                                     <thead>
                                         <tr>
                                             <th style="width:28%" class="text-center">服務類型</th>
-                                            <th style="width:18%" class="text-center">${sitSrvVO.acpPetTyp}</th>
+                                            <th style="width:18%" class="text-center">
+                                            <c:if test="${sitSrvVO.acpPetTyp==0}">貓</c:if>
+                                            <c:if test="${sitSrvVO.acpPetTyp==1}">貓 、小型狗(1-5公斤)</c:if>
+                                            <c:if test="${sitSrvVO.acpPetTyp==2}">貓 、中型狗(10公斤以下)</c:if>
+                                            <c:if test="${sitSrvVO.acpPetTyp==3}">貓 、大型狗(20公斤以下)</c:if>
+                                            <c:if test="${sitSrvVO.acpPetTyp==4}">貓 、特大型狗(20公斤以上)</c:if>
+                                            <c:if test="${sitSrvVO.acpPetTyp==5}">小型狗(1-5公斤)</c:if>
+                                            <c:if test="${sitSrvVO.acpPetTyp==6}">中型狗(10公斤以下)</c:if>
+                                            <c:if test="${sitSrvVO.acpPetTyp==7}">大型狗(20公斤以下)</c:if>
+                                            <c:if test="${sitSrvVO.acpPetTyp==8}">特大型狗(20公斤以上)</c:if>
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody class="text-center radio-group">
@@ -120,7 +191,17 @@
                                     <thead>
                                         <tr>
                                             <th style="width:28%" class="text-center">服務類型</th>
-                                            <th style="width:18%" class="text-center">${sitSrvVO.acpPetTyp}</th>
+                                            <th style="width:18%" class="text-center">
+                                            <c:if test="${sitSrvVO.acpPetTyp==0}">貓</c:if>
+                                            <c:if test="${sitSrvVO.acpPetTyp==1}">貓 、小型狗(1-5公斤)</c:if>
+                                            <c:if test="${sitSrvVO.acpPetTyp==2}">貓 、中型狗(10公斤以下)</c:if>
+                                            <c:if test="${sitSrvVO.acpPetTyp==3}">貓 、大型狗(20公斤以下)</c:if>
+                                            <c:if test="${sitSrvVO.acpPetTyp==4}">貓 、特大型狗(20公斤以上)</c:if>
+                                            <c:if test="${sitSrvVO.acpPetTyp==5}">小型狗(1-5公斤)</c:if>
+                                            <c:if test="${sitSrvVO.acpPetTyp==6}">中型狗(10公斤以下)</c:if>
+                                            <c:if test="${sitSrvVO.acpPetTyp==7}">大型狗(20公斤以下)</c:if>
+                                            <c:if test="${sitSrvVO.acpPetTyp==8}">特大型狗(20公斤以上)</c:if>
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody class="text-center radio-group">
@@ -138,7 +219,17 @@
                                     <thead>
                                         <tr>
                                             <th style="width:28%" class="text-center">服務類型</th>
-                                            <th style="width:18%" class="text-center">${sitSrvVO.acpPetTyp}</th>
+                                            <th style="width:18%" class="text-center">
+                                            <c:if test="${sitSrvVO.acpPetTyp==0}">貓</c:if>
+                                            <c:if test="${sitSrvVO.acpPetTyp==1}">貓 、小型狗(1-5公斤)</c:if>
+                                            <c:if test="${sitSrvVO.acpPetTyp==2}">貓 、中型狗(10公斤以下)</c:if>
+                                            <c:if test="${sitSrvVO.acpPetTyp==3}">貓 、大型狗(20公斤以下)</c:if>
+                                            <c:if test="${sitSrvVO.acpPetTyp==4}">貓 、特大型狗(20公斤以上)</c:if>
+                                            <c:if test="${sitSrvVO.acpPetTyp==5}">小型狗(1-5公斤)</c:if>
+                                            <c:if test="${sitSrvVO.acpPetTyp==6}">中型狗(10公斤以下)</c:if>
+                                            <c:if test="${sitSrvVO.acpPetTyp==7}">大型狗(20公斤以下)</c:if>
+                                            <c:if test="${sitSrvVO.acpPetTyp==8}">特大型狗(20公斤以上)</c:if>
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody class="text-center radio-group">
@@ -156,7 +247,17 @@
                                     <thead>
                                         <tr>
                                             <th style="width:28%" class="text-center">服務類型</th>
-                                            <th style="width:18%" class="text-center">${sitSrvVO.acpPetTyp}</th>
+                                            <th style="width:18%" class="text-center">
+                                            <c:if test="${sitSrvVO.acpPetTyp==0}">貓</c:if>
+                                            <c:if test="${sitSrvVO.acpPetTyp==1}">貓 、小型狗(1-5公斤)</c:if>
+                                            <c:if test="${sitSrvVO.acpPetTyp==2}">貓 、中型狗(10公斤以下)</c:if>
+                                            <c:if test="${sitSrvVO.acpPetTyp==3}">貓 、大型狗(20公斤以下)</c:if>
+                                            <c:if test="${sitSrvVO.acpPetTyp==4}">貓 、特大型狗(20公斤以上)</c:if>
+                                            <c:if test="${sitSrvVO.acpPetTyp==5}">小型狗(1-5公斤)</c:if>
+                                            <c:if test="${sitSrvVO.acpPetTyp==6}">中型狗(10公斤以下)</c:if>
+                                            <c:if test="${sitSrvVO.acpPetTyp==7}">大型狗(20公斤以下)</c:if>
+                                            <c:if test="${sitSrvVO.acpPetTyp==8}">特大型狗(20公斤以上)</c:if>
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody class="text-center radio-group">
@@ -177,18 +278,18 @@
     	            <c:forEach var="sitSrvVO" items="${list}">
     	            <c:if test="${sitSrvVO.sitSrvName.indexOf('加價洗澡') != -1}">
 	                    <td id="extraBathing_${sitSrvVO.sitSrvName.substring(4)}" style="display: none;" name="mainSrvHide">
-	                        <select class="form-control">
-	                            <option value="">不洗澡</option>
+	                        <select class="form-control" id="extraBathing">
+	                            <option value="withoutBathing">不洗澡</option>
 	                            <option value="${sitSrvVO.sitSrvNo}">洗澡</option>
 	                        </select>
 	                    </td>
                     </c:if>
                     <c:if test="${sitSrvVO.sitSrvName.indexOf('加價接送') != -1}">
 	                    <td id="extraPickup_${sitSrvVO.sitSrvName.substring(4)}" style="display: none;" name="mainSrvHide" >
-	                        <select onchange="extraSrv();" class="form-control">
+	                        <select id="extraPickup" onchange="extraSrv();" class="form-control">
 	                            <option>不需要接送</option>
-	                            <option value="${sitSrvVO.sitSrvNo}">只要單程接送</option>
-	                            <option value="${sitSrvVO.sitSrvNo}">需要來回接送</option>
+	                            <option data-way="one" value="${sitSrvVO.sitSrvNo}">只要單程接送</option>
+	                            <option data-way="round" value="${sitSrvVO.sitSrvNo}">需要來回接送</option>
 	                        </select>
 	                    </td>
                     </c:if>
@@ -224,10 +325,10 @@
                   MemVO memVO = memSrv.getOneMem(memNo);
                   pageContext.setAttribute("memVO", memVO);
                 %>
-                <tr class="row1">
+                <tr class="row1" style="display: none;" id="addressInfo">
                     <th scope="row">
                         <img src="<%=request.getContextPath()%>/images/car.png" width="40"> 接送地址:
-                        <p style="display: none; color: #E63946;" id="addressInfo" name="mainSrvHide"><i>* 請填寫此欄 *</i></p>
+                        <p style="color: #E63946;" name="mainSrvHide"><i>* 請填寫此欄 *</i></p>
                     </th>
                     <td>
                         <div class="row">
@@ -250,21 +351,32 @@
                                     </select>
                                 </div>
                                 <div class="col-8">
-                                    <input name="address" type="text" class="form-control" value="${address}">
+                                <div class="row">
+                                <div class="col-sm-10"><input id="address" name="address" type="text" class="form-control" value="${address}"></div>
+                                <div class="col-sm-2"><input type="submit" id="measureDistance" value="距離測量" class="btn btn-dark"></div>
                                 </div>
+                                </div>
+                                
                             </div>
                         </div>
                     </td>
                 </tr>
+                <tr id="mapShowup" style="display: none; background-color: rgba(168, 218, 220, 0.5);">
+                <th><img src="<%=request.getContextPath()%>/images/map.png" width="40"> 預測距離</th>
+                <td>
+                <div id="output" style="font-size: 15px;"></div>
+                <div id="map"></div>
+                </td>
+                </tr>
                 <tr class="row2">
                     <th scope="row"><img src="<%=request.getContextPath()%>/images/coin.png" width="40"> 總金額:</th>
-                    <td>$1,500
-                        <%
+                    <td><div id="distance"></div>
                         
-                    %>
                     </td>
                 </tr>
             </table>
+            
+            
             <!-- 訂單假資料 -->
             <input type="hidden" name="sitNo" value="<%=(sitOrderVO == null) ? sitNo : sitOrderVO.getSitNo()%>">
             <input type="hidden" name="memNo" value="M001">
@@ -284,7 +396,7 @@
     <!-- 內文end -->
     <!-- footer -->
     <jsp:include page="/front-end/footer.jsp" />
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="<%=request.getContextPath()%>/js/js-ching/jquery-3.2.1.min.js"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.0/moment.min.js"></script>
@@ -292,29 +404,50 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/js/tempusdominus-bootstrap-4.min.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/js/js-ching/tw-districts.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBrz4ag2NaMMR2zYIuPB_aiH60CKr-PZ-Y&libraries=&v=weekly" defer></script>
     <script>
+       
+    $(document).ready(function(){
+    	
+    	$("#mainSrv").change(function(){
+    		$.ajax({
+    			type: "POST",
+    			url: "<%=request.getContextPath()%>/sitOrder/sitOrder.do",
+    			data: {
+    				   action: "countMainFee",
+    				   sitSrvNo: $(this).val(),
+    			},
+    			success: function(data) {
+    				console.log(data);
+    				$("#distance").text("$ "+data).val(data);
+    			}  
+    		})
+    	})
+    	
+    	$("#extraBathing").change(function(){
+    		console.log("test", $("#distance").val());
+    		if ($(this).val()!="withoutBathing"){
+    			console.log("ccc",$(this).val());
+    			$.ajax({
+        			type: "POST",
+        			url: "<%=request.getContextPath()%>/sitOrder/sitOrder.do",
+        			data: {
+        				   action: "countExtraFee",
+        				   sitSrvNo: $(this).val(),
+        				   mainSrvFee: $("#distance").val()
+        			},
+        			success: function(data) {
+        				console.log(data);
+        				$("#distance").text("$ "+data);
+        			}  
+        		})
+    		}
+    		
+    	})
+    	
+    });    
     
-//     $(function() {
-//         $('#sitSDate').datetimepicker({
-//             format: "L",
-//             format: "yyyy-MM-DD",
-//             minDate: new Date(),
-//         });
-//         $('#sitEDate').datetimepicker({
-//             format: "L",
-//             format: "yyyy-MM-DD",
-//             useCurrent: false
-//         });
-//         $("#sitSDate").on("change.datetimepicker", function(e) {
-//             $('#sitEDate').datetimepicker('minDate', e.date);
-//         });
-//         $("#sitEDate").on("change.datetimepicker", function(e) {
-//             $('#sitSDate').datetimepicker('maxDate', e.date);
-//         });
-//     });
-
-        	
-
+    
         function toggleSvc() {
 
         	$("#orderDate").fadeIn("slow");
@@ -329,8 +462,7 @@
         	// 首次建立月曆時(oneSrv)發送ajax取得資料
         	$.ajax({
 		        type: "GET",
-// 		       	url: "/EA103G3/front-end/sitOffDay/sitOffDay.do?action=getOneSitSrvOffDay",
-		url: "<%=request.getContextPath()%>/sitOffDay/sitOffDay.do?action=getOneSitSrvOffDay",
+ 		       	url: "<%=request.getContextPath()%>/sitOffDay/sitOffDay.do?action=getOneSitSrvOffDay",
 		   		data: {sitSrvNo: sitSrvNo,},
 		        dataType: "json",
 		        cache: false,
@@ -423,18 +555,27 @@
 
 
         }
+        
 
         function extraSrv() {
-            var n = $("#extraPickup").find("option:selected").val();
+        	
+        	var n = $("#extraPickup").find("option:selected").attr("data-way");
+        	
+       	 switch (n) {
+            case 'one':
+                $("#addressInfo").fadeIn("slow");
+                $("#success").attr("disabled", true);
+                break;
+            case 'round':
+                $("#addressInfo").fadeIn("slow");
+                $("#success").attr("disabled", true);
+                break;
+            default:
+            	$("#addressInfo").fadeOut();
+                break;
+        }
 
-            switch (n) {
-                case 'Pickup':
-                    $("#addressInfo").fadeIn("slow");
-                    $("#pickupFrom").attr("checked", true);
-                    break;
-                default:
-                    break;
-            }
+           
         }
         
         
@@ -481,7 +622,160 @@
                     }
                 })
             })
+            
+            
+            $("#measureDistance").click(function() {
+
+                $.ajax({
+                    url: "<%=request.getContextPath()%>/sitOrder/sitOrder.do",
+                    type: "POST",
+                    data: {
+                        action: "measure",
+                        city: $("[name='city']").val(),
+                        district: $("[name='district']").val(),
+                        address: $("[name='address']").val(),
+                    },
+                    success: function(data) {
+                    	
+                    	
+                    	$("#mapShowup").fadeIn("slow");
+                    	$("#success").removeAttr("disabled");
+                    	console.log(data);
+                    	var pickup = JSON.parse(data);
+                    	var pickupStr = JSON.stringify(pickup);
+                    	var address = pickup.pickupFrom.toString();
+                    	console.log(pickup);
+                    	
+                    	const bounds = new google.maps.LatLngBounds();
+                        const markersArray = [];
+                        let startend = []
+                        const origin2 = "${memVO.memAddress}";
+                        console.log(origin2);
+                        const destinationA = address;
+                        console.log(destinationA);
+                        const destinationIcon =
+                            "https://chart.googleapis.com/chart?" +
+                            "chst=d_map_pin_letter&chld=D|FF0000|000000";
+                        const originIcon =
+                            "https://chart.googleapis.com/chart?" +
+                            "chst=d_map_pin_letter&chld=O|FFFF00|000000";
+                        const map = new google.maps.Map(document.getElementById("map"), {
+                            center: { lat: 25.04092, lng: 121.572006 },
+                            zoom: 10,
+                        });
+                        const geocoder = new google.maps.Geocoder();
+                        const service = new google.maps.DistanceMatrixService();
+                        service.getDistanceMatrix({
+                                origins: [origin2],
+                                destinations: [destinationA],
+                                travelMode: google.maps.TravelMode.DRIVING,
+                                unitSystem: google.maps.UnitSystem.METRIC,
+                                avoidHighways: false,
+                                avoidTolls: false,
+                            },
+                            (response, status) => {
+                                if (status !== "OK") {
+                                    alert("Error was: " + status);
+                                } else {
+                                    const originList = response.originAddresses;
+                                    const destinationList = response.destinationAddresses;
+                                    const outputDiv = document.getElementById("output");
+                                    outputDiv.innerHTML = "";
+                                    deleteMarkers(markersArray);
+
+                                    const showGeocodedAddressOnMap = function(asDestination) {
+                                        const icon = asDestination ? destinationIcon : originIcon;
+
+                                        return function(results, status) {
+                                            if (status === "OK") {
+                                                map.fitBounds(bounds.extend(results[0].geometry.location));
+//                                                 markersArray.push(
+//                                                     new google.maps.Marker({
+//                                                         map,
+//                                                         position: results[0].geometry.location,
+//                                                         icon: icon,
+//                                                         scaledSize: new google.maps.Size(40, 60)
+//                                                     })
+//                                                 );
+                                                startend.push({lat: results[0].geometry.location.lat(), lng: results[0].geometry.location.lng()})
+                                                if(startend.length==2){
+                                                	var directionsService = new google.maps.DirectionsService();
+        		                                    var directionsDisplay = new google.maps.DirectionsRenderer();
+        		                                 	// 放置路線圖層
+        		                                    directionsDisplay.setMap(map);
+        		                                 	
+        		                                    // 路線相關設定
+        		                                    var request = {
+        		                                        origin: { lat: startend[0].lat, lng: startend[0].lng },
+        		                                        destination: { lat: startend[1].lat, lng: startend[1].lng },
+        		                                        travelMode: 'DRIVING'
+        		                                    };
+        		                                    // 繪製路線
+        		                                    directionsService.route(request, function (result, status) {
+        		                                        if (status == 'OK') {
+        		                                            // 回傳路線上每個步驟的細節
+        		                                            console.log(result.routes[0].legs[0].steps);
+        		                                            directionsDisplay.setDirections(result);
+        		                                        } else {
+        		                                            console.log(status);
+        		                                        }
+        		                                    });
+                                                }
+                                            } else {
+                                                alert("Geocode was not successful due to: " + status);
+                                            }
+                                        };
+                                        
+                                    };
+                                    
+//                                    
+                                    
+                                    var measure = null;
+
+                                    for (let i = 0; i < originList.length; i++) {
+                                        const results = response.rows[i].elements;
+                                        geocoder.geocode({ address: originList[i] },
+                                            showGeocodedAddressOnMap(false)
+                                        );
+
+                                        for (let j = 0; j < results.length; j++) {
+                                            geocoder.geocode({ address: destinationList[j] },
+                                                showGeocodedAddressOnMap(true)
+                                                 
+                                            );
+                                            outputDiv.innerHTML +=
+                                                originList[i] +
+                                                " 到 " +
+                                                destinationList[j] +
+                                                ": " +
+                                                results[j].distance.text +
+                                                " 大約需 " +
+                                                results[j].duration.text +
+                                                "<br>";
+                                                
+                                                measure = (results[j].distance.text.split(" "))[0];
+                                        }
+                                        
+                                        
+                                        $("#distance").text(measure + "公里");
+                                    }
+                                    
+                                   
+                                }
+                            }
+                        );
+                    }
+                })
+            })
+            
         });
+
+        function deleteMarkers(markersArray) {
+            for (let i = 0; i < markersArray.length; i++) {
+                markersArray[i].setMap(null);
+            }
+            markersArray = [];
+        }
         
     </script>
 </body>
