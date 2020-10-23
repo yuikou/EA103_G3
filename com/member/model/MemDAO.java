@@ -8,6 +8,8 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import com.transDetail.model.TransDetailVO;
+
 
 public class MemDAO implements MemDAO_interface{
 	
@@ -42,6 +44,8 @@ public class MemDAO implements MemDAO_interface{
 			"SELECT * FROM MEMBER_TABLE WHERE memId=? AND memPsw=?"; 
 	private static final String ISDUP = 
 			"SELECT 1 FROM MEMBER_TABLE WHERE memId=?";
+	private static final String TRANSACTION = 
+			"UPDATE MEMBER_TABLE SET MEMPOINT=? WHERE MEMNO=?";
 	@Override
 	public void insert(MemVO memVO) {
 		
@@ -371,6 +375,80 @@ public class MemDAO implements MemDAO_interface{
 		return list;
 	}
 	
+	@Override
+	public void deposit(TransDetailVO tsVO, Integer memPoint, Connection con) {
+		
+		PreparedStatement pstmt = null;
+		
+		try {
+			pstmt = con.prepareStatement(TRANSACTION);
+			// 會員點數加總
+			Integer total = memPoint + tsVO.getTransAmount();
+			pstmt.setInt(1, total);
+			pstmt.setString(2, tsVO.getMemNo());
+			
+			pstmt.executeUpdate();
+		}catch (SQLException se) {
+			if (con != null) {
+				try {
+					// 3●設定於當有exception發生時之catch區塊內
+					System.err.print("Transaction is being ");
+					System.err.println("rolled back-由-member_table");
+					con.rollback();
+				} catch (SQLException excep) {
+					throw new RuntimeException("rollback error occured. "
+							+ excep.getMessage());
+				}
+			}
+			throw new RuntimeException("A database error occured. "
+					+ se.getMessage());
+			// Clean up JDBC resources
+		} finally {
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+		}
+	
+	}
+	
+	@Override
+	public void transaction(String memNo, Integer memPoint, Integer bill, Connection con) {
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.prepareStatement(TRANSACTION);
+			/* 會員交易扣款 */
+			Integer checkout = memPoint - bill;// 扣款餘額
+			pstmt.setInt(1, checkout);
+			pstmt.setString(2, memNo);
+			
+			pstmt.executeUpdate();
+		} catch(SQLException se) {
+			if(con != null) {
+				try {
+					System.err.print("transaction is being ");
+					System.err.println("rolled back-由-member_table");
+					con.rollback();
+				}catch(SQLException excep) {
+					throw new RuntimeException("rolled back occured. ");
+				}
+				
+			}
+			throw new RuntimeException("A database error occured. ");
+		}finally {
+			if(pstmt != null) {
+				try {
+					pstmt.close();
+				}catch(SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+		}
+	}
+
 	@Override
 		public boolean isDup(String memId) {
 			Connection con = null;

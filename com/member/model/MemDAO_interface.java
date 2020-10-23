@@ -1,6 +1,9 @@
 package com.member.model;
 
+import java.sql.Connection;
 import java.util.*;
+
+import com.transDetail.model.TransDetailVO;
 
 public interface MemDAO_interface {
 	public void insert(MemVO memVO); // 註冊新會員
@@ -12,4 +15,6 @@ public interface MemDAO_interface {
 	public List<MemVO> getAll(); // 列出所有會員
 	public MemVO findByPrimaryKey(String memNo); // 尋找單一會員
 	public boolean isDup(String memId);
+	public void deposit(TransDetailVO tsVO, Integer memPoint, java.sql.Connection con); // 儲值
+	public void transaction(String memNo, Integer memPoint, Integer bill, Connection con);
 }

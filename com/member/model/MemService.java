@@ -71,4 +71,6 @@ public class MemService {
 	public boolean isDup(String memId) {
 		return dao.isDup(memId);
 	}
+	
+	
 }
