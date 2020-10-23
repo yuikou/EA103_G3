@@ -36,7 +36,7 @@
     <div class="container">
 		
 		<% 
-			String sitNo = (String) session.getAttribute("sitNo");
+			String sitNo = (String) session.getAttribute("sessionSitNo");
 			SitLicService slSvc = new SitLicService();
 			List<SitLicVO> list = slSvc.getSitAllLic(sitNo);
 			pageContext.setAttribute("list", list);

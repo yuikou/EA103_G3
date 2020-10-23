@@ -10,12 +10,21 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-public class MailService {
+public class MailService implements Runnable{
+	private String to;
+	private String subject;
+	private String messageText;
+	
+	public MailService(String to, String subject, String messageText) {
+		this.to= to;
+		this.subject= subject;
+		this.messageText= messageText;
+	}
 	
 	// 設定傳送郵件:至收信人的Email信箱,Email主旨,Email內容
-	public void sendMail(String to, String subject, String messageText) {
-			
-	   try {
+	public void sendMail() {
+	   
+		try {
 		   // 設定使用SSL連線至 Gmail smtp Server
 		   Properties props = new Properties();
 		   props.put("mail.smtp.host", "smtp.gmail.com");
@@ -61,10 +70,15 @@ public class MailService {
       String passRandom = "111";
       String messageText = "Hello! " + ch_name + " 請謹記此密碼: " + passRandom + "\n" +" (已經啟用)"; 
        
-      MailService mailService = new MailService();
-      mailService.sendMail(to, subject, messageText);
+      MailService mailService = new MailService(to, subject, messageText);
+      mailService.run();
 
    }
+
+	@Override
+	public void run() {
+		sendMail();
+	}
 
 
 }

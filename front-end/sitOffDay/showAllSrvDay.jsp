@@ -274,7 +274,7 @@
 				//-----------------------------開始新增資料----------------------------------------
 		     	editOffDayInfo(info);
 				var arr = $("#mySrv2").val();
-				console.log("groupId="+$("[name='groupId']").val());
+// 				console.log("groupId="+$("[name='groupId']").val());
 				swal({
 		            title: "修改"+info.event.title+"日期",
 		            text: startDay +"~"+ endDay,

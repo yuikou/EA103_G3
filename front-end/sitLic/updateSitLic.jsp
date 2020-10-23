@@ -13,7 +13,6 @@
 <TITLE>修改證書</TITLE>
 
 <!-- 匯入外部CSS -->
-<c:set var="path" value="${pageContext.request.contextPath}/front-end" />
 <c:set var="cssPath" value="${pageContext.request.contextPath}/css/euphy" />
 <link rel="stylesheet" type="text/css" href="${cssPath}/bootstrap.min.css">   
 <link rel="stylesheet" type="text/css" href="${cssPath}/Main.css">
@@ -48,7 +47,7 @@
 		</div>
 
 		<!-- 修改證書 -->	
-		<div class="limiter" style="margin:100px 0 40px 0;">
+		<div class="limiter">
 	        <div class="container-login100 cover">
 	            <div class="wrap-login100 mybody">
 					<FORM class="login100-form validate-form p-l-55 p-r-55 p-t-70" 
@@ -106,8 +105,8 @@
 				           	</div>
 					        <div class="wrap-input100">
 					           	<label class="myLabel">
-					           		<span class="txt1 myP uploadTXT info">如果要修改證照，請上傳圖片、檔案</span>
-					           		<img src="${path}/img/upload.svg" class="myUpload">
+					           		<span class="txt1 myP uploadTXT info">如果要修改證照，請上傳圖片</span>
+					           		<img src="${pageContext.request.contextPath}/front-end/img/upload.svg" class="myUpload">
 					           		<input class="myFile" type="file" name="licPic" style="display:none">
 					           	</label>
 					        </div>

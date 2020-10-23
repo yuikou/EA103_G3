@@ -159,18 +159,17 @@
 						<div class="row">
 <!-- nearAddr -->
 							<div class="col-sm-5 search-loaction">
-								<span id="panel"><input type="text" id="keyword" class="search-loaction-input" name="nearAddr"></span>
-<!-- 								<input class="search-loaction-input" type="text" id="keyword" name="nearAddr" value=""> -->
+								<span id="panel"><input type="text" id="keyword" class="search-loaction-input" name="nearAddr" value="${memVo.memAddress}"></span>
 							</div>
 <!-- dateFrom & dateTo -->						
 							<div class="col-sm-7 search-time">
 								<div class="search-time-div">
 									<div class="col-sm-6 search-time-from"> 
-										<input class="search-time-input" type="text" id="start_dateTime" name="dateFrom" value="" placeholder="開始日期">
+										<input class="search-time-input" type="text" id="start_dateTime" name="dateFrom" value="" placeholder="開始日期" autocomplete="off">
 									</div>
 									<div class="betweenDiv"><i class="betweenIcon"></i></div>
 									<div class="col-sm-6 search-time-end">
-										<input class="search-time-input" type="text" id="end_dateTime" name="dateTo" value="" placeholder="結束日期">
+										<input class="search-time-input" type="text" id="end_dateTime" name="dateTo" value="" placeholder="結束日期" autocomplete="off">
 									</div>
 									
 								</div>
@@ -331,6 +330,7 @@
 	<script src="${jsPath}/popper.js"></script>
 	<script src="${jsPath}/bootstrap.min.js"></script>
 	<script src="${jsPath}/google-map.js"></script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB4icTXRSh83NvMt7E3vY3ZrF4NGTb5AIs&libraries=places" async defer></script>
 	<script>
 	$.datetimepicker.setLocale('zh');
 	$(document).ready(function(){
@@ -383,6 +383,8 @@
 				})
 			},
 			timepicker:false,
+			scrollMonth : false,
+			scrollInput : false,
 			beforeShowDay: function(date) {
 				if ( date.getYear() <  today.getYear() || 
 				   ( date.getYear() == today.getYear() && date.getMonth() <  today.getMonth()) || 
@@ -407,6 +409,8 @@
 				})
 			},
 			timepicker:false,
+			scrollMonth : false,
+			scrollInput : false,
 			beforeShowDay: function(date) {
 				if ( date.getYear() <  today.getYear() || 
 				   ( date.getYear() == today.getYear() && date.getMonth() <  today.getMonth()) || 
@@ -425,6 +429,19 @@
 		
 	});
 	
+	function stopScrollFun(evt) {  
+		  evt = evt || window.event;  
+		    if(evt.preventDefault) {  
+		    // Firefox  
+		      evt.preventDefault();  
+		      evt.stopPropagation();  
+		    } else {  
+		      // IE  
+		      evt.cancelBubble=true;  
+		      evt.returnValue = false;  
+		  }  
+		  return false;  
+		}
 	</script>
 	
 </body>

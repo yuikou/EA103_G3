@@ -394,7 +394,7 @@ public class SitSrvServlet extends HttpServlet {
 				if (sitSrvCode == null || sitSrvCode.isEmpty()) {
 					sitSrvCode = "Boarding";
 				}
-				System.out.println("SitSrvServlet_392.sitSrvCode = "+sitSrvCode);
+//				System.out.println("SitSrvServlet_392.sitSrvCode = "+sitSrvCode);
 				
 				/* 2-acpPetTyp */
 				String acpPetTypPart0 = req.getParameter("acpPetTypPart0");
@@ -430,7 +430,7 @@ public class SitSrvServlet extends HttpServlet {
 						acpPetTypSet.add(8);
 					}
 				}
-				System.out.println("SitSrvServlet_428.acpPetTypSet = "+ acpPetTypSet);
+//				System.out.println("SitSrvServlet_428.acpPetTypSet = "+ acpPetTypSet);
 				Object[] acpPetTypArr = acpPetTypSet.toArray();
 				
 				/* 3-nearAddr */
@@ -446,7 +446,7 @@ public class SitSrvServlet extends HttpServlet {
 						memAddress = nearAddr.substring(county_index-2,city_index+1);
 					}
 				}
-				System.out.println("SitSrvServlet_431.memAddress = "+ memAddress);
+//				System.out.println("SitSrvServlet_431.memAddress = "+ memAddress);
 				
 				/* 4-dateFrom & 5-dateTo */
 				String dateFrom = req.getParameter("dateFrom");
@@ -466,8 +466,8 @@ public class SitSrvServlet extends HttpServlet {
 						errorMsgs.add("服務日期格式錯誤");
 					}
 				}
-				System.out.println("SitSrvServlet_450.dateFrom = "+dateFrom);
-				System.out.println("SitSrvServlet_451.dateTo = "+dateTo);
+//				System.out.println("SitSrvServlet_450.dateFrom = "+dateFrom);
+//				System.out.println("SitSrvServlet_451.dateTo = "+dateTo);
 				
 				
 				// 回傳錯誤資訊
@@ -479,9 +479,7 @@ public class SitSrvServlet extends HttpServlet {
 				
 				/* 6.1-acpPetNum */
 				Map<String, String[]> map = (Map<String, String[]>)session.getAttribute("map");
-				System.out.println(req.getParameter("whichPage"));
-				if (req.getParameter("whichPage") == null || req.getParameter("whichPage").isEmpty() || "1".equals(req.getParameter("whichPage"))){
-					System.out.println("第一次查詢~");
+				if (req.getParameter("whichPage") == null || "0".equals(req.getParameter("whichPage"))){
 					HashMap<String, String[]> map1 = new HashMap<String, String[]>(req.getParameterMap());
 					session.setAttribute("map",map1);
 					map = map1;
@@ -497,11 +495,11 @@ public class SitSrvServlet extends HttpServlet {
 				
 				// 先查符合的托養類型與寵物型態的服務VO
 				sitSrvVOlist = ssSvc.choose_SitSrv(sitSrvCode, acpPetTypArr, map);
-				System.out.println("SitSrvServlet_491.sitSrvVOlist.size(before = " + sitSrvVOlist.size());
+				System.out.println("SitSrvServlet_500.sitSrvVOlist.size(before = " + sitSrvVOlist.size());
 				
 				// 再查此服務類型有休假的保母服務編號
 				sitSrvNoSet = sodSvc.getSitByDate(sitSrvCode, dateFrom, dateTo);
-				System.out.println("SitSrvServlet_495.sitSrvNoSet.size = " + sitSrvNoSet.size());
+				System.out.println("SitSrvServlet_504.sitSrvNoSet.size = " + sitSrvNoSet.size());
 				
 				// 如果服務VO的服務編號有在休假的Set上，就移除這一個VO
 				for (int i = 0; i < sitSrvVOlist.size(); i++) {
@@ -510,7 +508,7 @@ public class SitSrvServlet extends HttpServlet {
 						sitSrvVOlist.remove(i);
 					}
 				}
-				System.out.println("SitSrvServlet_507.sitSrvVOlist.size(after = " + sitSrvVOlist.size());
+				System.out.println("SitSrvServlet_513.sitSrvVOlist.size(after = " + sitSrvVOlist.size());
 				
 				/*************************** 3.新增完成,準備轉交(Send the Success view) ***********/
 				if("search".equals(action)) {
@@ -543,7 +541,7 @@ public class SitSrvServlet extends HttpServlet {
 				/*************************** 1.接收請求參數 ****************************************/
 				/* 1-sitSrvNo */
 				String sitSrvNo = req.getParameter("sitSrvNo");
-				System.out.println("SitSrvServlet_524.sitSrvNo = "+sitSrvNo);
+//				System.out.println("SitSrvServlet_546.sitSrvNo = "+sitSrvNo);
 				
 				/*************************** 2.開始新增資料 ***************************************/
 				SitSrvService ssSvc = new SitSrvService();
@@ -570,7 +568,7 @@ public class SitSrvServlet extends HttpServlet {
 				/*************************** 1.接收請求參數 ****************************************/
 				/* 1-sitSrvNo */
 				String sitSrvNo = req.getParameter("sitSrvNo");
-				System.out.println("SitSrvServlet_551.sitSrvNo = "+sitSrvNo);
+//				System.out.println("SitSrvServlet_573.sitSrvNo = "+sitSrvNo);
 				
 				/*************************** 2.開始新增資料 ***************************************/
 				SitSrvService ssSvc = new SitSrvService();
@@ -598,7 +596,7 @@ public class SitSrvServlet extends HttpServlet {
 				/*************************** 1.接收請求參數 ****************************************/
 				/* 1-sitSrvNo */
 				String sitSrvNo = req.getParameter("sitSrvNo");
-				System.out.println("SitSrvServlet_579.sitSrvNo = "+sitSrvNo);
+//				System.out.println("SitSrvServlet_601.sitSrvNo = "+sitSrvNo);
 				
 				/*************************** 2.開始新增資料 ***************************************/
 				SitSrvService ssSvc = new SitSrvService();
