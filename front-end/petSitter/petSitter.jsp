@@ -8,7 +8,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>petSitter select page</title>
+    <title>加入保母</title>
     <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/css-ching/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/css-ching/index.css">
     <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/css-ching/petSitter.css">
