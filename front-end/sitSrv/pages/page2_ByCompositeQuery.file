@@ -3,8 +3,6 @@
 <div class="col-md-12 column">
 	<ul class="pagination text-center" role="navigation" aria-label="Pagination">
 		
-<%if (rowsPerPage<rowNumber) {%>
-		            
    		<li class="pagination-li pagination-first">
    			<div>
    				<i class="material-icons" style="color:#AFAFAF;">first_page</i>
@@ -21,8 +19,6 @@
         <li class="pagination-li pagination-next"><div><i class="material-icons" style="color:#AFAFAF;">chevron_right</i></div></li>
         <li class="pagination-li pagination-final"><div><i class="material-icons" style="color:#AFAFAF;">last_page</i></div></li>
 		            
-<%}%>
-
 	</ul>
 </div>
 

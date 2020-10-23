@@ -50,6 +50,10 @@
 		</div>
 
 		<form id="form1" action="${pageContext.request.contextPath}/sitSrv/sitSrv.do" method="post">
+<!-- pages1 -->		
+		<div class="row" style="display:none;">
+			<%@ include file="pages/page1_ByCompositeQuery.file" %>
+		</div>
 		
 		
 		<div class="main-wrapper col-md-12 ">
@@ -255,23 +259,15 @@
 			</div>
 
 <!-- search-results -->
-			<div class="col-xl-5 col-lg-7 col-md-7 col-sm-12 search-results">
-				<div class="orderBy-div">
-					<div class="col-2" style="min-width: 18%;">排序方式</div>
-					<div class="col-4 orderByTyp" data-val="priceLower" style="max-width: 32%;">服務費率<small>(由低到高)</small></div>
-					<div class="col-3 orderByTyp" data-val="totalComm" >評價得分</div>
-					<div class="col-3 orderByTyp" data-val="repeatCus" >重複預訂</div>
-					<input type="hidden" id="orderBy" name="orderBy">
-				</div>
+			<div class="col-xl-4 col-lg-7 col-md-7 col-sm-12 search-results">
 				<div class="search-results-wrapper">
 				
 				<!-- 先創建Svc -->
 				<jsp:useBean id="memSvc" class="com.member.model.MemService"/>
         		<jsp:useBean id="petSitterSvc" class="com.petSitter.model.PetSitterService"/>
         		<jsp:useBean id="sfSrv" class="com.sitFollow.model.SitFollowService"/>
-        		<jsp:useBean id="sordSvc" class="com.sitOrder.model.SitOrderService"/>
 					
-					<c:forEach var="sitSrvVO" items="${sitSrvVOlist}">
+					<c:forEach var="sitSrvVO" items="${sitSrvVOlist}" begin="<%=pageIndex%>" end="<%=pageIndex+rowsPerPage-1%>">
 					<div class="panel" id="${sitSrvVO.sitSrvNo}">
         
 			            <a href="${pageContext.request.contextPath}/petSitter/petSitter.do?action=getOneSitter_DisplayForMem&sitNo=${sitSrvVO.sitNo}&sitSrvNo=${sitSrvVO.sitSrvNo}">
@@ -283,7 +279,7 @@
 <%-- 			                    	<img src="${path}/img/verify_mobile.svg" class="hl-phoneveri" alt="phone"> --%>
 			                    <div class="hl-title">${sitSrvVO.sitSrvName}</div>
 			                    <div class="hl-stars">
-			                        <div class="rateit" data-rateit-value="${sordSvc.countAvgStar(sitSrvVO.sitNo)}" data-rateit-ispreset="true" data-rateit-readonly="true"></div>
+			                        <div class="rateit" data-rateit-value=<c:if test="${sitSrvVO.totalComm != 0}">${sitSrvVO.totalComm / sitSrvVO.totalCus}</c:if> data-rateit-ispreset="true" data-rateit-readonly="true"></div>
 			                    </div>
 			                    <div class="hl-svc">
 			                    	${sitSrvVO.memAddress.substring(0,6)}</div>
@@ -291,6 +287,8 @@
 			                    	<div class="hl-about-div repeat-clients">${sitSrvVO.repeatCus} 個重複預訂</div>
 			                    	<div class="hl-about-div reviews"><fmt:formatNumber value="${sitSrvVO.totalComm}"  pattern="0"/> 個評價</div>
 			                    </div>
+			                    <div style="display: none" class="memAddress">${sitSrvVO.memAddress}</div>
+			                    <div style="display: none" class="memPicPath">${pageContext.request.contextPath}/PicReader.do?action=getMemPic&memNo=${sitSrvVO.memNo}</div>
 			                </div>
 			                <div class="col-md-2 col-sm-2 column" style="position:relative;height:inherit;padding-right: 0;">
 			                    <div class="hl-best-svc text-center">
@@ -319,10 +317,14 @@
 					</c:forEach>
 					
 				</div>
+				<div class="row align-center">
+	        		<%@ include file="pages/page2_ByCompositeQuery.file" %>
+	        		<input id="whichPage" type="hidden" name="whichPage" value="<%=whichPage%>">
+				</div>
 			</div>
 
 <!-- search-map -->
-			<div class="col-xl-4 hide-md search-map">
+			<div class="col-xl-5 hide-md search-map">
 				<div class="search-map-wrapper">
 					<div id="map"></div>
 				</div>
@@ -349,27 +351,33 @@
 	<script>
 		$.datetimepicker.setLocale('zh');
 		
-		function search() {
+		function search(p) {
 			// 發送ajax重新查詢
 			var data = $( "form" ).serialize();
+			var dataFinal = data.substr(0, data.length-1) + p;
 			
-			// 先清空之前的marker
-        	DeleteMarkers();
-        	// 重新搜尋後顯示搜尋結果的Marker
-            addSearchData();
-        	//
-            changeCenter($("#keyword").val());
+			if (p==0) {
+				// 先清空之前的marker
+        		DeleteMarkers();
+        		// 重新搜尋後顯示搜尋結果的Marker
+                addSearchData();
+        		//
+                changeCenter($("#keyword").val());
+			}
 			
 			$.ajax({
                 type: "POST",
                 url: "${pageContext.request.contextPath}/sitSrv/sitSrv.do",
-                data: data,             	
+                data: dataFinal,             	
                 dataType: "json",
                 success: function (result) {
                 	var wrapper = $(".search-results-wrapper");
                 	wrapper.empty();
                 	
                 	$.each(result, function (i, j) {
+                		if (p==0) p+=1;
+                		if (i<p*5 && i>=(p-1)*5){
+// 	                		console.log("取出第"+i+"筆json物件："+j.memName);
 							var unit='次';
 							if (j.sitSrvCode == 'Boarding') {
 								unit = '晚';
@@ -407,6 +415,8 @@
 					                    	<div class="hl-about-div repeat-clients">`+ j.repeatCus +` 個重複預訂</div>
 					                    	<div class="hl-about-div reviews">`+ j.totalComm +` 個評價</div>
 					                    </div>
+					                    <div style="display: none" class="memAddress">`+ j.memAddress + `</div>
+					                    <div style="display: none" class="memPicPath">${pageContext.request.contextPath}/PicReader.do?action=getMemPic&memNo=`+j.memNo+`</div>
 	                				</div>
 	                				<div class="col-md-2 col-sm-2 column" style="position:relative;height:inherit;padding-right: 0;">
 					                    <div class="hl-best-svc text-center">
@@ -424,7 +434,16 @@
 	                		wrapper.append(newCard);
 	                		$(".rateit").rateit();
 	                		
+	                	}
                 	});
+                	$(".current").text(p);
+                	$("#whichPage").val(p);//更改input目前頁數
+                	if (result.length <= 5) {
+                		$(".pagination").hide();
+                	} else {
+                		$(".pagination").show();
+                		changePage();
+                	}
                 	$('html, body').scrollTop(0);
                 },
                 error: function (xhr, ajaxOptions, thrownError) {
@@ -433,6 +452,29 @@
             });
 		}
 		
+		function changePage() {
+			var pagination_first = $(".pagination-first").children("div");
+			var pagination_prev = $(".pagination-prev").children("div");
+			var pagination_next = $(".pagination-next").children("div");
+			var pagination_final = $(".pagination-final").children("div");
+			
+			if ($(".current").text()==1) {
+				pagination_first.fadeTo("normal",0).css("cursor", "default");
+				pagination_prev.fadeTo("normal",0).css("cursor", "default");
+				pagination_next.fadeTo("normal",1).css("cursor", "pointer");
+				pagination_final.fadeTo("normal",1).css("cursor", "pointer");
+			} else if ($(".current").text()==<%=pageNumber%>) {
+				pagination_first.fadeTo("normal",1).css("cursor", "pointer");
+				pagination_prev.fadeTo("normal",1).css("cursor", "pointer");
+				pagination_next.fadeTo("normal",0).css("cursor", "default");;
+				pagination_final.fadeTo("normal",0).css("cursor", "default");;
+			} else if ($(".current").text()!=1 ) {
+				pagination_first.fadeTo("normal",1).css("cursor", "pointer");
+				pagination_prev.fadeTo("normal",1).css("cursor", "pointer");
+				pagination_next.fadeTo("normal",1).css("cursor", "pointer");
+				pagination_final.fadeTo("normal",1).css("cursor", "pointer");
+			}
+		}
 		
 		$(document).ready(function() {
 			
@@ -446,22 +488,39 @@
 			
 			search_condition_btn.click(function(e){
 				e.preventDefault();
-				search();
-			});
+				search(0);
+				
+			})
 			
-			// --------------------點選排序--------------------
-			$(".orderByTyp").click(function(){
-				$(".orderByTyp").each(function(){
-					$(this).removeClass("orderByNow");
-				});
-				$("#orderBy").val($(this).attr("data-val"));
-				search();
-				$(this).addClass("orderByNow");
-				if ($(this).attr("data-val")=='priceLower') {
-					$(this).attr("data-val", 'srvFee').find("small").text("(由高到低)");
-				} else if ($(this).attr("data-val")=='srvFee'){
-					$(this).attr("data-val", 'priceLower').find("small").text("(由低到高)");
-				}
+			;
+			// --------------------頁數--------------------
+			var pagination_first = $(".pagination-first").children("div");
+			var pagination_prev = $(".pagination-prev").children("div");
+			var pagination_next = $(".pagination-next").children("div");
+			var pagination_final = $(".pagination-final").children("div");
+			var whichPage = $("#whichPage");
+			
+			if ($(".current").text()==1) {
+				pagination_first.hide();
+				pagination_prev.hide();
+			}
+			// 點擊跳至第一頁
+			pagination_first.click(function(){
+				search(1);
+			});
+			// 點擊上一頁
+			pagination_prev.click(function(){
+				var newPage = parseInt(whichPage.val());
+				search(newPage-1);
+			});
+			// 點擊下一頁
+			pagination_next.click(function(){
+				var newPage = parseInt(whichPage.val());
+				search(newPage+1);
+			});
+			// 點擊最後一頁
+			pagination_final.click(function(){
+				search(<%=pageNumber%>);
 			});
 			
 			// --------------------顯示服務選項--------------------

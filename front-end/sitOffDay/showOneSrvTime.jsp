@@ -34,38 +34,11 @@
 				</ul>
 			</c:if>
 		</div>
+		<!------------------------------可預約時段 -------------------------------->
 		<div>
-        	<div class="title-change title-info">服務說明</div>
-        	<div class="row">
-        		<c:forEach var="sitSrvVO" items="${sitSrvSvc.get_OneSit_AllSrv(petSitterVO.getSitNo())}">
-        		<div class='srvInfo srvInfo-hide' id="srvInfo_${sitSrvVO.sitSrvCode}">${sitSrvVO.srvInfo}</div>
-        		</c:forEach>
-        	</div>
-        </div>
-		<!-------------------------------- 服務選單 -------------------------------->
-<!-- 		<div class="section-line"> -->
-<!-- 			<select id="mySrv1" name="sitSrvNo"> -->
-<%-- 				<c:forEach var="sitSrvVO" items="${sitSrvSvc.get_OneSit_AllSrv(petSitterVO.getSitNo())}"> --%>
-<%-- 					<c:if test="${sitSrvVO.sitSrvCode != 'Bathing' && sitSrvVO.sitSrvCode != 'Pickup'}"> --%>
-<%-- 					<option name="sitSrvNo ${sitSrvVO.sitSrvCode}" value="${sitSrvVO.sitSrvNo}">${sitSrvVO.sitSrvName}</option> --%>
-<%-- 					</c:if> --%>
-<%-- 				</c:forEach> --%>
-<!-- 			</select> -->
-<!-- 	   	</div> -->
-		<div class="title-change title-offDay">尚未預約日期/時間</div>
-		<div class="row">
-            <div class='col-12'>
-            	<!-------------------------------- 小月曆 -------------------------------->
-			    <div class="form-group">
-			    	<div class="col-12" style="padding: 0">
-			            <div id="datetimepicker13"></div>
-			        </div>
-			    </div>
-			    <!------------------------------可預約時段 -------------------------------->
-			    <c:forEach var="sitSrvVO" items="${sitSrvSvc.get_OneSit_AllSrv(petSitterVO.getSitNo())}">
+		    <c:forEach var="sitSrvVO" items="${sitSrvSvc.get_OneSit_AllSrv(petSitterVO.getSitNo())}">
 			    <c:if test="${sitSrvVO.sitSrvCode != 'Bathing' && sitSrvVO.sitSrvCode != 'Pickup' && sitSrvVO.sitSrvCode != 'Boarding' && sitSrvVO.sitSrvCode != 'DayCare'}">
 			    <div class="appointmentDates appointmentHide" id="appointment_${sitSrvVO.sitSrvCode}">
-			    	<span class="spanDate">尚未預約時段</span>
 		            <div class="appointmentSlots slots">
 						<div class="appointmentSlotsContainer">
 						<% 
@@ -75,9 +48,9 @@
 							SitSrvVO sitSrvVO = (SitSrvVO) pageContext.getAttribute("sitSrvVO");
 							
 							String srvTstr = sitSrvSvc.get_OneSit_OneSrv(sitSrvVO.getSitSrvNo()).getSrvTime();
-							int srvT = 100;
+							int srvT = 100;// 通常服務時間一小時
 							if (srvTstr!= null) {
-								srvT = Integer.valueOf(srvTstr);// 先以一小時測試
+								srvT = Integer.valueOf(srvTstr);// 如果服務項目有設定服務時間
 							}
 							if (startT != null){
 								Integer startTint = Integer.valueOf(startT);
@@ -103,8 +76,7 @@
 		            </div>
 				</div>
 				</c:if>
-				</c:forEach>
-			</div>
+			</c:forEach>
         </div>
         
 	</div>
@@ -115,9 +87,7 @@
 	<script src="${jsPath}/jquery-3.2.1.min.js"></script>
 	<script src="${jsPath}/popper.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.0/moment.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.0/locale/zh-tw.min.js"></script>
 	<script src="${jsPath}/bootstrap.min.js"></script>
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/js/tempusdominus-bootstrap-4.min.js"></script>
     <script type="text/javascript">
         $(function() {
         	// 判斷預約時間是否要顯示
@@ -129,8 +99,6 @@
         	
         	var sitOffDayObj = null;
         	var today = new Date();
-        	// spanDate
-        	var spanDate = $(".spanDate").text(dateFormat(today)+" 尚未預約時段");
         	// 首次建立月曆時(oneSrv)發送ajax取得資料
         	$.ajax({
 		        type: "GET",
@@ -234,6 +202,7 @@
     			
         	});
         	
+        	
         	// 點選月曆日期，更改可預約時間
         	$("#datetimepicker13").on("change.datetimepicker", function (e) {
         		
@@ -263,84 +232,6 @@
         			}); 
         		}
         	});
-        	
-        	
-        	// 保姆頁面的小月曆(初始化)
-// 	        $('#datetimepicker13').datetimepicker({
-// 	        	format: 'L', // 不顯示time
-// 	        	inline: true,
-// 				daysOfWeekDisabled: [0, 6],
-// 				disabledDates: newArr, // 休假或是已經預約額滿
-// 				stepping: 30, // 30分鐘或1小時
-// 				minDate: moment(),
-// 				maxDate: new Date(new Date().setDate(new Date().getDate() + 30)),
-// 	        });
-        	
-        	// ----------------------追蹤----------------------
-			var myClick = $(".myClick");
-			
-			myClick.click(function(e){
-				var myClick_rn = $(this);
-				var myClick_span = myClick_rn.find("span");
-				var myClick_sitNo = myClick_rn.prev();
-				var myClick_memNo = myClick_sitNo.prev();
-				
-				e.preventDefault();
-				var myClick_action = null;
-				if (myClick_span.hasClass("fa-heart")) {
-					myClick_action = "del";
-				} else {
-					myClick_action = "add";
-				}
-				
-				$.ajax({
-	            	type: "POST",
-	            	url: "${pageContext.request.contextPath}/sitFollow/sitFollow.do",
-	            	data: {
-	                	action: myClick_action,
-	                	memNo: myClick_memNo.val(),
-	                	sitNo: myClick_sitNo.val(),
-	              	},
-	              	dataType: "html",
-	              	success: function (result) {
-	                	if (result==1){
-	                		myClick_rn.addClass("active");
-	                		myClick_rn.addClass("active-2");
-	                		
-	                		setTimeout(function () {
-	                			myClick_span.addClass("fa-heart");
-	                			myClick_span.removeClass("fa-heart-o");
-	                		}, 150);
-	                		  
-	                		setTimeout(function () {
-	                			  myClick_rn.addClass("active-3");
-	                		}, 150);
-	                		  
-	                		  
-	                   	} else if (result==0) {
-	                   		myClick_rn.removeClass("active");
-	                   	  	
-	                   		setTimeout(function () {
-	                   			myClick_rn.removeClass("active-2");
-	                   	  	}, 30);
-	                   	  	
-	                   		myClick_rn.removeClass("active-3");
-	                   	  	
-	                   	  	setTimeout(function () {
-	                   	  		myClick_span.removeClass("fa-heart");
-	                   	 		myClick_span.addClass("fa-heart-o");
-	                   	  	}, 15);
-	                   	} else if (result == "error"){
-	                        alert("唉呦~出錯了");
-	                    } else {
-	                   		console.log("追蹤失敗"+result);
-	                  	}
-	              	},
-	              	error: function (xhr, ajaxOptions, thrownError) {
-	               		console.log("ajax失敗");
-	               	}
-	         	});
-			});
         	
         });
         

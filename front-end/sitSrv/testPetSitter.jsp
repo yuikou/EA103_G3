@@ -1,6 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="BIG5"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ page import="com.sitFollow.model.*, com.sitOffDay.model.*, com.sitSrv.model.*, com.member.model.*, java.util.*" %>
+<%@ page import="com.petSitter.model.*, com.sitFollow.model.*, com.sitOffDay.model.*, com.sitSrv.model.*, com.member.model.*, java.util.*" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -25,13 +25,14 @@
 		<!-- 測試會員已登入並存進session【memNo=M001】 ，
 		點進某保姆頁面時用req(先用session)取得【sitNo=S005(M010)】 -->
 		
-		<jsp:useBean id="petSitterVO" scope="session" class="com.petSitter.model.PetSitterVO"/>
+<%-- 		<jsp:useBean id="petSitterVO" scope="session" class="com.petSitter.model.PetSitterVO"/> --%>
 		<jsp:useBean id="sitSrvVO" scope="session" class="com.sitSrv.model.SitSrvVO"/>
 		<jsp:useBean id="petSitterSvc" class="com.petSitter.model.PetSitterService"></jsp:useBean>
 		<% 
-			session.setAttribute("memNo","M014");
-			petSitterVO = petSitterSvc.getByFK("M014");
+			session.setAttribute("memNo","M002");
+			PetSitterVO petSitterVO = petSitterSvc.getByFK("M002");
 			session.setAttribute("petSitterVO", petSitterVO);
+			session.setAttribute("sessionSitNo","S002");
 // 			sitSrvVO.setSitSrvNo("SS024");
 // 			sitSrvVO.setSitSrvCode("PetTaxi");
 		%>

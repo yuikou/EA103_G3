@@ -28,9 +28,9 @@ public class SitLicServlet extends HttpServlet {
 /* 來自會員頁面的請求  - 查詢證照 */		
 		if ("getAll".equals(action)) {
 			/***************************開始查詢資料 ****************************************/
-			String sitNo = (String) session.getAttribute("sitNo");
-			SitLicDAO dao = new SitLicDAO();
-			List<SitLicVO> list = dao.getSitAllLic(sitNo);
+			String sitNo = (String) session.getAttribute("sessionSitNo");
+			SitLicService slSvc = new SitLicService();
+			List<SitLicVO> list = slSvc.getSitAllLic(sitNo);
 			
 			/***************************查詢完成,準備轉交(Send the Success view)*************/
 			session.setAttribute("list", list);
@@ -96,7 +96,7 @@ public class SitLicServlet extends HttpServlet {
 				slSvc.add(sitNo, licName, licPic, licEXP, licStatus);
 	
 				/*************************** 3.新增完成,準備轉交(Send the Success view) ***********/
-				String url = "/front-end/sitLic/listOneSitAllLic.jsp";
+				String url = "/front-end/sitLic/listOneSitAllLicBySession.jsp";
 				RequestDispatcher sucessView = req.getRequestDispatcher(url);
 				sucessView.forward(req, res);
 				
@@ -109,7 +109,7 @@ public class SitLicServlet extends HttpServlet {
 		}
 		
 		
-/* 來自 listOneSitAllLic.jsp 的請求 - 取得要修改的證照資料 */
+/* 來自listOneSitAllLicBySession.jsp的請求 - 取得要修改的證照資料 */
 		if ("getOne_For_Update".equals(action)) {
 			List<String> errorMsgs = new LinkedList<String>();
 			req.setAttribute("errorMsgs", errorMsgs);
@@ -133,7 +133,7 @@ public class SitLicServlet extends HttpServlet {
 				/***************************其他可能的錯誤處理*************************************/
 			} catch (Exception e) {
 				errorMsgs.add(e.getMessage());
-				RequestDispatcher failureView = req.getRequestDispatcher("/front-end/sitLic/listOneSitAllLic.jsp");
+				RequestDispatcher failureView = req.getRequestDispatcher("/front-end/sitLic/updateSitLic.jsp");
 				failureView.forward(req, res);
 			}
 		}
@@ -151,12 +151,12 @@ public class SitLicServlet extends HttpServlet {
 				
 				/* 2-licName */
 				String licName = req.getParameter("licName").trim();
-				if (licName == null || licName.trim().length() == 0) {
+				if (licName == null || licName.length() == 0) {
 					errorMsgs.add("請輸入證書名稱");
 				}
 				// 如果沒輸入就先回傳錯誤資訊
 				if (! errorMsgs.isEmpty()) {
-					RequestDispatcher failureView = req.getRequestDispatcher("/front-end/sitLic/listOneSitAllLicBySession.jsp");
+					RequestDispatcher failureView = req.getRequestDispatcher("/front-end/sitLic/updateSitLic.jsp");
 					failureView.forward(req, res);
 					return;
 				}
@@ -189,7 +189,7 @@ public class SitLicServlet extends HttpServlet {
 				
 				/* 6-sitSrvNo */
 				String sitSrvNo = req.getParameter("sitSrvNo");
-				System.out.println("SitLicServlet_191.sitSrvNo"+sitSrvNo);
+//				System.out.println("SitLicServlet_192.sitSrvNo"+sitSrvNo);
 				
 				/*************************** 2.開始新增資料 ***************************************/
 				SitLicService slSvc = new SitLicService();
@@ -200,7 +200,7 @@ public class SitLicServlet extends HttpServlet {
 				slSvc.update(licNo, licName, licPic, licEXP, licStatus, sitSrvNo);
 		
 				/*************************** 3.新增完成,準備轉交(Send the Success view) ***********/
-				String url = "/front-end/sitLic/listOneSitAllLic.jsp";
+				String url = "/front-end/sitLic/listOneSitAllLicBySession.jsp";
 				RequestDispatcher sucessView = req.getRequestDispatcher(url);
 				sucessView.forward(req, res);
 				
@@ -214,9 +214,8 @@ public class SitLicServlet extends HttpServlet {
 		
 /* 來自 listUnverifiedLic.jsp 的請求 - 修改證照狀態 */
 		if ("verify".equals(action)) {
-//			List<String> errorMsgs = new LinkedList<String>();
-//			req.setAttribute("errorMsgs", errorMsgs);
 			PrintWriter out = res.getWriter();
+//			MailService mailService = new MailService();
 	
 			try {
 				/*************************** 1.接收請求參數 ****************************************/
@@ -228,26 +227,42 @@ public class SitLicServlet extends HttpServlet {
 				
 				/* 3-sitSrvNo */
 				String sitSrvNo = req.getParameter("sitSrvNo");
-				System.out.println("SitLicServlet_230.sitSrvNo"+sitSrvNo);
+				
+				/* 4-memEmail */
+				String memEmail = req.getParameter("memEmail");
+				
+				/* 5-memName */
+				String memName = req.getParameter("memName");
+				
+				/* 6-failReason */
+				String failReason = req.getParameter("failReason");
 				
 				/*************************** 2.開始新增資料 ***************************************/
 				SitLicService slSvc = new SitLicService();
 				Boolean updateOK  = slSvc.updateStatus(licNo, licStatus, sitSrvNo);
 		
 				/*************************** 3.新增完成,準備轉交(Send the Success view) ***********/
-//				String url = "listUnverifiedLic.jsp";
-//				RequestDispatcher sucessView = req.getRequestDispatcher(url);
-//				sucessView.forward(req, res);
+				String subject_success = "PetFect-證照審核成功";
+				String subject_fail = "PetFect-證照審核失敗";
+				String messageText_success = "Hello! " + memName + ", 您的證照審核成功，已將證照名稱顯示於您的個人頁面。";
+				String messageText_fail = "Hello! " + memName + ", 您的證照審核失敗~ \r\n 原因：  " + failReason 
+										+ "\r\n 您可至「管理證照」專區，修改完成後再次送出審核，謝謝。";
+				
 				if (updateOK) {
 					out.write(licNo);
+					
+					if (licStatus==1) {
+						new Thread(new MailService(memEmail, subject_success, messageText_success)).start();
+//						mailService.sendMail(memEmail, subject_success, messageText_success);
+					} else if (licStatus==2) {
+						new Thread(new MailService(memEmail, subject_fail, messageText_fail)).start();
+//						mailService.sendMail(memEmail, subject_fail, messageText_fail);
+					}
 				} else {
 					out.write("error");
 				}
 				
 			} catch (Exception e) {
-//				errorMsgs.add("審核失敗： " + e.getMessage());
-//				RequestDispatcher failureView = req.getRequestDispatcher("listUnverifiedLic.jsp");
-//				failureView.forward(req, res);
 				out.write("error: " + e.getMessage());
 			}
 		}

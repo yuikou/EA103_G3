@@ -35,27 +35,14 @@
 <!------------------ 內文body ------------------>
     <div class="container">
 		
-		<div class="row" style="margin-top: 30px;">
-			<!-- 錯誤列表 -->
-		   	<div class="errorList" style="width:50%"> 
-				<c:if test="${not empty errorMsgs}" >
-					<font style="color:red;">發生以下錯誤：</font>
-					<ul>
-					<c:forEach var="msg" items="${errorMsgs}">
-						<li style="color:red;">${msg}</li>
-					</c:forEach>
-					</ul>
-				</c:if>
-			</div>
-			<div style="width:50%">
-				<a class="addLic" href="${pageContext.request.contextPath}/front-end/sitLic/addSitLic.jsp">
-					<svg viewBox="0 0 16 16" class="bi bi-file-earmark-plus" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-		  				<path d="M4 0h5.5v1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h1V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2z"/>
-		  				<path d="M9.5 3V0L14 4.5h-3A1.5 1.5 0 0 1 9.5 3z"/>
-		  				<path fill-rule="evenodd" d="M8 6.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V11a.5.5 0 0 1-1 0V9.5H6a.5.5 0 0 1 0-1h1.5V7a.5.5 0 0 1 .5-.5z"/>
-					</svg><span style="position: relative;top: 5px;">新增證書</span>
-				</a>
-			</div>
+		<div class="row add-div">
+			<a class="addLic" href="${pageContext.request.contextPath}/front-end/sitLic/addSitLic.jsp">
+				<svg viewBox="0 0 16 16" class="bi bi-file-earmark-plus" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+		  			<path d="M4 0h5.5v1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h1V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2z"/>
+		  			<path d="M9.5 3V0L14 4.5h-3A1.5 1.5 0 0 1 9.5 3z"/>
+		  			<path fill-rule="evenodd" d="M8 6.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V11a.5.5 0 0 1-1 0V9.5H6a.5.5 0 0 1 0-1h1.5V7a.5.5 0 0 1 .5-.5z"/>
+				</svg><span style="position: relative;top: 5px;">新增證書</span>
+			</a>
 		</div>
 		
 		
@@ -66,17 +53,17 @@
 					<li class="licLi">
 						<div class="top">
 						    <h1 class="licNameH1">${sitLic.licName}</h1>
-						    <div class="circle"><img class="pimg" alt="" src="${pageContext.request.contextPath}/PicReader.do?action=sitLic&licNo=${sitLic.licNo}"></img></div>
+						    <div class="circle"><img class="pimg" title="點我放大" alt="" src="${pageContext.request.contextPath}/PicReader.do?action=sitLic&licNo=${sitLic.licNo}"></img></div>
 						</div>
 						<div class="bottom">
 						    <p><span>到期日</span> <c:out value="${sitLic.licEXP}" default="-"/></p>
 						    <c:set var="licStatus" value="${sitLic.licStatus}"/>
 							<% 
-								String[] statusArr = {"審核中", "審核通過", "審核未通過", "過期證照"};
+								String[] statusArr = {"審核中", "有效證照", "審核未通過", "過期證照"};
 								String status = statusArr[(Integer)pageContext.getAttribute("licStatus")];
 								pageContext.setAttribute("status", status);
 							%>
-						    <p><span>證照狀態</span> ${status}</p>
+						    <p><span>證照狀態</span><span class="statusWord">${status}</span></p>
 						    
 						    <div class='button'>
 						    	<FORM method="post" action="${pageContext.request.contextPath}/sitLic/sitLic.do">
@@ -115,7 +102,17 @@
 	            var _this = $(this);//將當前的pimg元素作為_this傳入函式  
 	            console.log(_this);
 	            imgShow("#outerdiv", "#innerdiv", "#bigimg", _this);  
-	        });  
+	        });
+	        
+	        $(".statusWord").each(function(){
+		        if ($(this).text()=='有效證照') {
+		        	$(this).css("color", "#009688");
+		        } else if ($(this).text()=='過期證照') {
+		        	$(this).css("color", "#687073");
+		        } else {
+		        	$(this).css("color", "#EE644F");
+		        }
+	        });
 	    });  
 
 	    function imgShow(outerdiv, innerdiv, bigimg, _this){  

@@ -12,7 +12,6 @@
 <TITLE>新增證書</TITLE>
 
 <!-- 匯入外部CSS -->
-<c:set var="path" value="${pageContext.request.contextPath}/front-end" />
 <c:set var="cssPath" value="${pageContext.request.contextPath}/css/euphy" />
 <link rel="stylesheet" type="text/css" href="${cssPath}/bootstrap.min.css">   
 <link rel="stylesheet" type="text/css" href="${cssPath}/Main.css">
@@ -47,16 +46,7 @@
 			</c:if>
 		</div>
 
-		<!-- 測試先鎖定sitNo=S001 -->
-		<% session.setAttribute("sitNo","S001");%>
-		
-		<!-- 測試用 -->
-		<div class="test">
-			<a href="${pageContext.request.contextPath}/back-end/sitLic/listUnverifiedLic.jsp">員工查看待審核證書</a>by DAO
-		</div>
-		<!-- 測試用 -->
-	
-<!-- 新增證書 -->
+		<!-- 新增證書 -->
         <div class="limiter">
 	        <div class="container-login100 cover">
 	            <div class="wrap-login100 mybody">
@@ -70,10 +60,11 @@
 								<svg viewBox="0 0 16 16" class="bi bi-box-arrow-in-left" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
 	  								<path fill-rule="evenodd" d="M10 3.5a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 1 1 0v2A1.5 1.5 0 0 1 9.5 14h-8A1.5 1.5 0 0 1 0 12.5v-9A1.5 1.5 0 0 1 1.5 2h8A1.5 1.5 0 0 1 11 3.5v2a.5.5 0 0 1-1 0v-2z"/>
 	  								<path fill-rule="evenodd" d="M4.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H14.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z"/>
-								</svg>
+								</svg><span class="hide-xs">保母頁面</span>
 							</a>
 							新增保姆證照
-							<a class="search" href="${pageContext.request.contextPath}/front-end/sitLic/listOneSitAllLicBySession.jsp">
+							<a class="search" href="${pageContext.request.contextPath}/sitLic/sitLic.do?action=getAll">
+	                        	<span class="hide-xs">管理證書</span>
 	                        	<svg viewBox="0 0 16 16" class="bi bi-search" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
   									<path fill-rule="evenodd" d="M10.442 10.442a1 1 0 0 1 1.415 0l3.85 3.85a1 1 0 0 1-1.414 1.415l-3.85-3.85a1 1 0 0 1 0-1.415z"/>
 									<path fill-rule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"/>
@@ -91,12 +82,12 @@
 				           		<span class="focus-input100"></span>
 				           	</div>
 				           	<div class="info txt1 myP">
-                                	證照失效日 <span>*</span>
+                                	證照失效日<span style="color: #3b97ff;">*</span>
                                 <div class="add-note">
                                     <span>若證照有失效日期，請於下列日期欄位輸入</span>
                                 </div>
                            	</div>
-				           	<div class="wrap-input100">
+				           	<div class="wrap-input100 date-div">
 				           		<input class="input100" type="date" name="licEXP" placeholder="證照到期日" style="margin-top:0">
 				           		<span class="focus-input100"></span>
 				           	</div>
@@ -107,7 +98,7 @@
 					       	<div class="wrap-input100 myP">
 					           	<label class="myLabel">
 					           		<span class="txt1 myP uploadTXT info">上傳寵物相關證照</span>
-					           		<img src="${path}/img/upload.svg" class="myUpload">
+					           		<img src="${pageContext.request.contextPath}/front-end/img/upload.svg" class="myUpload">
 					           		<input class="myFile" type="file" name="licPic" style="display:none">
 					           	</label>
 					       	</div>
@@ -205,6 +196,9 @@
       	   $(".remove").addClass("hideDiv");
        });
 
+       $(".date-div").click(function(){
+    	   $("[name='licEXP']").click();
+       });
 	}
     window.onload = init;
     </script>

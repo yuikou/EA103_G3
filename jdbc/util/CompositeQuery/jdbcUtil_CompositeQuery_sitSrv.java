@@ -45,19 +45,27 @@ public class jdbcUtil_CompositeQuery_sitSrv {
 	public static String get_WhereCondition(Map<String, String[]> map) {
 		Set<String> keys = map.keySet();
 		StringBuffer whereCondition = new StringBuffer();
-		int count = 0;
+		String orderBy = " order by ";
 		for (String key : keys) {
 			String value = map.get(key)[0];
 			if (value != null && value.trim().length() != 0	&& !"action".equals(key)) {
-				count++;
-				String aCondition = get_aCondition_For_Oracle(key, value.trim());
-
-				whereCondition.append(aCondition);
-
+				
+				if("orderBy".equals(key)) {
+					if("priceLower".equals(value)) {
+						orderBy = " order by srvFee";
+					}else {
+						orderBy += value + " DESC";
+					}
+				} else {
+					String aCondition = get_aCondition_For_Oracle(key, value.trim());
+					whereCondition.append(aCondition);
+				}
 			}
 		}
-		
-		return whereCondition.toString();
+		if(orderBy.length() >10)
+			return whereCondition.append(orderBy).toString();
+		else
+			return whereCondition.toString();
 	}
 
 	public static void main(String argv[]) {

@@ -38,6 +38,7 @@ public class SitOrderJDBCDAO implements SitOrderDAO_interface{
 	
 	private static final String GETALL_PSTMT = "SELECT * FROM sitOrder";
 	
+	private static final String COUNT_AVG_STAR = "SELECT SUM(commStar)/COUNT(commStar) FROM sitOrder WHERE sitNo = ? AND commStar > 0";
 	
 	@Override
 	public void insert(SitOrderVO sitOrderVO) {
@@ -263,7 +264,6 @@ public class SitOrderJDBCDAO implements SitOrderDAO_interface{
 				sitOrderVO.setSitComm(rs.getString("sitComm"));
 				sitOrderVO.setPickupFrom(rs.getString("pickupFrom"));
 				sitOrderVO.setPickupTo(rs.getString("pickupTo"));
-
 			}
 
 		} catch (ClassNotFoundException e) {
@@ -590,7 +590,65 @@ public class SitOrderJDBCDAO implements SitOrderDAO_interface{
 			}
 		}
 	}
+	
+	
+	@Override
+	public Double countAvgStar(String sitNo) {
+		
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		Double starred = 0.0;
+		
+		try {
+			
+			Class.forName(driver);
+			con = DriverManager.getConnection(url, userid, pwd);
+			pstmt = con.prepareStatement(COUNT_AVG_STAR);
+			
+			pstmt.setString(1, sitNo);
+			rs = pstmt.executeQuery();
 
+			while (rs.next()) {
+				starred = rs.getDouble(1);
+			}
+			
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException("Couldn't load database driver. "
+					+ e.getMessage());
+		} catch (SQLException se) {
+			throw new RuntimeException("A database error occured. "
+					+ se.getMessage());
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
+		
+		return starred;
+	}
+
+	
+	
+	
 	public static void main(String[] args) {
 
 		SitOrderJDBCDAO dao = new SitOrderJDBCDAO();
@@ -716,32 +774,39 @@ public class SitOrderJDBCDAO implements SitOrderDAO_interface{
 //			System.out.println(sitOrder.getPickupTo());
 //			System.out.println();
 //		}
+//		
+//		SitOrderVO sitOrderVO = new SitOrderVO();
+//		sitOrderVO.setMemNo("M003");
+//		sitOrderVO.setSitNo("S002");
+//		sitOrderVO.setSitSDate(java.sql.Date.valueOf("2016-01-01"));
+//		sitOrderVO.setSitEDate(java.sql.Date.valueOf("2016-01-01"));
+//		sitOrderVO.setTotalPrice(200);
+//		sitOrderVO.setOrderStatus(3);
+//		sitOrderVO.setRefund(200);
+//		sitOrderVO.setCoupon(0);
+//		sitOrderVO.setCommStar(4);
+//		sitOrderVO.setSitComm("good");
+//		sitOrderVO.setPickupFrom("Chie Ding");
+//		sitOrderVO.setPickupTo("Jia Li");
+//		
+//		List<SitODetailVO> list = new ArrayList<SitODetailVO>();
+//		SitODetailVO sitODetailVO = new SitODetailVO();
+//		sitODetailVO.setSitSrvNo("SS002");
+//		sitODetailVO.setPetNo("P00012");
+//		sitODetailVO.setSitOpPrice(250);
+//		sitODetailVO.setSitSrvTimes(1);
+//		sitODetailVO.setSitSrvUnit("คั");
+//		
+//		list.add(sitODetailVO);
+//		
+//		dao.insertWithODetail(sitOrderVO, list);
 		
-		SitOrderVO sitOrderVO = new SitOrderVO();
-		sitOrderVO.setMemNo("M003");
-		sitOrderVO.setSitNo("S002");
-		sitOrderVO.setSitSDate(java.sql.Date.valueOf("2016-01-01"));
-		sitOrderVO.setSitEDate(java.sql.Date.valueOf("2016-01-01"));
-		sitOrderVO.setTotalPrice(200);
-		sitOrderVO.setOrderStatus(3);
-		sitOrderVO.setRefund(200);
-		sitOrderVO.setCoupon(0);
-		sitOrderVO.setCommStar(4);
-		sitOrderVO.setSitComm("good");
-		sitOrderVO.setPickupFrom("Chie Ding");
-		sitOrderVO.setPickupTo("Jia Li");
 		
-		List<SitODetailVO> list = new ArrayList<SitODetailVO>();
-		SitODetailVO sitODetailVO = new SitODetailVO();
-		sitODetailVO.setSitSrvNo("SS002");
-		sitODetailVO.setPetNo("P00012");
-		sitODetailVO.setSitOpPrice(250);
-		sitODetailVO.setSitSrvTimes(1);
-		sitODetailVO.setSitSrvUnit("คั");
+//		String sitNo = "S002";
+//		System.out.println(dao.countAvgStar(sitNo));
 		
-		list.add(sitODetailVO);
-		
-		dao.insertWithODetail(sitOrderVO, list);
 	}
+
+
 
 }

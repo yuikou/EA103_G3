@@ -16,5 +16,7 @@ public interface SitOrderDAO_interface {
 	public Set<SitOrderVO> getByFK_sitNo(String sitNo);
 	public List<SitOrderVO> getAll();
 	
+	public Double countAvgStar(String sitNo); //取得評價總人數量
+	
 	public void insertWithODetail(SitOrderVO sitOrderVO , List<SitODetailVO> list);	
 }

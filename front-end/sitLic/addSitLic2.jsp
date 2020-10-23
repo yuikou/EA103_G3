@@ -12,7 +12,6 @@
 <TITLE>新增證書</TITLE>
 
 <!-- 匯入外部CSS -->
-<c:set var="path" value="${pageContext.request.contextPath}/front-end" />
 <c:set var="cssPath" value="${pageContext.request.contextPath}/css/euphy" />
 <link rel="stylesheet" type="text/css" href="${cssPath}/bootstrap.min.css">    
 <link rel="stylesheet" type="text/css" href="${cssPath}/Main.css">
@@ -46,7 +45,7 @@
 				        <span class="focus-input100"></span>
 				    </div>
 				    <div class="info txt1 myP">
-                    	證照失效日 <span>*</span>
+                    	證照失效日 <span style="color: #3b97ff;">*</span>
                     	<div class="add-note">
                     		<span>若證照有失效日期，請於下列日期欄位輸入</span>
                     	</div>
@@ -62,7 +61,7 @@
 					<div class="wrap-input100 myP">
 					   	<label class="myLabel">
 					   		<span class="txt1 myP uploadTXT info">上傳寵物相關證照</span>
-					       	<img src="${path}/img/upload.svg" class="myUpload">
+					       	<img src="${pageContext.request.contextPath}/front-end/img/upload.svg" class="myUpload">
 					       	<input class="myFile" type="file" name="licPic" style="display:none">
 					   	</label>
 					</div>
@@ -131,12 +130,6 @@
                       	}
                		}
             	}
-                        //e.target.value = ''
-                        /*
-                        	解決input type=file 同一個檔案二次上傳無效的問題!
-                        	使用input[type=file]的檔案上傳功能，是通過onchange事件觸發js程式碼, 如果兩次檔案是重複的，所以這個時候onchange事件是沒有觸發到的。解決方法 :  把input的value設定為空
-                        	!!! 這樣Part就取不到了
-                        */
            });
        }
                 

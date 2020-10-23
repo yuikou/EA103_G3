@@ -12,7 +12,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.sitOffDay.model.*;
-import com.sitSrv.model.SitSrvVO;
 
 @WebServlet("/sitOffDay/sitOffDay.do")
 public class SitOffDayServlet extends HttpServlet {
@@ -312,7 +311,6 @@ public class SitOffDayServlet extends HttpServlet {
 					RequestDispatcher sucessView = req.getRequestDispatcher(url);
 					sucessView.forward(req, res);
 				}
-				// 如果是新增訂單，do nothing
 				
 			/***************************其他可能的錯誤處理*************************************/
 			} catch (Exception e) {
@@ -533,15 +531,13 @@ public class SitOffDayServlet extends HttpServlet {
 					jsonObj.put("offTime", sodVO.getOffTime());
 					sodList.put(jsonObj);
 				}
-				System.out.println("寫出sodList=" + sodList);
 				out.print(sodList);
+				System.out.println("寫出sodList=" + sodList);
+				out.close();
 				
 			/***************************其他可能的錯誤處理*************************************/
 			} catch (Exception e) {
 				e.printStackTrace();
-//				errorMsgs.add(e.getMessage());
-//				RequestDispatcher failureView = req.getRequestDispatcher("showOneSrvDay.jsp");
-//				failureView.forward(req, res);
 				out.write("error：" + e.getMessage());
 			}
 		}
