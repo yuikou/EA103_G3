@@ -13,15 +13,21 @@ public class SalonJDBCDAO implements SalonDAO_interface {
 	String userid = "EA103G3";
 	String passwd = "123456";
 
-	private static final String INSERT_STMT = "INSERT INTO SALON(SALNO,SALNAME,SALOWNER,SALPH,SALMAIL,SALCITY,SALDIST,SALADR,SALAC,SALPW,SALSTIME,SALETIME,SALREMIT,BANKCODE,SALSTATUS,SALINFO,SALPETTYPE,SALCERTIF) VALUES('B' || lpad(SALNO_SEQ.NEXTVAL,3,'0'),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-	private static final String DELETE = "DELETE FROM SALON WHERE SALNO = ?";
-	private static final String UPDATE = "UPDATE SALON SET salname=?, salowner=?, salph=? , salmail=?,SALCITY=?,SALDIST=?, saladr=?, salac=?, salpw=? , salstime=?, saletime=?, salremit=?, bankcode=?, salstatus=?, salinfo=?,SALPETTYPE=? WHERE salno=?";
-	private static final String GET_ALL_STMT = "SELECT SALNO,SALNAME,SALOWNER,SALPH,SALMAIL,SALCITY,SALDIST,SALADR,SALAC,SALPW,SALSTIME,SALETIME,SALREMIT,BANKCODE,SALSTATUS,SALTOTALSCORE,SALINFO,SALPETTYPE FROM SALON ORDER BY SALNO";
-	private static final String GET_ONE_STMT = "SELECT SALNO,SALNAME,SALOWNER,SALPH,SALMAIL,SALCITY,SALDIST,SALADR,SALAC,SALPW,SALSTIME,SALETIME,SALREMIT,BANKCODE,SALSTATUS,SALINFO,SALPETTYPE FROM SALON  WHERE SALNO = ?";
-	private static final String LOGIN = "SELECT salac FROM salon WHERE salac=? AND salpw=?";
-	private static final String GET_BY_SEARCH = "SELECT * FROM SALON WHERE salCity=? AND salDist=? AND salPetType=? ORDER BY salTotalScore";
+	private static final String INSERT_STMT = 
+			"INSERT INTO SALON(SALNO,SALNAME,SALOWNER,SALPH,SALMAIL,SALCITY,SALDIST,SALADR,SALAC,SALPW,SALSTIME,SALETIME,SALREMIT,BANKCODE,SALSTATUS,SALINFO,SALPETTYPE,SALCERTIF) VALUES('B' || lpad(SALNO_SEQ.NEXTVAL,3,'0'),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	private static final String DELETE = 
+			"DELETE FROM SALON WHERE SALNO = ?";
+	private static final String UPDATE = 
+			"UPDATE SALON SET salname=?, salowner=?, salph=? , salmail=?,SALCITY=?,SALDIST=?, saladr=?, salac=?, salpw=? , salstime=?, saletime=?, salremit=?, bankcode=?, salstatus=?, salinfo=?,SALPETTYPE=? WHERE salno=?";
+	private static final String GET_ALL_STMT = 
+			"SELECT SALNO,SALNAME,SALOWNER,SALPH,SALMAIL,SALCITY,SALDIST,SALADR,SALAC,SALPW,SALSTIME,SALETIME,SALREMIT,BANKCODE,SALSTATUS,SALINFO,SALPETTYPE FROM SALON ORDER BY SALNO";
+	private static final String GET_ONE_STMT = 
+			"SELECT SALNO,SALNAME,SALOWNER,SALPH,SALMAIL,SALCITY,SALDIST,SALADR,SALAC,SALPW,SALSTIME,SALETIME,SALREMIT,BANKCODE,SALSTATUS,SALINFO,SALPETTYPE FROM SALON  WHERE SALNO = ?";
+	private static final String LOGIN = 
+			"SELECT salac FROM salon WHERE salac=? AND salpw=?";
+	private static final String GET_BY_SEARCH = 
+			"SELECT * FROM SALON WHERE salCity=? AND salDist=? AND salPetType=? ORDER BY salTotalScore";
 
-	
 	@Override
 	public void insert(SalonVO salonVO) {
 		Connection con = null;
@@ -198,8 +204,8 @@ public class SalonJDBCDAO implements SalonDAO_interface {
 				salonVO.setSalStatus(rs.getInt("salStatus"));
 				salonVO.setSalInfo(rs.getString("salInfo"));
 				salonVO.setSalPetType(rs.getInt("salPetType"));
-				salonVO.setSalTotalScore(rs.getInt("salTotalScore"));
-				salonVO.setSalCertif(rs.getBytes("salCertif"));
+				salonVO.setSalTotalScore(rs.getInt("salTotalScore"));	
+				salonVO.setSalCertif(rs.getBytes("salCertif"));	
 				salonVO.setSalTotalCount(rs.getInt("salTotalCount"));
 
 				list.add(salonVO);
@@ -401,6 +407,86 @@ public class SalonJDBCDAO implements SalonDAO_interface {
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
+	@Override	
+	public List<SalonVO> findByCondition(String salCity, String salDist, Integer salPetType) {	
+		Connection con = null;	
+		PreparedStatement pstmt = null;	
+		ResultSet rs = null;	
+			
+		List<SalonVO> list = new ArrayList<SalonVO>();	
+		SalonVO salonVO = null;	
+//		SELECT * FROM SALON WHERE salCity=? AND salDist=? AND salPetType=? ORDER BY salTotalScore";	
+		try {	
+			Class.forName(driver);	
+			con = DriverManager.getConnection(url, userid, passwd);	
+			pstmt = con.prepareStatement(GET_BY_SEARCH);	
+				
+			pstmt.setString(1, salCity);	
+			pstmt.setString(2, salDist);	
+			pstmt.setInt(3, salPetType);	
+				
+			rs = pstmt.executeQuery();	
+			while (rs.next()) {	
+				salonVO = new SalonVO();	
+				salonVO.setSalNo(rs.getString("salNo"));	
+				salonVO.setSalName(rs.getString("salName"));	
+				salonVO.setSalOwner(rs.getString("salOwner"));	
+				salonVO.setSalPic(rs.getBytes("salPic"));	
+				salonVO.setSalPh(rs.getString("salPh"));	
+				salonVO.setSalMail(rs.getString("salMail"));	
+				salonVO.setSalCity(rs.getString("salCity"));	
+				salonVO.setSalDist(rs.getString("salDist"));	
+				salonVO.setSalAdr(rs.getString("salAdr"));	
+				salonVO.setSalAc(rs.getString("salAc"));	
+				salonVO.setSalPw(rs.getString("salPw"));	
+				salonVO.setSalSTime(rs.getString("salSTime"));	
+				salonVO.setSalETime(rs.getString("salETime"));	
+				salonVO.setSalRemit(rs.getString("salRemit"));	
+				salonVO.setBankCode(rs.getString("bankCode"));	
+				salonVO.setSalStatus(rs.getInt("salStatus"));	
+				salonVO.setSalInfo(rs.getString("salInfo"));	
+				salonVO.setSalPetType(rs.getInt("salPetType"));	
+				salonVO.setSalTotalScore(rs.getInt("salTotalScore"));	
+				salonVO.setSalCertif(rs.getBytes("salCertif"));	
+				salonVO.setSalTotalCount(rs.getInt("salTotalCount"));	
+				list.add(salonVO);	
+					
+//				System.out.println(salonVO);	
+			}	
+		} catch (ClassNotFoundException e) {	
+			throw new RuntimeException("Couldn't load database driver. " + e.getMessage());	
+			// Handle any SQL errors	
+		} catch (SQLException se) {	
+			throw new RuntimeException("A database error occured. " + se.getMessage());	
+			// Clean up JDBC resources	
+		} finally {	
+			if (rs != null) {	
+				try {	
+					rs.close();	
+				} catch (SQLException se) {	
+					se.printStackTrace(System.err);	
+				}	
+			}	
+			if (pstmt != null) {	
+				try {	
+					pstmt.close();	
+				} catch (SQLException se) {	
+					se.printStackTrace(System.err);	
+				}	
+			}	
+			if (con != null) {	
+				try {	
+					con.close();	
+				} catch (Exception e) {	
+					e.printStackTrace(System.err);	
+				}	
+			}	
+		}	
+		return list;	
+		
+	}	
+
 
 	
 
@@ -409,35 +495,34 @@ public class SalonJDBCDAO implements SalonDAO_interface {
 		SalonJDBCDAO dao = new SalonJDBCDAO();
 
 		// 新增
-//		SalonVO salVO1 = new SalonVO();
-//		salVO1.setSalName("腳丫星球毛孩生活館");
-//		salVO1.setSalOwner("小小吳");
-//		salVO1.setSalPh("0226933008");
-//		salVO1.setSalMail("abc5412@hotmail.com");
-//		salVO1.setSalCity("桃園市");
-//		salVO1.setSalDist("桃園區");
-//		salVO1.setSalAdr("康寧街409號");
-//		salVO1.setSalAc("ijk6654");
-//		salVO1.setSalPw("ijk6654");
-//		salVO1.setSalSTime("1000");
-//		salVO1.setSalETime("2000");
-//		salVO1.setSalRemit("1234-51123");
-//		salVO1.setBankCode("055");
-//		salVO1.setSalStatus(1);
-//		salVO1.setSalInfo("專業摩氧浴、頂級精油SPA，腳丫星球不只是一間寵物美容，更希望可以由內而外的照顧你捧在手心上的孩子。");
-//		salVO1.setSalPetType(1);
-//		byte[] pic = null;
-		
-		dao.findByCondition("桃園市", "桃園區", 1);
-//		try {
-//			pic = getPictureByteArray("WebContent/dog1.jpg");
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		salVO1.setSalCertif(pic);
-//		dao.insert(salVO1);
-//		System.out.println("新增成功");
+		SalonVO salVO1 = new SalonVO();
+		salVO1.setSalName("腳丫星球毛孩生活館");
+		salVO1.setSalOwner("小小吳");
+		salVO1.setSalPh("0226933008");
+		salVO1.setSalMail("abc5412@hotmail.com");
+		salVO1.setSalCity("新北市");
+		salVO1.setSalDist("汐止區");
+		salVO1.setSalAdr("康寧街409號");
+		salVO1.setSalAc("ijk6654");
+		salVO1.setSalPw("ijk6654");
+		salVO1.setSalSTime("1000");
+		salVO1.setSalETime("2000");
+		salVO1.setSalRemit("1234-51123");
+		salVO1.setBankCode("055");
+		salVO1.setSalStatus(1);
+		salVO1.setSalInfo("專業摩氧浴、頂級精油SPA，腳丫星球不只是一間寵物美容，更希望可以由內而外的照顧你捧在手心上的孩子。");
+		salVO1.setSalPetType(1);
+		byte[] pic = null;
+//		dao.findByCondition("桃園市", "桃園區", 1);
+		try {
+			pic = getPictureByteArray("WebContent/dog1.jpg");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		salVO1.setSalCertif(pic);
+		dao.insert(salVO1);
+		System.out.println("新增成功");
 
 		// 修改
 //	SalonVO salVO2 = new SalonVO();
@@ -507,87 +592,4 @@ public class SalonJDBCDAO implements SalonDAO_interface {
 //	System.out.println(salVO3.getSalInfo() + ",");
 //	System.out.println(salVO3.getSalPetType() + ",");
 	}
-
-	@Override
-	public List<SalonVO> findByCondition(String salCity, String salDist, Integer salPetType) {
-		Connection con = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		
-		List<SalonVO> list = new ArrayList<SalonVO>();
-		SalonVO salonVO = null;
-//		SELECT * FROM SALON WHERE salCity=? AND salDist=? AND salPetType=? ORDER BY salTotalScore";
-		try {
-			Class.forName(driver);
-			con = DriverManager.getConnection(url, userid, passwd);
-			pstmt = con.prepareStatement(GET_BY_SEARCH);
-			
-			pstmt.setString(1, salCity);
-			pstmt.setString(2, salDist);
-			pstmt.setInt(3, salPetType);
-			
-			rs = pstmt.executeQuery();
-
-			while (rs.next()) {
-				salonVO = new SalonVO();
-				salonVO.setSalNo(rs.getString("salNo"));
-				salonVO.setSalName(rs.getString("salName"));
-				salonVO.setSalOwner(rs.getString("salOwner"));
-				salonVO.setSalPic(rs.getBytes("salPic"));
-				salonVO.setSalPh(rs.getString("salPh"));
-				salonVO.setSalMail(rs.getString("salMail"));
-				salonVO.setSalCity(rs.getString("salCity"));
-				salonVO.setSalDist(rs.getString("salDist"));
-				salonVO.setSalAdr(rs.getString("salAdr"));
-				salonVO.setSalAc(rs.getString("salAc"));
-				salonVO.setSalPw(rs.getString("salPw"));
-				salonVO.setSalSTime(rs.getString("salSTime"));
-				salonVO.setSalETime(rs.getString("salETime"));
-				salonVO.setSalRemit(rs.getString("salRemit"));
-				salonVO.setBankCode(rs.getString("bankCode"));
-				salonVO.setSalStatus(rs.getInt("salStatus"));
-				salonVO.setSalInfo(rs.getString("salInfo"));
-				salonVO.setSalPetType(rs.getInt("salPetType"));
-				salonVO.setSalTotalScore(rs.getInt("salTotalScore"));
-				salonVO.setSalCertif(rs.getBytes("salCertif"));
-				salonVO.setSalTotalCount(rs.getInt("salTotalCount"));
-
-				list.add(salonVO);
-				
-//				System.out.println(salonVO);
-			}
-		} catch (ClassNotFoundException e) {
-			throw new RuntimeException("Couldn't load database driver. " + e.getMessage());
-			// Handle any SQL errors
-		} catch (SQLException se) {
-			throw new RuntimeException("A database error occured. " + se.getMessage());
-			// Clean up JDBC resources
-		} finally {
-			if (rs != null) {
-				try {
-					rs.close();
-				} catch (SQLException se) {
-					se.printStackTrace(System.err);
-				}
-			}
-			if (pstmt != null) {
-				try {
-					pstmt.close();
-				} catch (SQLException se) {
-					se.printStackTrace(System.err);
-				}
-			}
-			if (con != null) {
-				try {
-					con.close();
-				} catch (Exception e) {
-					e.printStackTrace(System.err);
-				}
-			}
-		}
-		return list;
-	
-	}
-
-
 }

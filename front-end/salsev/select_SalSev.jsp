@@ -5,10 +5,14 @@
 
 <%
 	SalVService svSvc = new SalVService();
-String salno = (session.getAttribute("salno")).toString();
-List<SalsevVO> list = svSvc.getAll(salno);
-pageContext.setAttribute("list", list);
+session = request.getSession();
+session.setAttribute("salNo","B001");//測試用
+session.setAttribute("memNo","M005");//測試用
+	String salno = (session.getAttribute("salNo")).toString();
+	List<SalsevVO> list = svSvc.getAll(salno);
+	pageContext.setAttribute("list", list);
 %>
+
 
 <!DOCTYPE html>
 <html>
@@ -23,9 +27,9 @@ pageContext.setAttribute("list", list);
 	crossorigin="anonymous">
 <!-- 匯入外部CSS -->
 <link rel="stylesheet" type="text/css"
-	href="<%=request.getContextPath()%>/css/index.css">
+	href="<%=request.getContextPath()%>/css/liz/index.css">
 <link rel="stylesheet" type="text/css"
-	href="<%=request.getContextPath()%>/css/groomer.css">
+	href="<%=request.getContextPath()%>/css/liz/groomer.css">
 <link rel="Shortcut Icon" type="image/x-icon"
 	href="https://dzmg8959fhe1k.cloudfront.net/all/favicon.ico">
 <title>選擇服務項目</title>
@@ -73,7 +77,7 @@ pageContext.setAttribute("list", list);
 		</div>
 	</div>
 	<!-- 此處include footer -->
-	<script src="<%=request.getContextPath()%>/js/util.js"></script>
+	<script src="<%=request.getContextPath()%>/js/liz/util.js"></script>
 
 </body>
 </html>

@@ -1,0 +1,507 @@
+        * {
+            /*眕狟俴壺罜蕼偞齬唳*/
+            margin: 0px;
+            padding: 0px;
+            list-style: none;
+            box-sizing: border-box;
+            font-family: 'Montserrat', 峚�絭w, sans-serif;
+        }
+        body {
+            /*鋒桴菁伎-譙啞伎*/
+            background-color: rgba(252, 244, 217, 0.7);
+        }
+        /* 眕狟岆騷啄 */
+        .myNav {
+            /*騷啄菁伎-芅閡伎*/
+            background-color: #A8DADC !important;
+            height: 80px;
+            width: 100%;
+            /*騷啄蕾闚��*/
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+            /*饜磁RWD旌轎變唳*/
+            padding: 0px;
+            /*旌轎虳峚諾炩*/
+            top: -1px;
+        }
+        /* logo */
+        .myNav .mylogo {
+            /* logo祥猁怮蕞�� */
+            margin-left: 50px;
+            /*logo size*/
+            width: 100px;
+            height: 80px;
+        }
+        .myNav .mylogoWord {
+            /*logoWord size*/
+            width: 200px;
+            height: 80px;
+        }
+        /* 騷啄狟嶺腢 */
+        .myUndeLine {
+            /* 腢嶲擒 */
+            margin-right: 5px;
+        }
+        .myUndeLine li {
+            width: 150px;
+            /* 螛紲腢�� */
+            height: 60px;
+            /* �� */
+            /* height: 300px; */
+            overflow: hidden;
+            /* 蕞菁掀廌藝罠 */
+            margin-top: 20px;
+            /* 窣磐恅趼离笢 */
+            text-align: center;
+        }
+        .myUndeLine li:hover {
+            /* 鞞尨腢�� */
+            height: auto;
+            color: #457b9d !important;
+        }
+        /* 捼淕菴珨�腔腢墿僅 */
+        .myUndeLine li .myFirst {
+            margin-bottom: 4px;
+        }
+        /*狟嶺腢*/
+        .morelink {
+            /* 腢奻狟嶲擒 */
+            padding-bottom: 15px;
+            display: block;
+            background-color: #A8DADC !important;
+        }
+
+        /* 騷啄閉窣磐恅趼 */
+        .myNavDiv li a {
+            /*恅趼��-緉啞伎ㄛ�做訰�-旮芅伎*/
+            color: #F1FAEE !important;
+            text-shadow: 1px 1px 3px #457b9d;
+            font-size: 22px;
+            font-weight: bold;
+            padding-top: 15px;
+        }
+        .myNavDiv li a:hover {
+            /*恅趼��-旮芅伎ㄛ�做訰�-芅伎*/
+            color: #457b9d !important;
+            text-shadow: 1px 1px 1px #A8DADC;
+        }
+        /*蜊荎恅*/
+        .myUndeLine a:hover .ch-word {
+            display: none;
+            /* left: -999em; */
+        }
+        .en-word {
+            display: none;
+        }
+        .myUndeLine a:hover .en-word {
+            display: block;
+        }
+        /* 眕奻岆騷啄垀衄腔狟嶺腢 */
+
+        /*腎偌漃*/
+        .collapse .myBtn {
+            /*痄壺垀衄蕼偞*/
+            border: none;
+            outline: none;
+            -webkit-appearance: none;
+            /* Safari 睿 Chromeㄛ都蚚黺iOS狟痄壺膘宒 */
+            -moz-appearance: none;
+            /* FireFox */
+            appearance: none;
+            /*眕奻痄壺垀衄button蕼偞*/
+
+            color: #fff;
+            background-color: #FAA307;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bolder;
+            /*湮苤弇离*/
+            width: 100px;
+            padding: 2px;
+            margin: 10px 50px 0px 10px;
+            /*扷*/
+            cursor: pointer;
+            /*褒*/
+            border-radius: 7px;
+
+            /*晊腷��*/
+            transition-duration: 0.2s;
+            overflow: hidden;
+        }
+        .collapse .myBtn:hover {
+            color: #FF7260 !important;
+            background-color: #fff;
+            text-shadow: 1px 1px 2px #fff;
+            box-shadow: 0px 2px 5px #97B1BF;
+        }
+        .myBtn:active, .myBtn:focus {
+            color: #fff !important;
+            background-color: #FF7260;
+        }
+        /* 眕奻岆腎偌漃 */
+
+        /*忑��偞隅*/
+        .myBanner {
+            margin: 40px auto;
+            width: 95%;
+        }
+        .myBanner ol {
+            position: relative;
+            top: 700px;
+        }
+        .myImg {
+            height: 720px;
+            background-size: cover !important;
+        }
+        .myPrev, .myNext {
+            margin-top: 40px;
+            height: 720px;
+        }
+        /*寶荂*/
+        .petfooter {
+            height: 140px;
+            text-align: center;
+            overflow: hidden;
+        }
+        .petfooter img {
+            opacity: 0;
+            margin: 10px auto;
+            position: relative;
+        }
+        .petfooter .pf1 {
+            animation: footer 3s ease-in-out 0s infinite forwards;
+            transform: rotate(150deg);
+        }
+        .petfooter .pf2 {
+            animation: footer 3s ease-in-out 1s infinite forwards;
+            transform: rotate(120deg);
+            top: 25px;
+            left: 20px;
+        }
+        .petfooter .pf3 {
+            animation: footer 3s ease-in-out 2s infinite forwards;
+            transform: rotate(150deg);
+            top: 75px;
+            left: -110px;
+        }
+        /*寶荂��*/
+        @keyframes footer {
+            0% {
+                opacity: 0;
+            }
+            50% {
+                opacity: 0.5;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+        /*眕奻忑��偞隅
+
+        /*body偞隅*/
+        /*諦督謐毞弅偌漃*/
+        .qaicon {
+            position: fixed;
+            bottom: 20px;
+            margin: auto;
+            right: 10px;
+            z-index: 9;
+        }
+        .qaicon img {
+            width: 80px;
+            height: 80px;
+        }
+        /*眕奻諦督謐毞弅偌漃*/
+        /* 跪蹈H1觳 */
+        .myH1 {
+            color: #FF7A5A;
+            font-weight: 900;
+            margin: 40px auto;
+        }
+        .row2, .row3, .row4 {
+            margin-top: 60px;
+            padding: 10px;
+            text-align: center;
+        }
+        .row4 h1 {
+            margin-top: 150px;
+        }
+        /*眕狟岆督苤縐*/
+        .card {
+/*             display: inline-block; */
+            margin: 30px 25px;
+            box-shadow: 0 4px 8px 0 rgba(29, 53, 87, 0.2);
+            transition: 0.3s;
+/*             width: 40%; */
+        }
+        .card:hover {
+            transform: translateY(-1rem);
+        }
+        /*眕狟岆誑*/
+        .myBox {
+            z-index: 5;
+        }
+        /*誑湮*/
+        .myBox {
+            overflow: hidden;
+        }
+        .myBox img {
+            height: 360px;
+            /* �霽鯗完� */
+            transform: scale(1, 1);
+            transition: all 1s ease-out;
+            z-index: 1;
+        }
+        .myBox:hover img {
+            /* �菩完� */
+            filter: brightness(0.7);
+            /* �霽鯗完� */
+            transition: all 0.8s;
+            transform: scale(1.2, 1.2);
+        }
+        /* 誑螹ㄛ�樓奻�� */
+        .myBox figcaption {
+            display: none;
+            text-align: center;
+            color: #aaa;
+            text-shadow: 2px 2px 2px #fff;
+            transition: all 1.5s;
+            font-size: 24px;
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        .myBlog, .myEvent {
+            box-shadow: 7px 4px 18px 2px rgba(29, 53, 87, 0.2);
+            background-color: #fff;
+            padding: 30px 50px;
+            height: 360px !important;
+        }
+        /*誑窣磐*/
+        h2 {
+            font-weight: 900;
+            color: #1D3557;
+        }
+        h5 {
+            color: #505050;
+            margin: 20px 0;
+        }
+        .text ul {
+            list-style-type: none;
+        }
+        .text li {
+            padding-top: 10px;
+            text-align: left;
+        }
+        .separate {
+            width: 100%;
+            height: 180px;
+        }
+        /* 眕奻岆誑 */
+
+        /* 豢 */
+        .ad img {
+            width: 240px;
+            height: 160px;
+            margin: 15px 15px;
+        }
+        .cutePage {
+            height: 120px;
+            vertical-align: center;
+        }
+        .page {
+            width: 40px;
+            height: 40px;
+            display: inline-block;
+            margin: 10px;
+        }
+        /*眕奻body偞隅*/
+
+        /*眕狟footer偞隅*/
+        .main-footer {
+            background-color: #264653;
+            color: #fff;
+            padding-top: 30px;
+            padding-bottom: 15px;
+        }
+        .myFooterContainer ul {
+            list-style-type: none;
+            margin: 5px auto;
+            padding: 0px;
+            text-align: center;
+        }
+        .myFooterContainer ul li {
+            margin-top: 20px;
+        }
+        .myFooterLink {
+            text-decoration: none;
+            color: #fff;
+        }
+        .myFooterLink:hover {
+            text-decoration: none;
+            color: #fff;
+            text-shadow: 0.1em 0.1em 0.2em rgba(0, 0, 0, 0.5);
+        }
+        /*唳趼*/
+        .copyright {
+            color: #000;
+            margin: 10px 0px 0px 0px;
+        }
+        /*�X����*/
+        @media (min-width: 992px) {
+            /* 狟嶺腢湮�遘葍� */
+            .myUndeLine {
+                height: 80px;
+                border-bottom: 5px solid #A8DADC;
+            }
+            .myUndeLine:hover {
+                border-bottom: 5px solid #457b9d;
+            }
+            .myBlog, .myEvent {
+                width: 540px;
+                height: 360px;
+                /*眈弇离*/
+                z-index: 5;
+                position: relative;
+                top: 100px;
+                left: -70px;
+            }
+            .row3 {
+                margin-top: 20px;
+            }
+            .row3 h1 {
+                margin: 40px 0px 60px 0px;
+            }
+        }
+        /* 啣﹜忒脹笢�� */
+        @media (max-width: 991px) {
+            /*忒祥溫logo*/
+            .myNav .mylogo {
+                display: none;
+            }
+            /*惜狟嶺*/
+            .myNavDiv {
+                background-color: rgba(168, 218, 220, 0.5);
+                text-align: center;
+            }
+            /* 惜狟嶺摽腔腢遺遺 */
+            .myUndeLine li {
+                width: 80%;
+                margin: 0 auto;
+            }
+            .myUndeLine li:hover {
+                margin: 0 auto;
+                border: 1px solid rgba(69, 123, 157, 0.7);
+            }
+            /*狟嶺腢*/
+            .morelink {
+                /* 腢奻狟嶲擒 */
+                padding-bottom: 5px;
+                display: block;
+                background-color: transparent !important;
+            }
+            .myUndeLine li a:hover {
+                background-color: rgba(168, 218, 220, 0.6) !important;
+            }
+            /*banner*/
+            .myImg {
+                height: 650px;
+                background-size: cover !important;
+            }
+            .myBanner ol {
+                position: relative;
+                top: 650px;
+            }
+            /*腎偌漃*/
+            .collapse .myBtn {
+                margin: 15px auto;
+            }
+            .collapsing .myBtn {
+                margin: 15px auto;
+                overflow: hidden;
+
+                color: #fff;
+                background-color: #FAA307;
+                text-align: center;
+                font-size: 20px;
+                font-weight: bolder;
+                /*湮苤弇离*/
+                width: 100px;
+                padding: 2px;
+                /*褒*/
+                border-radius: 7px;
+
+                /*痄壺垀衄蕼偞*/
+                border: none;
+                outline: none;
+            }
+            /*眕奻腎偌漃*/
+            .myBox {
+                padding: 0px;
+            }
+            .myBox img {
+                max-height: 100%;
+                width: auto;
+                overflow: hidden;
+                object-fit: cover;
+            }
+            .myBlog, .myEvent {
+                box-shadow: 7px 4px 18px 2px rgba(29, 53, 87, 0.2);
+                background-color: #FFF;
+                padding-top: 15px;
+                overflow: hidden;
+            }
+            h5 {
+                display: none;
+            }
+            .text ul {
+                padding-left: 0px;
+            }
+            .separate {
+                width: 100%;
+                height: 50px;
+            }
+            .row4 h1 {
+                margin-top: 40px;
+            }
+        }
+        /*忒RWD*/
+        @media (max-width: 767.98px) {
+            /* banner */
+            .myImg {
+                height: 680px;
+                background-size: cover !important;
+            }
+            .row2, .row3, .row4 {
+                margin-top: 40px;
+            }
+            .row3 h1 {
+                margin: 20px 0px 60px 0px;
+            }
+            .row4 h1 {
+                margin-top: 40px;
+            }
+            /*眕狟岆督苤縐*/
+            .card {
+                box-shadow: 0 4px 8px 0 rgba(29, 53, 87, 0.2);
+                transition: 0.3s;
+                margin: 25px auto;
+            }
+
+            /*眕狟岆誑*/
+            .myBox {
+                padding: 0px;
+                height: 280px;
+            }
+            .myBox img {
+                height: 280px;
+            }
+            .myBlog, .myEvent {
+                height: 340px !important;
+                padding: 15px 5px;
+            }
+            .myBlog ul, .myEvent ul {
+                padding-left: 20px;
+            }
+            .separate {
+                width: 100%;
+                height: 80px;
+            }
+        }

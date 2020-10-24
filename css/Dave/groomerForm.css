@@ -1,0 +1,69 @@
+        body, html {
+            height: 100%;
+            font-family: Ubuntu-Regular, sans-serif;
+            background-color: #F1FAEE;
+        }
+        img {
+            width: 90%;
+            height: auto;
+            margin: 20px;
+            float: left;
+        }
+        .wrap-login100 {
+            width: 700px;
+        }
+        .login100-form-title {
+            background-color: #8ED2C9;
+            height: 50px;
+            margin: auto;
+        }
+        a:hover {
+            text-decoration: none;
+            color: #FFB85F;
+        }
+        .txt2 {
+            color: #8ED2C9;
+        }
+        .txt3 {
+            color: #8ED2C9;
+        }
+        .login100-form-btn {
+            background-color: #8ED2C9;
+        }
+        .login100-form-btn:hover {
+            background-color: #FFB85F;
+        }
+        .input100 {
+            margin-top: 15px;
+        }
+        #salPic {
+            padding-top: 20px;
+        }
+        /*營業執照跟圖片檔預覽的文字格式*/
+        .myP {
+            padding-top: 19px;
+            color: #505050;
+        }
+
+        #remove {
+            margin-bottom: 10px;
+            border: 1px solid;
+            width: 100px;
+            height: 30px;
+            float: right;
+        }
+        .myBox {
+            height: 100%;
+            overflow: hidden;
+
+        }
+        .upload_img {
+            display: inline;
+        }
+        #myTerm {
+            text-align: center;
+        }
+        #myTitle {
+            text-align: center;
+            vertical-align: middle;
+        }

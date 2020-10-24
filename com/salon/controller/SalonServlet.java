@@ -1,17 +1,16 @@
 package com.salon.controller;
 
 import java.io.ByteArrayOutputStream;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.io.PrintWriter;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -25,10 +24,8 @@ import javax.servlet.http.Part;
 
 import com.salon.model.SalonService;
 import com.salon.model.SalonVO;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-
 
 @WebServlet("/salon/salon.do")
 @MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 5 * 1024 * 1024, maxRequestSize = 5 * 5 * 1024 * 1024)
@@ -37,20 +34,16 @@ public class SalonServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		req.setCharacterEncoding("UTF-8");
-		
-		 
-			System.out.println(123);
-			String salAc = req.getParameter("salAc");
-			  SalonService salSvc = new SalonService();
-			  System.out.println(salAc);
-			  if(salSvc.checkAc(salAc)) {
-			   res.getWriter().print(true);
-			  } else {
-			   res.getWriter().print(false);
-			  }
-			 
-		
-		
+
+		String salAc = req.getParameter("salAc");
+		SalonService salSvc = new SalonService();
+		System.out.println(salAc);
+		if (salSvc.checkAc(salAc)) {
+			res.getWriter().print(true);
+		} else {
+			res.getWriter().print(false);
+		}
+
 		doPost(req, res);
 
 	}
@@ -60,31 +53,26 @@ public class SalonServlet extends HttpServlet {
 		String action = req.getParameter("action");
 		HttpSession session = req.getSession();
 
-		 
-		
-		
-		
-		
 		if ("insert".equals(action)) {
 
 			List<String> errorMsgs = new LinkedList<String>();
 
-			req.setAttribute("errorMsgs", errorMsgs); 
+			req.setAttribute("errorMsgs", errorMsgs);
 
 			try {
 				String salAc = req.getParameter("salAc");
 				String salAcReg = "^[(a-zA-Z0-9)]{6,15}$";
-				if(salAc == null || salAc.trim().length() ==0) {
-					errorMsgs.add("帳號請勿空白");	
-				}else if(!salAc.trim().matches(salAcReg)) {
+				if (salAc == null || salAc.trim().length() == 0) {
+					errorMsgs.add("帳號請勿空白");
+				} else if (!salAc.trim().matches(salAcReg)) {
 					errorMsgs.add("帳號請輸入英文、數字,且長度必須在6~15個字之間");
 				}
 
 				String salPw = req.getParameter("salPw");
 				String salPwReg = "^[(a-zA-Z0-9)]{6,15}$";
-				if(salPw == null || salPw.trim().length() == 0) {
+				if (salPw == null || salPw.trim().length() == 0) {
 					errorMsgs.add("帳號請勿空白");
-				}else if (!salPw.trim().matches(salPwReg)) {
+				} else if (!salPw.trim().matches(salPwReg)) {
 					errorMsgs.add("密碼請輸入英文、數字,且長度必須在6~15個字之間");
 				}
 
@@ -97,10 +85,10 @@ public class SalonServlet extends HttpServlet {
 				}
 
 				String salOwner = req.getParameter("salOwner");
-				String salOwnerReg = "^[(\u4e00-\u9fa5)]{2,10}$";				
-				if(salOwner == null || salOwner.trim().length() ==0) {
+				String salOwnerReg = "^[(\u4e00-\u9fa5)]{2,10}$";
+				if (salOwner == null || salOwner.trim().length() == 0) {
 					errorMsgs.add("負責人姓名請勿空白");
-				}else if(!salOwner.trim().matches(salOwnerReg)){
+				} else if (!salOwner.trim().matches(salOwnerReg)) {
 					errorMsgs.add("負責人姓名: 只能是中文字母,且長度必需在2到10之間");
 				}
 
@@ -164,7 +152,7 @@ public class SalonServlet extends HttpServlet {
 				} catch (NumberFormatException e) {
 					errorMsgs.add("請選擇接受寵物類型");
 				}
-                //上傳執照
+				// 上傳執照
 				byte[] salCertif = null;
 				byte[] buf = null;
 
@@ -173,12 +161,12 @@ public class SalonServlet extends HttpServlet {
 				buf = new byte[in.available()];
 				in.read(buf);
 				salCertif = buf;
-				
-				//上傳大頭貼
+
+				// 上傳大頭貼
 				byte[] salPic = null;
 				byte[] buf2 = null;
-				
-				Part part2 =req.getPart("salPic");
+
+				Part part2 = req.getPart("salPic");
 				InputStream in2 = part2.getInputStream();
 				buf2 = new byte[in2.available()];
 				in2.read(buf2);
@@ -212,7 +200,7 @@ public class SalonServlet extends HttpServlet {
 				// 開始新增資料
 				SalonService salonSvc = new SalonService();
 				salonVO = salonSvc.addsalon(salName, salOwner, salPh, salMail, salCity, salDist, salAdr, salAc, salPw,
-						salSTime, salETime, salRemit, bankCode, salStatus, salInfo, salPetType, salCertif,salPic);
+						salSTime, salETime, salRemit, bankCode, salStatus, salInfo, salPetType, salCertif, salPic);
 				req.setAttribute("salonVO", salonVO);
 				// 新增成功
 //				String url = "/front-end/salon/index.jsp";
@@ -232,11 +220,8 @@ public class SalonServlet extends HttpServlet {
 			List<String> errorMsgs = new LinkedList<String>();
 
 			req.setAttribute("errorMsgs", errorMsgs);
-			
 
 			try {
-				
-				
 
 				String salNo = new String(req.getParameter("salNo").trim());
 
@@ -249,12 +234,12 @@ public class SalonServlet extends HttpServlet {
 				}
 
 				String salOwner = req.getParameter("salOwner");
-			String salOwnerReg = "^[(\u4e00-\u9fa5)]{2,10}$";				
-			if(salOwner == null || salOwner.trim().length() ==0) {
-				errorMsgs.add("負責人姓名請勿空白");
-			}else if(!salOwner.trim().matches(salOwnerReg)){
-				errorMsgs.add("負責人姓名: 只能是中文字母,且長度必需在2到10之間");
-			}
+				String salOwnerReg = "^[(\u4e00-\u9fa5)]{2,10}$";
+				if (salOwner == null || salOwner.trim().length() == 0) {
+					errorMsgs.add("負責人姓名請勿空白");
+				} else if (!salOwner.trim().matches(salOwnerReg)) {
+					errorMsgs.add("負責人姓名: 只能是中文字母,且長度必需在2到10之間");
+				}
 
 				String salPh = req.getParameter("salPh");
 				String salPhReg = "^[(0-9)]{6,10}$";
@@ -314,44 +299,43 @@ public class SalonServlet extends HttpServlet {
 				} catch (NumberFormatException e) {
 					errorMsgs.add("請選擇接受寵物類型");
 				}
-                
+
 //上傳證照
 				SalonService salSvc = new SalonService();
-				
+
 				byte[] salCertif = null;
 				byte[] buf = null;
 				Part part = req.getPart("salCertif");
 				InputStream in = part.getInputStream();
 				buf = new byte[in.available()];
-				
-				if(buf.length == 0) {
+
+				if (buf.length == 0) {
 					salCertif = salSvc.getonesalon(salNo).getSalCertif();
-				}else {
+				} else {
 					part = req.getPart("salCertif");
-					 in = part.getInputStream();
+					in = part.getInputStream();
 					buf = new byte[in.available()];
 					in.read(buf);
 					salCertif = buf;
 				}
-												
+
 //上傳大頭貼
 				byte[] salPic = null;
 				byte[] buf2 = null;
-				Part part2 =req.getPart("salPic");
+				Part part2 = req.getPart("salPic");
 				InputStream in2 = part2.getInputStream();
 				buf2 = new byte[in2.available()];
-				
-				if(buf2.length == 0) {
+
+				if (buf2.length == 0) {
 					salPic = salSvc.getonesalon(salNo).getSalPic();
-				}else {
-					part2 =req.getPart("salPic");
+				} else {
+					part2 = req.getPart("salPic");
 					in2 = part2.getInputStream();
 					buf2 = new byte[in2.available()];
 					in2.read(buf2);
 					salPic = buf2;
 				}
-				
-					
+
 				SalonVO salonVO = new SalonVO();
 				salonVO.setSalNo(salNo);
 				salonVO.setSalName(salName);
@@ -369,7 +353,7 @@ public class SalonServlet extends HttpServlet {
 				salonVO.setSalPetType(salPetType);
 				salonVO.setSalCertif(salCertif);
 				salonVO.setSalPic(salPic);
-			
+
 				if (!errorMsgs.isEmpty()) {
 					req.setAttribute("salonVO", salonVO); // 含有輸入格式錯誤的empVO物件,也存入req
 					RequestDispatcher failureView = req.getRequestDispatcher("/front-end/salon/updateSalon.jsp");
@@ -377,10 +361,9 @@ public class SalonServlet extends HttpServlet {
 					return; // 程式中斷
 				}
 
-				salSvc = new SalonService();				
+				salSvc = new SalonService();
 				salonVO = salSvc.updatesalon(salNo, salName, salOwner, salPh, salMail, salCity, salDist, salAdr,
-						salSTime, salETime, salRemit, bankCode, salInfo, salPetType, salCertif,salPic);
-				
+						salSTime, salETime, salRemit, bankCode, salInfo, salPetType, salCertif, salPic);
 
 				req.setAttribute("salonVO", salonVO);
 				String url = "/front-end/salon/index.jsp";
@@ -529,162 +512,158 @@ public class SalonServlet extends HttpServlet {
 			}
 
 		}
-		
 
 		if ("login".equals(action)) {
 			List<String> errorMsgs = new LinkedList<String>();
 			req.setAttribute("errorMsgs", errorMsgs);
 
-			
-				try {
-					String salAc = new String(req.getParameter("salAc"));
-					String salPw = new String(req.getParameter("salPw"));
-
-					SalonService salSvc = new SalonService();
-					SalonVO salonVO = salSvc.login(salAc, salPw);
-
-					if (salonVO == null) {
-						errorMsgs.add("帳號密碼錯誤");	
-						String url = "/front-end/salon/Glogin.jsp";
-						RequestDispatcher successView = req.getRequestDispatcher(url);
-						successView.forward(req, res);
-					} else if(salonVO.getSalStatus() == 0 || salonVO.getSalStatus() == 2){
-						errorMsgs.add("審核尚未通過");	
-						String url = "/front-end/salon/Glogin.jsp";
-						RequestDispatcher successView = req.getRequestDispatcher(url);
-						successView.forward(req, res);
-					}else{
-						 session = req.getSession();
-						 session.setAttribute("salonVO", salonVO);	
-						 
-						try {
-							String location = (String) session.getAttribute("location");
-							if (location != null) {
-								session.removeAttribute("location");
-								res.sendRedirect(location);
-								return;
-							}
-						} catch (Exception ignored) {
-						}
-						res.sendRedirect(req.getContextPath() + "/front-end/salon/index.jsp");						
-					}
-
-				} catch (Exception e) {
-					errorMsgs.add("無法取得要修改的資料:" + e.getMessage());
-					RequestDispatcher failureView = req.getRequestDispatcher("/front-end/salon/salonManager.jsp");
-					failureView.forward(req, res);
-				}
-			}
-		
-		if("logout".equals(action)) {
-			List<String> errorMsgs = new LinkedList<String>();
-			req.setAttribute("errorMsgs", errorMsgs);
-			
 			try {
-				session.invalidate();
-				
-				res.sendRedirect(req.getContextPath() + "/front-end/salon/index.jsp");	
-				
-			}catch (Exception e) {
+				String salAc = new String(req.getParameter("salAc"));
+				String salPw = new String(req.getParameter("salPw"));
+
+				SalonService salSvc = new SalonService();
+				SalonVO salonVO = salSvc.login(salAc, salPw);
+
+				if (salonVO == null) {
+					errorMsgs.add("帳號密碼錯誤");
+					String url = "/front-end/salon/Glogin.jsp";
+					RequestDispatcher successView = req.getRequestDispatcher(url);
+					successView.forward(req, res);
+				} else if (salonVO.getSalStatus() == 0 || salonVO.getSalStatus() == 2) {
+					errorMsgs.add("審核尚未通過");
+					String url = "/front-end/salon/Glogin.jsp";
+					RequestDispatcher successView = req.getRequestDispatcher(url);
+					successView.forward(req, res);
+				} else {
+					session = req.getSession();
+					session.setAttribute("salonVO", salonVO);
+
+					try {
+						String location = (String) session.getAttribute("location");
+						if (location != null) {
+							session.removeAttribute("location");
+							res.sendRedirect(location);
+							return;
+						}
+					} catch (Exception ignored) {
+					}
+					res.sendRedirect(req.getContextPath() + "/front-end/salon/index.jsp");
+				}
+
+			} catch (Exception e) {
 				errorMsgs.add("無法取得要修改的資料:" + e.getMessage());
 				RequestDispatcher failureView = req.getRequestDispatcher("/front-end/salon/salonManager.jsp");
 				failureView.forward(req, res);
 			}
-			
 		}
-	
-		
-		if("approve".equals(action)) {
+
+		if ("logout".equals(action)) {
 			List<String> errorMsgs = new LinkedList<String>();
 			req.setAttribute("errorMsgs", errorMsgs);
-	
+
+			try {
+				session.invalidate();
+
+				res.sendRedirect(req.getContextPath() + "/front-end/salon/index.jsp");
+
+			} catch (Exception e) {
+				errorMsgs.add("無法取得要修改的資料:" + e.getMessage());
+				RequestDispatcher failureView = req.getRequestDispatcher("/front-end/salon/salonManager.jsp");
+				failureView.forward(req, res);
+			}
+
+		}
+
+		if ("approve".equals(action)) {
+			List<String> errorMsgs = new LinkedList<String>();
+			req.setAttribute("errorMsgs", errorMsgs);
+
 			try {
 				/*************************** 1.接收請求參數 ****************************************/
-				
-				String salNo = req.getParameter("salNo").trim();								
+
+				String salNo = req.getParameter("salNo").trim();
 				Integer salStatus = Integer.parseInt(req.getParameter("salStatus"));
-				
+
 				/*************************** 2.開始新增資料 ***************************************/
 				SalonService salSvc = new SalonService();
 				salSvc.approve(salNo, salStatus);
-		
+
 				/*************************** 3.新增完成,準備轉交(Send the Success view) ***********/
 				String url = "/back-end/salon/unacceptList.jsp";
 				RequestDispatcher sucessView = req.getRequestDispatcher(url);
 				sucessView.forward(req, res);
-				
+
 			} catch (Exception e) {
 				errorMsgs.add("審核失敗： " + e.getMessage());
 				RequestDispatcher failureView = req.getRequestDispatcher("listUnverifiedLic.jsp");
 				failureView.forward(req, res);
 			}
-		
+
 		}
-		
-		if("notApprove".equals(action)) {
+
+		if ("notApprove".equals(action)) {
 			List<String> errorMsgs = new LinkedList<String>();
 			req.setAttribute("errorMsgs", errorMsgs);
-	
+
 			try {
 				/*************************** 1.接收請求參數 ****************************************/
-				
-				String salNo = req.getParameter("salNo").trim();								
+
+				String salNo = req.getParameter("salNo").trim();
 				Integer salStatus = Integer.parseInt(req.getParameter("salStatus"));
-				
+
 				/*************************** 2.開始新增資料 ***************************************/
 				SalonService salSvc = new SalonService();
 				salSvc.notApprove(salNo, salStatus);
-		
+
 				/*************************** 3.新增完成,準備轉交(Send the Success view) ***********/
 				String url = "/back-end/salon/unacceptList.jsp";
 				RequestDispatcher sucessView = req.getRequestDispatcher(url);
 				sucessView.forward(req, res);
-				
+
 			} catch (Exception e) {
 				errorMsgs.add("審核失敗： " + e.getMessage());
 				RequestDispatcher failureView = req.getRequestDispatcher("listUnverifiedLic.jsp");
 				failureView.forward(req, res);
 			}
-		
+
 		}
+
 		// *-----Up by Liz----*
-		//處理搜尋頁面的條件搜尋 --ajax--
-		if("findByCondition".equals(action)) {
+		// 處理搜尋頁面的條件搜尋 --ajax--
+		if ("findByCondition".equals(action)) {
 			List<String> errorMsgs = new LinkedList<String>();
 			req.setAttribute("errorMsgs", errorMsgs);
 			req.setCharacterEncoding("UTF-8");
 			res.setContentType("text/html; charset=utf-8");
 			PrintWriter out = res.getWriter();
-
 			try {
 				String salCity = req.getParameter("salCity").trim();
-				
+
 				String salDist = req.getParameter("salDist").trim();
-				
+
 				Integer salpettype = new Integer(req.getParameter("salPetType"));
-				
+
 				SalonService salSvc = new SalonService();
-				List<SalonVO> list= salSvc.findByCondition(salCity, salDist, salpettype);
-				
+				List<SalonVO> list = salSvc.findByCondition(salCity, salDist, salpettype);
+
 				Gson gson = new Gson();
 				String jsonStr = gson.toJson(list);
-				//System.out.println(jsonStr);
-				
-				if(errorMsgs.isEmpty()) {
+				// System.out.println(jsonStr);
+
+				if (errorMsgs.isEmpty()) {
 					out.write(jsonStr);
 				}
-			
+
 			} catch (Exception e) {
 				errorMsgs.add("搜尋失敗： " + e.getMessage());
 				RequestDispatcher failureView = req.getRequestDispatcher("searchSalon.jsp");
 				failureView.forward(req, res);
-			}finally {
+			} finally {
 				out.flush();
 				out.close();
 			}
-			
+
 		}
-		
 	}
 
 }

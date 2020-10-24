@@ -25,15 +25,24 @@ public class SalonDAO implements SalonDAO_interface {
 		}
 	}
 
-	private static final String INSERT_STMT = "INSERT INTO SALON(SALNO,SALNAME,SALOWNER,SALPH,SALMAIL,SALCITY,SALDIST,SALADR,SALAC,SALPW,SALSTIME,SALETIME,SALREMIT,BANKCODE,SALSTATUS,SALINFO,SALPETTYPE,SALCERTIF,SALPIC) VALUES('B' || lpad(SALNO_SEQ.NEXTVAL,3,'0'),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-	private static final String DELETE = "DELETE FROM SALON WHERE SALNO = ?";
-	private static final String UPDATE = "UPDATE SALON SET salname=?, salowner=?, salph=? , salmail=?, salCity=?,salDist=?,saladr=?, salstime=?, saletime=?, salremit=?, bankcode=?,  salinfo=?,salpettype=?,salCertif=?,salPic=? WHERE salno=?";
-	private static final String GET_ALL_STMT = "SELECT * FROM SALON ORDER BY SALNO";
-	private static final String GET_ONE_STMT = "SELECT * FROM SALON  WHERE SALNO = ?";
-	private static final String LOGIN = "SELECT * FROM salon WHERE SALAC=? AND SALPW=?";
-	private static final String UPDATE_STATUS_STMT = "UPDATE SALON SET SALSTATUS = ? WHERE SALNO = ?";
-	private static final String CHECKAC = "SELECT SALAC FROM SALON WHERE SALAC=?";
-	private static final String GET_BY_SEARCH = "SELECT * FROM SALON WHERE salCity=? AND salDist=? AND salPetType=? ORDER BY salTotalScore";
+	private static final String INSERT_STMT = 
+			"INSERT INTO SALON(SALNO,SALNAME,SALOWNER,SALPH,SALMAIL,SALCITY,SALDIST,SALADR,SALAC,SALPW,SALSTIME,SALETIME,SALREMIT,BANKCODE,SALSTATUS,SALINFO,SALPETTYPE,SALCERTIF,SALPIC) VALUES('B' || lpad(SALNO_SEQ.NEXTVAL,3,'0'),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	private static final String DELETE = 
+			"DELETE FROM SALON WHERE SALNO = ?";
+	private static final String UPDATE = 
+			"UPDATE SALON SET salname=?, salowner=?, salph=? , salmail=?, salCity=?,salDist=?,saladr=?, salstime=?, saletime=?, salremit=?, bankcode=?,  salinfo=?,salpettype=?,salCertif=?,salPic=? WHERE salno=?";
+	private static final String GET_ALL_STMT = 
+			"SELECT * FROM SALON ORDER BY SALNO";
+	private static final String GET_ONE_STMT = 
+			"SELECT * FROM SALON  WHERE SALNO = ?";
+	private static final String LOGIN = 
+			"SELECT * FROM salon WHERE SALAC=? AND SALPW=?";
+	private static final String UPDATE_STATUS_STMT = 
+			"UPDATE SALON SET SALSTATUS = ? WHERE SALNO = ?";
+	private static final String CHECKAC = 
+			"SELECT SALAC FROM SALON WHERE SALAC=?";
+	private static final String GET_BY_SEARCH = 
+			"SELECT * FROM SALON WHERE salCity=? AND salDist=? AND salPetType=? ORDER BY salTotalScore";
 
 	@Override
 	public void insert(SalonVO salonVO) {
@@ -207,9 +216,9 @@ public class SalonDAO implements SalonDAO_interface {
 				salonVO.setSalStatus(rs.getInt("salStatus"));
 				salonVO.setSalInfo(rs.getString("salInfo"));
 				salonVO.setSalPetType(rs.getInt("salPetType"));
-				salonVO.setSalTotalScore(rs.getInt("salTotalScore"));
-				salonVO.setSalPic(rs.getBytes("salPic"));
-				salonVO.setSalCertif(rs.getBytes("salCertif"));
+				salonVO.setSalTotalScore(rs.getInt("salTotalScore"));	
+				salonVO.setSalPic(rs.getBytes("salPic"));	
+				salonVO.setSalCertif(rs.getBytes("salCertif"));	
 				salonVO.setSalTotalCount(rs.getInt("salTotalCount"));
 
 				list.add(salonVO);
@@ -464,7 +473,7 @@ public class SalonDAO implements SalonDAO_interface {
 		}
 		return flag;
 	}
-
+	
 	@Override
 	public List<SalonVO> findByCondition(String salCity, String salDist, Integer salPetType) {
 		
@@ -538,10 +547,6 @@ public class SalonDAO implements SalonDAO_interface {
 				}
 			}
 		}
-		return list;
-	
-		
+		return list;		
 	}
-	
-
 }
