@@ -10,7 +10,7 @@ h4{
 table.listAll{
 	text-align: center;
 }
-thead {
+thead, .tText {
 	color: #505050;
 }
 tbody {

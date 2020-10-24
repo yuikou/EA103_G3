@@ -26,13 +26,21 @@ pageContext.setAttribute("mySalon", mySalon);
 	crossorigin="anonymous">
 <!-- 匯入外部CSS -->
 <link rel="stylesheet" type="text/css"
-	href="<%=request.getContextPath()%>/css/index.css">
+	href="<%=request.getContextPath()%>/css/liz/index.css">
 <link rel="stylesheet" type="text/css"
-	href="<%=request.getContextPath()%>/css/SF.css">
-<link rel="stylesheet" type="text/css"
-	href="<%=request.getContextPath()%>/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+	href="<%=request.getContextPath()%>/css/liz/SF.css">
+<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/liz/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
 <link rel="Shortcut Icon" type="image/x-icon"
 	href="https://dzmg8959fhe1k.cloudfront.net/all/favicon.ico">
+<style>
+	span{
+		margin-right:20px;
+		text-align:right;
+	}
+	.myicon{
+		width:20px;
+	}
+</style>
 <title>我的收藏</title>
 
 </head>
@@ -73,19 +81,30 @@ pageContext.setAttribute("mySalon", mySalon);
 
 		<!-- 這邊要useBean載入salon名字跟動態取得salon page -->
 		<jsp:useBean id="salonSvc" class="com.salon.model.SalonService"></jsp:useBean>
+		<div class="row myinfo">
+			<SPAN><small class="text-muted">可接受寵物類型:</small></SPAN>
+			<span><small class="text-muted">狗跟貓都服務</small><img src="/Pet_Test/image/both2.svg" class="myicon"></span>
+			<span><small class="text-muted">狗狗only</small><img src="/Pet_Test/image/dog(1).svg" class="myicon"></span>
+			<span><small class="text-muted">only服務貓貓</small><img src="/Pet_Test/image/cat(1).svg" class="myicon"></span>
+		</div>
 		<div class="row myRow">
 			<c:forEach var="sal" items="${mySalon}">
 				<div class="col-6 col-md-3 col-sm-4 card">
 					<img
-						src="<%=request.getContextPath()%>/grm/PicReader?action=salPic&salPic=${sal.salNo}"
+						src="<%=request.getContextPath()%>/PicReader.do?action=salPic&salPic=${sal.salNo}"
 						class="card-img-top" alt="my salon" style="width:100%; height:100%;">
 					<div class="card-body">
 						<c:set var="salNo" value="${sal.salNo }" />
-						<h5 class="card-title">${salonSvc.getOneSalon(salNo).getSalName() }</h5>
-						<p class="card-text">${salonSvc.getOneSalon(salNo).getSalCity() }</p>
-						<small class="text-muted">${salonSvc.getOneSalon(salNo).getSalPetType() }</small>
-						<a href="#" class="card-link"><i class="fa fa-arrow-right"></i>link
-							to salon</a>
+						<h5 class="card-title">${salonSvc.getonesalon(salNo).getSalName() }</h5>
+						<p class="card-text">${salonSvc.getonesalon(salNo).getSalCity() }</p>
+						<c:set var="petcat" value="${salonSvc.getonesalon(salNo).getSalPetType() }" />
+						<%
+							String [] picArr = {"both2.svg", "dog(1).svg", "cat(1).svg"};
+							String icon = "/Pet_Test/image/"+ picArr[(Integer) pageContext.getAttribute("petcat")];
+							pageContext.setAttribute("icon", icon);
+						%>
+						<small class="text-muted"><img src="${icon }" style="width:35px;"></small>
+						<a href="#" class="card-link"><i class="fa fa-arrow-right"></i>link to salon</a>
 					</div>
 				</div>
 
@@ -105,6 +124,6 @@ pageContext.setAttribute("mySalon", mySalon);
 		src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
 		integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
 		crossorigin="anonymous"></script>
-	<script src="<%=request.getContextPath()%>/js/favor.js"></script>
+	<script src="<%=request.getContextPath()%>/js/liz/favor.js"></script>
 </body>
 </html>

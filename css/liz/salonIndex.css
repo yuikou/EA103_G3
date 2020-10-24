@@ -1,0 +1,30 @@
+.myCard {
+	width: 260px;
+}
+
+.headText {
+	color: #505050;
+}
+
+.card-header {
+	padding: 0px;
+}
+
+h5 {
+	margin: 0px;
+}
+
+.sList, .sList>a {
+	margin: 5px;
+	color: #457B9D;
+}
+
+.sList:hover {
+	color: #FFB85F;
+	text-shadow: 1px 2px 2px #FFF5C3;
+}
+
+.sList>a:hover {
+	color: #FFB85F;
+	text-shadow: 1px 2px 2px #FFF5C3;
+}

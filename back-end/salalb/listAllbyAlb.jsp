@@ -23,9 +23,9 @@ pageContext.setAttribute("list", list);
 	crossorigin="anonymous">
 <!-- 匯入外部CSS -->
 <link rel="stylesheet" type="text/css"
-	href="<%=request.getContextPath()%>/css/index.css">
+	href="<%=request.getContextPath()%>/css/liz/index.css">
 <link rel="stylesheet" type="text/css"
-	href="<%=request.getContextPath()%>/css/groomer.css">
+	href="<%=request.getContextPath()%>/css/liz/groomer.css">
 <link rel="Shortcut Icon" type="image/x-icon"
 	href="https://dzmg8959fhe1k.cloudfront.net/all/favicon.ico">
 <title>Document</title>
@@ -61,16 +61,14 @@ pageContext.setAttribute("list", list);
 					<c:forEach var="picVO" items="${list}" begin="0" end="20">
 						<div class="card sabCard" style="width: 18rem;">
 							<img
-								src="<%=request.getContextPath()%>/grm/PicReader?action=salAlbNo&salAlbNo=${picVO.salAlbNo}"
-								alt="picture for salon" name="salAlbNo" class="card-img-top">
-							<div class="card-body mydBtn">
+								src="<%=request.getContextPath()%>/PicReader.do?action=salAlbNo&salAlbNo=${picVO.salAlbNo}"
+								alt="picture for salon" name="salAlbNo" class="card-img-top back-salonAlb">
 								<form method="post"
 									action="<%=request.getContextPath()%>/salalb/salalb.do">
 									<input type="submit" value="刪除" class="btn btn-outline-danger">
 									<input type="hidden" name="salAlbNo" value="${picVO.salAlbNo}">
 									<input type="hidden" name="action" value="delete">
 								</form>
-							</div>
 						</div>
 					</c:forEach>
 				</div>

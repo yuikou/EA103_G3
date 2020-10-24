@@ -16,26 +16,28 @@ public class GODayJDBCDAO implements GODayDAO_interface {
 	String passwd = "123456";
 
 	private static final String INSERT_STMT = "INSERT INTO GROOMEROFFDAY (offno,groomerno,offday,offtime,offdaytype) VALUES ('GD' || lpad(GMOFF_SEQ.NEXTVAL, 3, 0),?, ?, ?, ?)";
+	private static final String INSERT_HOLIDAY = "INSERT INTO GROOMEROFFDAY (offno,groomerno,offday,offdaytype) VALUES ('GD' || lpad(GMOFF_SEQ.NEXTVAL, 3, 0),?, ?, ?)";
 	// 查詢單一美容師的所有offday
-	private static final String GET_ALL_STMT = "SELECT offno, groomerno, offday, offtime, offdaytype FROM GROOMEROFFDAY where groomerno=? ";
+	//private static final String GET_ALL_STMT_BACKUP = "SELECT offno, groomerno, offday, offtime, offdaytype FROM GROOMEROFFDAY where groomerno=? ";
+	private static final String GET_ALL_STMT = "SELECT OFFNO, GROOMEROFFDAY.GROOMERNO, GROOMERNAME, OFFDAY, OFFTIME, OFFDAYTYPE FROM GROOMER JOIN GROOMEROFFDAY ON GROOMER.GROOMERNO = GROOMEROFFDAY.GROOMERNO where GROOMEROFFDAY.groomerno=? ";
+	
 	private static final String GET_ONE_STMT = "SELECT offno, groomerno, offday, offtime, offdaytype FROM GROOMEROFFDAY where offno=? ";
 	private static final String DELETE = "DELETE from GROOMEROFFDAY where offno=?";
 	private static final String UPDATE = "UPDATE GROOMEROFFDAY set groomerno=?, offday=?, offtime=?, offdaytype=? where offno=?";
 	// UPDATE GROOMEROFFDAY set offday=to_date('2020-12-25 18:30' ,'yyyy-mm-dd
 	// HH24:MI'), offdaytype=1 where offno='GD007';
 
-//	public static void main(String[] args) {
+	public static void main(String[] args) {
 //		GODayVO vo = new GODayVO();
-//		GODayJDBCDAO test = new GODayJDBCDAO();
-//		vo.setGroomerNo("G006");
-//		vo.setOffDay("2020-09-08");
-//		vo.setOffTime("18:00");
+		GODayJDBCDAO test = new GODayJDBCDAO();
+//		vo.setGroomerNo("G002");
+//		vo.setOffDay("2020-10-28");
 //		vo.setOffDayType(1);
-//		vo.setOffNo("GD001");
 //		test.insert(vo);
-//		test.update(vo);
-//		test.findByPrimaryKey(vo.getGroomerNo());
-//	}
+////		test.update(vo);
+////		test.findByPrimaryKey(vo.getGroomerNo());
+		test.getAll("G002");
+	}
 
 	public void insert(GODayVO godayVO) {
 		Connection con = null;
@@ -209,20 +211,22 @@ public class GODayJDBCDAO implements GODayDAO_interface {
 			con.setAutoCommit(true);
 
 			while (rs.next()) {
-				godayVO = new GODayVO();
-				godayVO.setOffNo(rs.getString("offno"));
-				godayVO.setGroomerNo(rs.getString("groomerno"));
-				godayVO.setOffDay(rs.getString("offday"));
-				godayVO.setOffTime(rs.getString("offtime"));
-				godayVO.setOffDayType(rs.getInt("offdaytype"));
+//				godayVO = new GODayVO();
+//				godayVO.setOffNo(rs.getString("offno"));
+//				godayVO.setGroomerNo(rs.getString("groomerno"));
+//				godayVO.setGroomerName(rs.getString("groomerName"));
+//				godayVO.setOffDay(rs.getString("offday"));
+//				godayVO.setOffTime(rs.getString("offtime"));
+//				godayVO.setOffDayType(rs.getInt("offdaytype"));
+//
+//				list.add(godayVO);
 
-				list.add(godayVO);
-
-//				System.out.println("休假編號:"+rs.getString("offno"));
-//				System.out.println("美容師編號:"+rs.getString("groomerno"));
-//				System.out.println("NG日期"+rs.getString("offday"));
-//				System.out.println("NG時間"+rs.getString("offtime"));
-//				System.out.println("休假類型"+ rs.getInt("offdaytype"));
+				System.out.println("休假編號:"+rs.getString("offno"));
+				System.out.println("美容師編號:"+rs.getString("groomerno"));
+				System.out.println("美容師:"+rs.getString("groomerName"));
+				System.out.println("NG日期"+rs.getString("offday"));
+				System.out.println("NG時間"+rs.getString("offtime"));
+				System.out.println("休假類型"+ rs.getInt("offdaytype"));
 
 			}
 
@@ -325,6 +329,54 @@ public class GODayJDBCDAO implements GODayDAO_interface {
 		}
 
 		return godayVO;
+	}
+
+	@Override
+	public void insertHoliday(GODayVO godayVO) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+
+		try {
+			Class.forName(driver);
+			con = DriverManager.getConnection(url, userid, passwd);
+			con.setAutoCommit(false);
+
+			pstmt = con.prepareStatement(INSERT_HOLIDAY);
+
+			pstmt.setString(1, godayVO.getGroomerNo());
+			pstmt.setString(2, godayVO.getOffDay());
+			pstmt.setInt(3, godayVO.getOffDayType());
+
+			pstmt.executeUpdate();
+//			System.out.println("OK");
+			con.commit();
+			con.setAutoCommit(true);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException se) {
+			try {
+				con.rollback();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			throw new RuntimeException("A database error occured. " + se.getMessage());
+		} finally {
+			// Clean up JDBC resources
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
 	}
 
 }

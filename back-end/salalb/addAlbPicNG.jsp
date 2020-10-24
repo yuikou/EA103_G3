@@ -80,7 +80,7 @@
 				allowedFileExtensions : [ 'jpg', 'png', 'gif' ],
 				fileActionSettings : {
 					showZoom : function(config) {
-						if (config.type === 'pdf' || config.type === 'image') {
+						if (config.type === 'image') {
 							return true;
 						}
 						return false;

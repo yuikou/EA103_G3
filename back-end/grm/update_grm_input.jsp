@@ -19,9 +19,9 @@
 	crossorigin="anonymous">
 <!-- 匯入外部CSS -->
 <link rel="stylesheet" type="text/css"
-	href="<%=request.getContextPath()%>/css/index.css">
+	href="<%=request.getContextPath()%>/css/liz/index.css">
 <link rel="stylesheet" type="text/css"
-	href="<%=request.getContextPath()%>/css/groomer.css">
+	href="<%=request.getContextPath()%>/css/liz/groomer.css">
 <link rel="Shortcut Icon" type="image/x-icon"
 	href="https://dzmg8959fhe1k.cloudfront.net/all/favicon.ico">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
@@ -62,8 +62,8 @@
 							<tr>
 								<th scope="col" class="gw">美容師照片:</th>
 								<td id="preview"><img
-									src="<%=request.getContextPath()%>/grm/picReader?grmPic=${grmVO.groomerNo}"
-									id="gPic"></td>
+									src="<%=request.getContextPath()%>/PicReader.do?action=grmPic&grmPic=${grmVO.groomerNo}"
+									 style="width: 280px;"></td>
 								<td><input type="file" id="myFile" name="grmPic"
 									value="修改照片" multiple></td>
 							</tr>
@@ -107,8 +107,8 @@
 		src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
 		integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
 		crossorigin="anonymous"></script>
-	<script src="<%=request.getContextPath()%>/js/grmPicUp.js"></script>
-	<script src="<%=request.getContextPath()%>/js/util.js"></script>
+	<script src="<%=request.getContextPath()%>/js/liz/grmPicUp.js"></script>
+	<script src="<%=request.getContextPath()%>/js/liz/util.js"></script>
 	<script type="text/javascript">
 		window.onload = init;
 	</script>

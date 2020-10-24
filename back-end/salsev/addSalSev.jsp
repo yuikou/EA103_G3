@@ -19,9 +19,9 @@
 	crossorigin="anonymous">
 <!-- 匯入外部CSS -->
 <link rel="stylesheet" type="text/css"
-	href="<%=request.getContextPath()%>/css/index.css">
+	href="<%=request.getContextPath()%>/css/liz/index.css">
 <link rel="stylesheet" type="text/css"
-	href="<%=request.getContextPath()%>/css/groomer.css">
+	href="<%=request.getContextPath()%>/css/liz/groomer.css">
 <link rel="Shortcut Icon" type="image/x-icon"
 	href="https://dzmg8959fhe1k.cloudfront.net/all/favicon.ico">
 <title>新增服務項目</title>
@@ -123,9 +123,9 @@
 		src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
 		integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
 		crossorigin="anonymous"></script>
-	<script src="<%=request.getContextPath()%>/js/util.js"></script>
+	<script src="<%=request.getContextPath()%>/js/liz/util.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-	<script src="<%=request.getContextPath()%>/js/salsev.js"></script>
+	<script src="<%=request.getContextPath()%>/js/liz/salsev.js"></script>
 	
 
 </body>

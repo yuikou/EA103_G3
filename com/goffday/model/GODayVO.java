@@ -6,7 +6,14 @@ public class GODayVO implements java.io.Serializable{
 	private String offDay;
 	private String offTime;
 	private Integer offDayType;
+	private String groomerName;
 	
+	public String getGroomerName() {
+		return groomerName;
+	}
+	public void setGroomerName(String groomerName) {
+		this.groomerName = groomerName;
+	}
 	public String getOffNo() {
 		return offNo;
 	}
