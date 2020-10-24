@@ -19,9 +19,9 @@
 	crossorigin="anonymous">
 <!-- 匯入外部CSS -->
 <link rel="stylesheet" type="text/css"
-	href="<%=request.getContextPath()%>/css/index.css">
+	href="<%=request.getContextPath()%>/css/liz/index.css">
 <link rel="stylesheet" type="text/css"
-	href="<%=request.getContextPath()%>/css/groomer.css">
+	href="<%=request.getContextPath()%>/css/liz/groomer.css">
 <link rel="Shortcut Icon" type="image/x-icon"
 	href="https://dzmg8959fhe1k.cloudfront.net/all/favicon.ico">
 <title>Petfect Match ==美容專區== 新增美容師</title>
@@ -55,14 +55,12 @@
 			</div>
 			<div class="col-md-12">
 				<div class="table-responsive">
-					<FORM METHOD="post"
-						ACTION="<%=request.getContextPath()%>/grm/grm.do"
-						enctype="multipart/form-data">
+					<FORM METHOD="post"	ACTION="<%=request.getContextPath()%>/grm/grm.do" enctype="multipart/form-data">
 						<table class="table table-borderless table-sm">
 							<tr>
 								<th scope="row">美容師照片: <input type="file" id="myFile"
 									name="grmPic" value="新增照片" multiple></th>
-								<td id="preview"><img src="" id="gPic"></td>
+								<td id="preview"><img src=""></td>
 							</tr>
 							<tr>
 								<th scope="row">美容師暱稱:</th>
@@ -100,8 +98,8 @@
 		src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
 		integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
 		crossorigin="anonymous"></script>
-	<script src="<%=request.getContextPath()%>/js/grmPicUp.js"></script>
-	<script src="<%=request.getContextPath()%>/js/util.js"></script>
+	<script src="<%=request.getContextPath()%>/js/liz/grmPicUp.js"></script>
+	<script src="<%=request.getContextPath()%>/js/liz/util.js"></script>
 	<script type="text/javascript">
 		window.onload = init;
 	</script>

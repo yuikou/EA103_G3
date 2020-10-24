@@ -1,0 +1,25 @@
+.del{
+	margin-bottom: 20px;
+}
+.add{
+	margin-bottom: 20px;
+	height: 42px;
+}
+#addOff, #oneGrmOff{
+	margin-right: 20px;
+}
+#offbody p{
+	display: inline-block;
+	color: #505050;
+	text-decoration: underline;
+}
+#offbody{
+	display: inline-block;
+}
+.offbodyA{
+	display: inline-block;
+	width: 200px;
+}
+.offbodyB{
+	display: inline-block;
+}

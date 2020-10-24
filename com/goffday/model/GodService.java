@@ -44,4 +44,16 @@ public class GodService {
 		return godDAO.getAll(groomerno);
 	}
 	
+public GODayVO addHoliday(String groomerNo, String offDay, Integer offDayType) {
+		
+		GODayVO godayVO = new GODayVO();
+		godayVO.setGroomerNo(groomerNo);
+		godayVO.setOffDay(offDay);
+		godayVO.setOffDayType(offDayType);
+	
+		godDAO.insertHoliday(godayVO);
+		
+		return godayVO;
+	}
+	
 }

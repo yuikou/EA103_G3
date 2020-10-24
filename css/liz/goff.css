@@ -1,3 +1,6 @@
+        a{
+        	text-decoration:none;
+        }
         .wrapper {
             margin: 30px auto;
             position: relative;
@@ -128,14 +131,11 @@
             color: #505050;
         }
         .panel:hover {
-            color: #fff;
+            color: #fff !important;
             background-color: #FFB85F;
             box-shadow: 2px 2px 7px 1px #aaa;
             text-shadow: 1px 2px 2px #CE5937;
             cursor: pointer;
-        }
-        .freeTime{
-        	text-decoration:none;
         }
         #result{
         	 background-color: #fff;

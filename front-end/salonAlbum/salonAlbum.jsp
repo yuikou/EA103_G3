@@ -29,15 +29,15 @@ pageContext.setAttribute("url", url);
 	crossorigin="anonymous">
 <!-- ¶×¤J¥~³¡CSS -->
 <link rel="stylesheet" type="text/css"
-	href="<%=request.getContextPath()%>/css/index.css">
+	href="<%=request.getContextPath()%>/css/liz/index.css">
 <link rel="Shortcut Icon" type="image/x-icon"
 	href="https://dzmg8959fhe1k.cloudfront.net/all/favicon.ico">
 <link rel="stylesheet"
-	href="<%=request.getContextPath()%>/css/blueimp-gallery.css">
+	href="<%=request.getContextPath()%>/css/liz/blueimp-gallery.css">
 <link rel="stylesheet"
-	href="<%=request.getContextPath()%>/css/blueimp-gallery-indicator.css">
+	href="<%=request.getContextPath()%>/css/liz/blueimp-gallery-indicator.css">
 <link rel="stylesheet"
-	href="<%=request.getContextPath()%>/css/gallery.css">
+	href="<%=request.getContextPath()%>/css/liz/gallery.css">
 <title>Document</title>
 </head>
 
@@ -47,9 +47,9 @@ pageContext.setAttribute("url", url);
 			<c:forEach var="pic" items="${list }" begin="0" end="20">
 				<div class="item">
 					<a
-						href="${url }/grm/PicReader?action=salAlbNo&salAlbNo=${pic.salAlbNo}"
+						href="${url }/PicReader.do?action=salAlbNo&salAlbNo=${pic.salAlbNo}"
 						data-gallery=""> <img
-						src="${url }/grm/PicReader?action=salAlbNo&salAlbNo=${pic.salAlbNo}">
+						src="${url }/PicReader.do?action=salAlbNo&salAlbNo=${pic.salAlbNo}">
 					</a>
 				</div>
 			</c:forEach>
@@ -81,11 +81,11 @@ pageContext.setAttribute("url", url);
 	<script
 		src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-gallery/2.33.0/js/blueimp-helper.min.js"></script>
 	<script
-		src="<%=request.getContextPath()%>/js/js/blueimp-gallery.min.js"></script>
+		src="<%=request.getContextPath()%>/js/liz/js/blueimp-gallery.min.js"></script>
 	<script
-		src="<%=request.getContextPath()%>/js/js/blueimp-gallery-fullscreen.js"></script>
+		src="<%=request.getContextPath()%>/js/liz/js/blueimp-gallery-fullscreen.js"></script>
 	<script
-		src="<%=request.getContextPath()%>/js/js/jquery.blueimp-gallery.min.js"></script>
+		src="<%=request.getContextPath()%>/js/liz/js/jquery.blueimp-gallery.min.js"></script>
 
 </body>
 </html>

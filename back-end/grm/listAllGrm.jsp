@@ -6,9 +6,9 @@
 
 <%
 	GrmService grmSvc = new GrmService();
-	String salno = (session.getAttribute("salno")).toString();
-	List<GrmVO> list = grmSvc.getGrm(salno);
-	pageContext.setAttribute("list", list);
+String salno = (session.getAttribute("salno")).toString();
+List<GrmVO> list = grmSvc.getGrm(salno);
+pageContext.setAttribute("list", list);
 %>
 <!DOCTYPE html>
 <html>
@@ -23,9 +23,10 @@
 	crossorigin="anonymous">
 <!-- 匯入外部CSS -->
 <link rel="stylesheet" type="text/css"
-	href="<%=request.getContextPath()%>/css/index.css">
+	href="<%=request.getContextPath()%>/css/liz/index.css">
 <link rel="stylesheet" type="text/css"
-	href="<%=request.getContextPath()%>/css/groomer.css">
+	href="<%=request.getContextPath()%>/css/liz/groomer.css">
+<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/liz/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
 <link rel="Shortcut Icon" type="image/x-icon"
 	href="https://dzmg8959fhe1k.cloudfront.net/all/favicon.ico">
 <title>Petfect Match ==美容專區== 美容師管理</title>
@@ -82,12 +83,10 @@
 			<div class="col-12 col-md-12">
 				<table>
 					<tr>
-						<td>
-						 <span class="myset"> <a
+						<td><span class="myset"> <a
 								href="<%=request.getContextPath()%>/back-end/backEnd_index.jsp">回首頁</a>
 						</span>
-							<h4>所有美容師資料</h4>
-						</td>
+							<h4>所有美容師資料</h4></td>
 					</tr>
 				</table>
 				<%-- 錯誤表列 --%>
@@ -122,7 +121,7 @@
 								<tr>
 									<th class="gno">${grmVO.groomerNo}</th>
 									<td><img
-										src="<%=request.getContextPath()%>/grm/picReader?grmPic=${grmVO.groomerNo}"
+										src="<%=request.getContextPath()%>//PicReader.do?action=grmPic&grmPic=${grmVO.groomerNo}"
 										name="grmPic" class="showGPic"></td>
 									<td>${grmVO.groomerName}</td>
 									<td class="toLeft">${grmVO.groomerInfo}</td>

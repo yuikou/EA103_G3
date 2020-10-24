@@ -106,15 +106,15 @@ console.log(PATH);
 	
 
 	//取得當日可預約時段
-    $('.calendar').click(function() {
+    $('.afterDays').click(function() {
         var timeList = {};
         $('#offTimeList').empty();
         str1 = $('#calendar-year').text();
         str = $('#calendar-month').text();
         
-        $('.afterDays').click(function(){
+     //   $('.afterDays').click(function(){
     		str2 = $(this).text();
-    	});
+    //	});
        
         for (var i = 0; i < monthName.length; i++) {
             if (str === monthName[i]) {
@@ -126,7 +126,7 @@ console.log(PATH);
         $('#myday').text(myday);
         
         fullDate = str1 + "-" + numMonth + "-" + str2;
-        console.log(fullDate);
+        //console.log(fullDate);
         $.ajax({
             type: "POST",
             url: PATH + "/goday/goday.do",
@@ -137,19 +137,18 @@ console.log(PATH);
             success: function(data) {
                 timeList = JSON.parse(data);
                 console.log(timeList);
-                if(Object.keys(timeList).length === 0){
+                if(Object.keys(timeList).length === 0 || data == 1){
                 	$('#offTimeList').append("<div class=\"panel\">Sorry 已約滿</div>");
-                	
                 }else{
                 	for (var prop in timeList) {
-                        $('#offTimeList').append("<div class=\"panel\"><a class=\"freeTime\">" + timeList[prop] + "</a></div>");
-                        $(".panel").click(function(){
-                        	myTime = $(this).text();
-		                	$(".freeTime").attr("href", PATH + "/goday/goday.do?action=toOrder&offDay="+ fullDate +"&offTime=" + myTime + "&goffdaytype=1");
-                        });
+                		let str = '<div class=\"panel\"><a href=\"'+ PATH +'/goday/goday.do?action=toOrder&offDay='+ fullDate +'&offTime='+ timeList[prop] +'&goffdaytype=1\" class=\"freeTime\">' + timeList[prop] + '</a></div>';
+                        $('#offTimeList').append(str);
+                        //$(".panel").click(function(){
+                        	//myTime = $(this).text();
+//		                	$(".freeTime").attr("href", PATH + "/goday/goday.do?action=toOrder&offDay="+ fullDate +"&offTime=" + timeList[prop] + "&goffdaytype=1");
+                        //});
                 	}
                 }
-               
                 
             }
         });
