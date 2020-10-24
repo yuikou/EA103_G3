@@ -42,6 +42,143 @@
         		</c:forEach>
         	</div>
         </div>
+<<<<<<< HEAD
+		<div class="title-change title-offDay">尚未預約日期/時間</div>
+		<div class="row">
+            <div class='col-12'>
+            	<!-------------------------------- 小月曆 -------------------------------->
+			    <div class="form-group">
+			    	<div class="col-12" style="padding: 0">
+			            <div id="datetimepicker13"></div>
+			        </div>
+			    </div>
+			    <!------------------------------可預約時段 -------------------------------->
+			    <c:forEach var="sitSrvVO" items="${sitSrvSvc.get_OneSit_AllSrv(petSitterVO.getSitNo())}">
+			    <c:if test="${sitSrvVO.sitSrvCode != 'Bathing' && sitSrvVO.sitSrvCode != 'Pickup' && sitSrvVO.sitSrvCode != 'Boarding' && sitSrvVO.sitSrvCode != 'DayCare'}">
+			    <div class="appointmentDates appointmentHide" id="appointment_${sitSrvVO.sitSrvCode}">
+			    	<span class="spanDate">尚未預約時段</span>
+		            <div class="appointmentSlots slots">
+						<div class="appointmentSlotsContainer">
+						<% 
+							String startT = petSitterVO.getSrvSTime();
+							String endT = petSitterVO.getSrvETime();
+							List<String> ssTlist = new ArrayList<String>();
+							SitSrvVO sitSrvVO = (SitSrvVO) pageContext.getAttribute("sitSrvVO");
+							
+							String srvTstr = sitSrvSvc.get_OneSit_OneSrv(sitSrvVO.getSitSrvNo()).getSrvTime();
+							int srvT = 100;
+							if (srvTstr!= null) {
+								srvT = Integer.valueOf(srvTstr);// 先以一小時測試
+							}
+							if (startT != null){
+								Integer startTint = Integer.valueOf(startT);
+								Integer endTint = Integer.valueOf(endT);
+								while(startTint<endTint){
+									String temp = "0"+ startTint.toString();
+									temp = temp.substring(temp.length()-4);
+									if (temp.substring(2, 4).equals("50")){
+										temp = temp.substring(0, 2) + ":30";
+									} else {
+										temp = temp.substring(0, 2) + ":00";
+									}
+									ssTlist.add(temp);
+									startTint+=srvT;
+								}
+							}
+							pageContext.setAttribute("ssTlist", ssTlist);
+						%>
+							<c:forEach var="ssT" items="${ssTlist}">
+			                	<div class="appointmentSlot slot" data-value="${ssT}">${ssT}</div>
+			                </c:forEach>
+						</div>
+		            </div>
+				</div>
+				</c:if>
+				</c:forEach>
+			</div>
+        </div>
+        
+	</div>
+	<!-- 內文end -->
+	
+	<!-- 匯入js -->
+    <c:set var="jsPath" value="${pageContext.request.contextPath}/js/euphy" />
+	<script src="${jsPath}/jquery-3.2.1.min.js"></script>
+	<script src="${jsPath}/popper.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.0/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.0/locale/zh-tw.min.js"></script>
+	<script src="${jsPath}/bootstrap.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/js/tempusdominus-bootstrap-4.min.js"></script>
+    <script type="text/javascript">
+        $(function() {
+        	// 判斷預約時間是否要顯示
+        	var sitSrvCode = $("#mySrv1 option:selected").attr("data-info");
+        	if (sitSrvCode.indexOf("DropIn") > -1 || sitSrvCode.indexOf("DogWalking") > -1 || sitSrvCode.indexOf("PetTaxi") > -1){
+        		$("#appointment_"+sitSrvCode).removeClass("appointmentHide");
+        	}
+        	
+        	// 顯示服務說明
+        	$("#srvInfo_"+sitSrvCode).removeClass("srvInfo-hide");
+        	
+        	var sitOffDayObj = null;
+        	var today = new Date();
+        	// spanDate
+        	var spanDate = $(".spanDate").text(dateFormat(today)+" 尚未預約時段");
+        	// 首次建立月曆時(oneSrv)發送ajax取得資料
+        	$.ajax({
+		        type: "GET",
+		       	url: "${pageContext.request.contextPath}/sitOffDay/sitOffDay.do?action=getOneSitSrvOffDay",
+		   		data: {sitSrvNo: $("#mySrv1").val(),},
+		        dataType: "json",
+		        cache: false,
+		        success: function (result) {
+		        	var disabledDates = []; 
+		        	sitOffDayObj = result;
+		        	
+		            $.each(result, function (i, j) {
+		            	
+		            	var offday = j.offDay;
+		            	var offtime = j.offTime;
+		            	
+		            	if (offtime == null) {
+		            		disabledDates.push(offday);
+		            	} else if (offday == today){
+		            		offtime = offtime.substr(0,2)+ ":" +offtime.substr(-2);
+		            		$("[data-value='"+offtime+"']").addClass("hideOffTime");
+		            	}
+		        	}); 
+		            
+		            $('#datetimepicker13').datetimepicker({
+        	        	format: 'L',
+        	        	inline: true,
+        				disabledDates: disabledDates,
+        				stepping: 30,
+        				minDate: moment(),
+        				maxDate: new Date(new Date().setDate(new Date().getDate() + 30)),
+        	        });
+		      	},
+		      	error: function (xhr, ajaxOptions, thrownError) {
+                	console.log("ajax失敗" + xhr.responseText);
+                }
+    		
+    		});
+        	
+        	
+        	// 更換服務項目(anotherSrv)後發送ajax取得新資料，並重新建立新月曆
+        	$("#mySrv1").on("change", function () {
+//         		console.log("送出sitSrvNo：" + $(this).val());
+        		
+    			$.ajax({
+    		        type: "GET",
+    		       	url: "${pageContext.request.contextPath}/sitOffDay/sitOffDay.do?action=getOneSitSrvOffDay",
+    		   		data: {sitSrvNo: $(this).val(),},
+    		        dataType: "json",
+    		        cache: false,
+    		        success: function (result) {
+    		        	// 預約時間
+    		        	sitSrvCode = $("#mySrv1 option:selected").attr("data-info");
+//     		        	console.log("sitSrvCode="+sitSrvCode);
+=======
 		<!-------------------------------- 服務選單 -------------------------------->
 <!-- 		<div class="section-line"> -->
 <!-- 			<select id="mySrv1" name="sitSrvNo"> -->
@@ -187,6 +324,7 @@
     		        	// 預約時間
     		        	sitSrvCode = $("#mySrv1 option:selected").attr("data-info");
     		        	console.log("sitSrvCode="+sitSrvCode);
+>>>>>>> branch 'master' of https://github.com/ea103T41/Petfect.git
     		        	if (sitSrvCode.indexOf("DropIn") > -1 || sitSrvCode.indexOf("DogWalking") > -1 || sitSrvCode.indexOf("PetTaxi") > -1){
     		        		$(".appointmentDates").addClass("appointmentHide");
     		        		$("#appointment_"+sitSrvCode).removeClass("appointmentHide");

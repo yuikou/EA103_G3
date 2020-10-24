@@ -21,7 +21,12 @@
     <div class="container sod-container">
     
 		<jsp:useBean id="sitSrvSvc" class="com.sitSrv.model.SitSrvService"/>
-		<% PetSitterVO petSitterVO = (PetSitterVO) request.getAttribute("petSitterVO"); %>
+		<jsp:useBean id="petSitterSvc" class="com.petSitter.model.PetSitterService"/>
+		<% 
+		String sitNo = (String) request.getAttribute("sitNo");	
+		PetSitterVO petSitterVO = petSitterSvc.getByPK(sitNo);
+		pageContext.setAttribute("petSitterVO", petSitterVO);
+		%>
 		
 		<!-------------------------------- 錯誤列表 -------------------------------->
 	   	<div class="errorList"> 
@@ -36,9 +41,9 @@
 		</div>
 		<!------------------------------可預約時段 -------------------------------->
 		<div>
-		    <c:forEach var="sitSrvVO" items="${sitSrvSvc.get_OneSit_AllSrv(petSitterVO.getSitNo())}">
+		    <c:forEach var="sitSrvVO" items="${sitSrvSvc.get_OneSit_AllSrv(sitNo)}">
 			    <c:if test="${sitSrvVO.sitSrvCode != 'Bathing' && sitSrvVO.sitSrvCode != 'Pickup' && sitSrvVO.sitSrvCode != 'Boarding' && sitSrvVO.sitSrvCode != 'DayCare'}">
-			    <div class="appointmentDates appointmentHide" id="appointment_${sitSrvVO.sitSrvCode}">
+			    <div class="appointmentDates appointmentHide" id="appointment_${sitSrvVO.sitSrvCode}">選擇時間
 		            <div class="appointmentSlots slots">
 						<div class="appointmentSlotsContainer">
 						<% 
@@ -70,7 +75,7 @@
 							pageContext.setAttribute("ssTlist", ssTlist);
 						%>
 							<c:forEach var="ssT" items="${ssTlist}">
-			                	<div class="appointmentSlot slot" data-value="${ssT}">${ssT}</div>
+			                	<div class="appointmentSlot slot srvTimeSlot" data-value="${ssT}" >${ssT}</div>
 			                </c:forEach>
 						</div>
 		            </div>
@@ -88,162 +93,5 @@
 	<script src="${jsPath}/popper.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.0/moment.min.js"></script>
 	<script src="${jsPath}/bootstrap.min.js"></script>
-    <script type="text/javascript">
-        $(function() {
-        	// 判斷預約時間是否要顯示
-        	var sitSrvCode = $("#mySrv1 option:selected").attr("data-info");
-        	if (sitSrvCode.indexOf("DropIn") > -1 || sitSrvCode.indexOf("DogWalking") > -1 || sitSrvCode.indexOf("PetTaxi") > -1){
-        		$("#appointment_"+sitSrvCode).removeClass("appointmentHide");
-        	} 
-        	$("#srvInfo_"+sitSrvCode).removeClass("srvInfo-hide");
-        	
-        	var sitOffDayObj = null;
-        	var today = new Date();
-        	// 首次建立月曆時(oneSrv)發送ajax取得資料
-        	$.ajax({
-		        type: "GET",
-		       	url: "${pageContext.request.contextPath}/sitOffDay/sitOffDay.do?action=getOneSitSrvOffDay",
-		   		data: {sitSrvNo: $("#mySrv1").val(),},
-		        dataType: "json",
-		        cache: false,
-		        success: function (result) {
-		        	var disabledDates = []; 
-		        	sitOffDayObj = result;
-		        	
-		            $.each(result, function (i, j) {
-		            	
-		            	var offday = j.offDay;
-		            	var offtime = j.offTime;
-		            	
-		            	if (offtime == null) {
-		            		disabledDates.push(offday);
-		            	} else if (offday == today){
-		            		offtime = offtime.substr(0,2)+ ":" +offtime.substr(-2);
-		            		$("[data-value='"+offtime+"']").addClass("hideOffTime");
-		            	}
-		        	}); 
-		            console.log(disabledDates);
-		            
-		            $('#datetimepicker13').datetimepicker({
-        	        	format: 'L',
-        	        	inline: true,
-        				disabledDates: disabledDates,
-        				stepping: 30,
-        				minDate: moment(),
-        				maxDate: new Date(new Date().setDate(new Date().getDate() + 30)),
-        	        });
-		      	},
-		      	error: function (xhr, ajaxOptions, thrownError) {
-                	console.log("ajax失敗");
-                	console.log(xhr.responseText);
-                }
-    		
-    		});
-        	
-        	
-        	// 更換服務項目(anotherSrv)後發送ajax取得新資料，並重新建立新月曆
-        	$("#mySrv1").on("change", function () {
-//         		console.log("送出sitSrvNo：" + $(this).val());
-        		
-    			$.ajax({
-    		        type: "GET",
-    		       	url: "${pageContext.request.contextPath}/sitOffDay/sitOffDay.do?action=getOneSitSrvOffDay",
-    		   		data: {sitSrvNo: $(this).val(),},
-    		        dataType: "json",
-    		        cache: false,
-    		        success: function (result) {
-    		        	// 預約時間
-    		        	sitSrvCode = $("#mySrv1 option:selected").attr("data-info");
-    		        	console.log("sitSrvCode="+sitSrvCode);
-    		        	if (sitSrvCode.indexOf("DropIn") > -1 || sitSrvCode.indexOf("DogWalking") > -1 || sitSrvCode.indexOf("PetTaxi") > -1){
-    		        		$(".appointmentDates").addClass("appointmentHide");
-    		        		$("#appointment_"+sitSrvCode).removeClass("appointmentHide");
-    		        	} else {
-    		        		$(".appointmentDates").addClass("appointmentHide");
-    		        	}
-    		        	
-    		        	// 不可預約日期&可預約時間
-		        		var offDayArr = [];
-
-		        		sitOffDayObj = result;
-    		        	console.log(sitOffDayObj);
-    		            
-    		        	$.each(result, function (i, j) {
-    		            	var offday = j.offDay;
-    		            	var offtime = j.offTime;
-    		            	
-    		            	if (offtime == null) {
-    		            		offDayArr.push(offday);
-    		            	} else if (offday == dateFormat(today)){
-    		            		offtime = offtime.substr(0,2)+ ":" +offtime.substr(-2);
-    		            		$("[data-value='"+offtime+"']").addClass("hideOffTime");
-    		            	}
-    		        	}); 
-    		            $('#datetimepicker13').datetimepicker("destroy");
-    		            $('#datetimepicker13').datetimepicker({
-	        	        	format: 'L',
-	        	        	inline: true,
-	        				disabledDates: offDayArr,
-	        				stepping: 30,
-	        				minDate: moment(),
-	        				maxDate: new Date(new Date().setDate(new Date().getDate() + 30)),
-	        	        });
-    		      	},
-    		      	error: function (xhr, ajaxOptions, thrownError) {
-                    	console.log("ajax失敗");
-                    }
-        		
-        		});
-    			$(".srvInfo").each(function(){
-    				$(this).addClass("srvInfo-hide");
-    			});
-    			var sitSrvCode_rn = $("#mySrv1 option:selected").attr("data-info");
-    			$("#srvInfo_"+sitSrvCode_rn).removeClass("srvInfo-hide");
-    			
-        	});
-        	
-        	
-        	// 點選月曆日期，更改可預約時間
-        	$("#datetimepicker13").on("change.datetimepicker", function (e) {
-        		
-        		if (e.oldDate == null) {
-        			e.oldDate = dateFormat(new Date());
-        		} else {
-        			e.oldDate = dateFormat(new Date(e.oldDate));
-        		}
-        		e.date = dateFormat(new Date(e.date));
-        		$(".spanDate").text(e.date+" 尚未預約時段");
-        		
-        	    if (e.oldDate !== e.date) {
-        	    	
-            		var offDayArr = [];
-            		
-        		    $("[data-value]").removeClass("hideOffTime");
-        		    $.each(sitOffDayObj, function (i, j) {
-        		         var offday = j.offDay;
-        		         var offtime = j.offTime;
-        		            	
-        		         if (offtime == null) {
-        		            offDayArr.push(offday);
-        		         } else if (offday == dateFormat(new Date(e.date))){
-        		        	 offtime = offtime.substr(0,2)+ ":" +offtime.substr(-2);
-        		             $("[data-value='"+offtime+"']").addClass("hideOffTime");
-        		         }
-        			}); 
-        		}
-        	});
-        	
-        });
-        
-        // 格式化日期
-        function dateFormat(date) {
-        	var yyyy = date.getFullYear();
-        	var MM = (date.getMonth() + 1) >= 10 ? (date.getMonth() + 1) : ("0" + (date.getMonth() + 1));
-        	var dd = date.getDate() < 10 ? ("0"+date.getDate()) : date.getDate();
-        	var formatDate = yyyy + "-" + MM + "-" + dd;
-        	return formatDate;
-        }
-
-	</script>
 </body>
 </html>
