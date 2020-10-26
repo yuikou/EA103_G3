@@ -5,6 +5,9 @@
     com.sitPhoto.model.*,com.member.model.*, java.util.*, java.text.DecimalFormat"%>
 <%
     PetSitterVO petSitterVO = (PetSitterVO) request.getAttribute("petSitterVO");
+    if (request.getAttribute("petSitterVO")==null) {
+    	String sitNo = (String) request.getAttribute("sitNo");
+    }
 %>
 <%
     SitSrvService sitSrvSrv = new SitSrvService();
@@ -28,7 +31,9 @@
     <title>會員保母頁面</title>
     <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/css-ching/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/css-ching/index.css">
+<%--     <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/css-ching/Petfect.css"> --%>
     <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/css-ching/listOneSitter.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.rateit/1.1.3/rateit.css"  />
     <link rel="Shortcut Icon" type="image/x-icon" href="https://dzmg8959fhe1k.cloudfront.net/all/favicon.ico">
     <link rel="stylesheet" href="<%=request.getContextPath()%>/css/css-ching/lightslider.css" />
@@ -66,14 +71,13 @@
                         <div class="col-5"><img id="userPhoto" src="<%=request.getContextPath()%>/images/pet.jpg"></div>
                         <div class="col-7">
                         <%
-                          double comm = 0.0;
-                          if(petSitterVO.getTotalComm()!=0){
-                            DecimalFormat df = new DecimalFormat("##.0");
-                            comm = Double.parseDouble(df.format(petSitterVO.getTotalComm() / petSitterVO.getTotalCus()));
-                          }
+                          SitOrderService sitOSrv = new SitOrderService();
+                          Double avgStar = sitOSrv.countAvgStar(petSitterVO.getSitNo());
+                          DecimalFormat df = new DecimalFormat("##.0");
+                          avgStar = Double.parseDouble(df.format(avgStar));
                         %>
                             <div>
-                            <div class="rateit" data-rateit-value="<%=comm %>" data-rateit-ispreset="true" data-rateit-readonly="true"></div>(<%=comm %>)    
+                            <div class="rateit" data-rateit-value="<%=avgStar %>" data-rateit-ispreset="true" data-rateit-readonly="true"></div>(<%=avgStar %>)    
                             </div>
                             <div><img src="<%=request.getContextPath()%>/images/repeat.png" width="20"> <b>重複預訂</b>
                                 <%=petSitterVO.getRepeatCus()%> 人</div>
@@ -109,15 +113,27 @@
 					</c:forEach>
 					</div>
                     <div class="row btnRow">
-                        <div class="col-7" style="margin-bottom: 10px;">
-                            <a href="#" class="btn btn-dark custom-btn">和保母聊聊</a>
+                        <div class="col-sm-5">
+                            <a href="#" class="btn btn-dark custom-btn">聯繫保母</a>
                         </div>
-                        <div class="col-5" style="margin-bottom: 10px">
+                        <div class="col-sm-2">
                             <form method="post" action="<%=request.getContextPath()%>/sitOrder/sitOrder.do">
                                 <input type="hidden" name="action" value="display_for_reserve">
                                 <input type="hidden" name="sitNo" value="${petSitterVO.sitNo}">
-                                <input type="submit" class="btn btn-dark custom-btn" value="預約保母">
+                                <input type="submit" class="btn btn-dark custom-btn" value="預約">
                             </form>
+                        </div>
+<!------------- 追蹤愛心 ------------->
+                        <div class="col-sm-1 heart-div" style="margin-left: 55px">
+                        <jsp:useBean id="petSitterSvc" class="com.petSitter.model.PetSitterService"></jsp:useBean>
+        				<jsp:useBean id="sfSrv" class="com.sitFollow.model.SitFollowService"></jsp:useBean>
+                        	<input type="hidden" name="memNo" value="${memNo}">
+							<input type="hidden" name="sitNo" value="${petSitterVO.sitNo}">
+							<div class="myClick">
+								<span class="${sfSrv.getAllByMemNo(memNo).contains(petSitterVO.memNo)? 'fa fa-heart':'fa fa-heart-o'}" style="color:red; font-size: 40px;"></span>
+								<div class="ring"></div>
+								<div class="ring2"></div>
+							</div>
                         </div>
                     </div>
                 </div>
@@ -140,12 +156,27 @@
         </div>
         <hr>
         <div class="row">
-            <div class="col-lg-4 col-sm-8">
-                <b>有提供的服務項目</b> <select class="form-control" size="1" name="sitSrvNo">
+            <div class="col-lg-4 col-sm-8 section-line">
+                <div class="title">托養證照</div>
+                <jsp:useBean id="sitLicSvc" class="com.sitLic.model.SitLicService"/>
+                <c:if test="${sitLicSvc.getSitAllLic(petSitterVO.sitNo).size()<1}">尚無證照</c:if>
+                <c:forEach var="sitLicVO" items="${sitLicSvc.getSitAllLic(petSitterVO.sitNo)}">
+                <c:if test="${sitLicVO.licStatus==1}">
+                <div class="sitlic-div">
+                	<img class="sitlicImg" src="${pageContext.request.contextPath}/front-end/img/certificate.svg">
+                	<span class="sitlicSapn">${sitLicVO.licName}</span>
+                </div>
+                </c:if>
+                </c:forEach>
+                <div class="title">有提供的服務項目</div> <select id="mySrv1" class="form-control" size="1" name="sitSrvNo">
                     <c:forEach var="sitSrvVO" items="${list}">
-                        <option value="${sitSrvVO.sitSrvCode}">${sitSrvVO.sitSrvName}</option>
+                    	<c:if test="${sitSrvVO.sitSrvCode != 'Bathing' && sitSrvVO.sitSrvCode != 'Pickup'}">
+                        <option name="sitSrvNo" data-info="${sitSrvVO.sitSrvCode}" value="${sitSrvVO.sitSrvNo}" <c:if test="${sitSrvVO.sitSrvNo==param.sitSrvNo}">selected</c:if> >${sitSrvVO.sitSrvName}</option>
+                        </c:if>
                     </c:forEach>
                 </select>
+                
+                <jsp:include page="/front-end/sitOffDay/showOneSrvDay.jsp" />
             </div>
             <div class="col-lg-8">
                 <div class="title">托養簡介</div>
@@ -158,7 +189,6 @@
                     <%=petSitterVO.getSrvETime().substring(0, 2) + ":" + petSitterVO.getSrvETime().substring(2, 4)%>
                 </div>
         <%
-           SitOrderService sitOSrv = new SitOrderService();
            Set<SitOrderVO> sitOVOSet = sitOSrv.getByFK_sitNo(petSitterVO.getSitNo());
            pageContext.setAttribute("sitOVOSet", sitOVOSet);
         %>
@@ -177,7 +207,44 @@
                     </c:if>
                     <c:if test="${memVO.memNo==sitOrderVO.memNo && sitOrderVO.sitNo==petSitterVO.getSitNo()}">
                       <div class="col-sm-8">
-                      <div style="font-size: 15px; font-weight: bold;">${memVO.memName}</div>
+                      <div style="font-size: 20px; font-weight: bold;">${memVO.memName}
+                      <c:if test="${sitOrderVO.commStar==5}">
+                      <img src="<%=request.getContextPath()%>/images/starred.png" width="20">
+                      <img src="<%=request.getContextPath()%>/images/starred.png" width="20">
+                      <img src="<%=request.getContextPath()%>/images/starred.png" width="20">
+                      <img src="<%=request.getContextPath()%>/images/starred.png" width="20">
+                      <img src="<%=request.getContextPath()%>/images/starred.png" width="20">
+                      </c:if>
+                      <c:if test="${sitOrderVO.commStar==4}">
+                      <img src="<%=request.getContextPath()%>/images/starred.png" width="20">
+                      <img src="<%=request.getContextPath()%>/images/starred.png" width="20">
+                      <img src="<%=request.getContextPath()%>/images/starred.png" width="20">
+                      <img src="<%=request.getContextPath()%>/images/starred.png" width="20">
+                      <img src="<%=request.getContextPath()%>/images/star.png" width="20">
+                      </c:if>
+                      <c:if test="${sitOrderVO.commStar==3}">
+                      <img src="<%=request.getContextPath()%>/images/starred.png" width="20">
+                      <img src="<%=request.getContextPath()%>/images/starred.png" width="20">
+                      <img src="<%=request.getContextPath()%>/images/starred.png" width="20">
+                      <img src="<%=request.getContextPath()%>/images/star.png" width="20">
+                      <img src="<%=request.getContextPath()%>/images/star.png" width="20">
+                      </c:if>
+                      <c:if test="${sitOrderVO.commStar==2}">
+                      <img src="<%=request.getContextPath()%>/images/starred.png" width="20">
+                      <img src="<%=request.getContextPath()%>/images/starred.png" width="20">
+                      <img src="<%=request.getContextPath()%>/images/star.png" width="20">
+                      <img src="<%=request.getContextPath()%>/images/star.png" width="20">
+                      <img src="<%=request.getContextPath()%>/images/star.png" width="20">
+                      </c:if>
+                      <c:if test="${sitOrderVO.commStar==1}">
+                      <img src="<%=request.getContextPath()%>/images/starred.png" width="20">
+                      <img src="<%=request.getContextPath()%>/images/star.png" width="20">
+                      <img src="<%=request.getContextPath()%>/images/star.png" width="20">
+                      <img src="<%=request.getContextPath()%>/images/star.png" width="20">
+                      <img src="<%=request.getContextPath()%>/images/star.png" width="20">
+                      </c:if>
+                      
+                      </div>
                       <div>${sitOrderVO.sitComm}</div>
                       </div>
                     </c:if>
@@ -187,13 +254,14 @@
                 <hr>
                 </c:if>
                 </c:forEach>
+                
             </div>
         </div>
     </div>
     <!-- 內文end -->
     <!-- footer -->
     <jsp:include page="/front-end/footer.jsp" />
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<!--     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.rateit/1.1.3/jquery.rateit.min.js"></script>
     <script src="<%=request.getContextPath()%>/js/js-ching/lightslider.js"></script>
     <script>
